@@ -1,13 +1,13 @@
-name = Fixed
+name = ircserv
 flags = -Wall -Wextra -Werror -std=c++98
-src =
+src = main.cpp
 
 obj = $(src:%.cpp=%.o)
 
 all : $(name)
 
-$(name): $(obj) main.cpp
-	c++ $(flags) main.cpp  $(obj) -o $(name)
+$(name): $(obj)
+	c++ $(flags)  $(obj) -o $(name)
 
 %.o: %.cpp
 	c++ $(flags) -c $< -o $@
