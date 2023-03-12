@@ -10,7 +10,7 @@ int main(int argc, char *argv[])
         exit(EXIT_FAILURE);
     }
 
-    std::cout << "SUCCESS\n";
+    std::cout << "welcome in our program\n ";
     foo();
     (void)argv;
     return (0);
