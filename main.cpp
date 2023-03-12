@@ -1,5 +1,4 @@
-#include <iostream>
-#include <string>
+#include "FT_IRC.h"
 
 int main(int argc, char *argv[])
 {
@@ -11,10 +10,8 @@ int main(int argc, char *argv[])
         exit(EXIT_FAILURE);
     }
 
-    std::cout << "done\n";
+    std::cout << "SUCCESS\n";
+    foo();
     (void)argv;
     return (0);
 }
-
-
-

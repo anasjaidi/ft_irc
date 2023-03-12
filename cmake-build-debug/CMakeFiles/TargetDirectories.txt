@@ -1,3 +1,3 @@
-/Users/ajaidi/CLionProjects/ft_irc/cmake-build-debug/CMakeFiles/ft_irc.dir
-/Users/ajaidi/CLionProjects/ft_irc/cmake-build-debug/CMakeFiles/edit_cache.dir
-/Users/ajaidi/CLionProjects/ft_irc/cmake-build-debug/CMakeFiles/rebuild_cache.dir
+/Users/mustapha/CLionProjects/ft_irc/cmake-build-debug/CMakeFiles/ft_irc.dir
+/Users/mustapha/CLionProjects/ft_irc/cmake-build-debug/CMakeFiles/edit_cache.dir
+/Users/mustapha/CLionProjects/ft_irc/cmake-build-debug/CMakeFiles/rebuild_cache.dir
