@@ -50,10 +50,11 @@ int main(int ac, char *av[]) {
 
     int i = 0;
 
-if (av[i] && i == 2)
-    std::cout << "Done you in server now !" << std::endl;
-else
+if (ac != 3)
     std::cout << "bad argement !" << std::endl;
+else 
+{
+    std::cout << "Done you in server now !" << std::endl;
 
 
     int server_fd, client_fd, port_number;
@@ -71,7 +72,7 @@ else
     // Bind socket to port
     std::memset(&server_address, 0, sizeof(server_address));
     port_number = atoi(av[1]);
-    passWord = av[2];
+    passWord = "pass";
     server_address.sin_family = AF_INET;
     server_address.sin_addr.s_addr = INADDR_ANY;
     server_address.sin_port = htons(port_number);
@@ -79,7 +80,9 @@ else
         std::cerr << "Eror binding socket to prort" << std::endl;
         return 1;
     }
-
+        if (!passWord.compare(av[2])){
+            std::cerr << "invalid password !" << std::endl; 
+        }
     // Listen for incoming connections
     listen(server_fd, 5);
 
@@ -112,7 +115,7 @@ else
 
     // Close socket
     close(server_fd);
-
+}
     return 0;
 }
 
