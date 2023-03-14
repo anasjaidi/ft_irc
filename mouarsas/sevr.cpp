@@ -6,7 +6,7 @@
 /*   By: mouarsas <mouarsas@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/13 17:18:04 by mouarsas          #+#    #+#             */
-/*   Updated: 2023/03/14 20:54:10 by mouarsas         ###   ########.fr       */
+/*   Updated: 2023/03/14 23:42:41 by mouarsas         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -117,4 +117,5 @@ int main(int ac, char *av[]) {
 }
 
 // client //
+// c++ -pthread mouarsas/sevr.cpp -o server // for compilation the programe
 // enter this argument in other prompet "nc localhost 555"
