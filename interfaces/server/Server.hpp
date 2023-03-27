@@ -13,6 +13,24 @@ private:
     const char *port;
     struct addrinfo hints;
     struct addrinfo *res;
+    int socket_fd;
+public:
+    const addrinfo &getHints() const;
+
+    addrinfo *getRes() const;
+
+    void setRes(addrinfo *res);
+
+    int getSocketFd() const;
+
+    void setSocketFd(int socketFd);
+
+    void setHints(const addrinfo &hints);
+
+public:
+    const char *getPort() const;
+
+    void setPort(const char *port);
 
 public:
     /**

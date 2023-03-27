@@ -30,3 +30,35 @@ Server::~Server() {
 const char *Server::AddrInfoError::what() const throw() {
     return  "GetAddrInfo Function failed To fill infos!";
 }
+
+const char *Server::getPort() const {
+    return port;
+}
+
+void Server::setPort(const char *port) {
+    Server::port = port;
+}
+
+const addrinfo &Server::getHints() const {
+    return hints;
+}
+
+void Server::setHints(const addrinfo &hints) {
+    Server::hints = hints;
+}
+
+addrinfo *Server::getRes() const {
+    return res;
+}
+
+void Server::setRes(addrinfo *res) {
+    Server::res = res;
+}
+
+int Server::getSocketFd() const {
+    return socket_fd;
+}
+
+void Server::setSocketFd(int socketFd) {
+    socket_fd = socketFd;
+}
