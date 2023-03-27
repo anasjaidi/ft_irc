@@ -8,7 +8,8 @@ set(CMAKE_DEPENDS_LANGUAGES
 
 # The set of dependency files which are needed:
 set(CMAKE_DEPENDS_DEPENDENCY_FILES
-  "/Users/naizam/Desktop/ft_irc/main.cpp" "CMakeFiles/ft_irc.dir/main.cpp.o" "gcc" "CMakeFiles/ft_irc.dir/main.cpp.o.d"
+  "/Users/ajaidi/Documents/ft_irc/interfaces/server_interface/server.cpp" "CMakeFiles/ft_irc.dir/interfaces/server_interface/server.cpp.o" "gcc" "CMakeFiles/ft_irc.dir/interfaces/server_interface/server.cpp.o.d"
+  "/Users/ajaidi/Documents/ft_irc/main.cpp" "CMakeFiles/ft_irc.dir/main.cpp.o" "gcc" "CMakeFiles/ft_irc.dir/main.cpp.o.d"
   )
 
 # Targets to which this target links.

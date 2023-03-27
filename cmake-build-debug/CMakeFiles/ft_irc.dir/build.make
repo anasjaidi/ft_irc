@@ -53,10 +53,10 @@ RM = /Applications/CLion.app/Contents/bin/cmake/mac/bin/cmake -E rm -f
 EQUALS = =
 
 # The top-level source directory on which CMake was run.
-CMAKE_SOURCE_DIR = /Users/naizam/Desktop/ft_irc
+CMAKE_SOURCE_DIR = /Users/ajaidi/Documents/ft_irc
 
 # The top-level build directory on which CMake was run.
-CMAKE_BINARY_DIR = /Users/naizam/Desktop/ft_irc/cmake-build-debug
+CMAKE_BINARY_DIR = /Users/ajaidi/Documents/ft_irc/cmake-build-debug
 
 # Include any dependencies generated for this target.
 include CMakeFiles/ft_irc.dir/depend.make
@@ -70,30 +70,46 @@ include CMakeFiles/ft_irc.dir/progress.make
 include CMakeFiles/ft_irc.dir/flags.make
 
 CMakeFiles/ft_irc.dir/main.cpp.o: CMakeFiles/ft_irc.dir/flags.make
-CMakeFiles/ft_irc.dir/main.cpp.o: /Users/naizam/Desktop/ft_irc/main.cpp
+CMakeFiles/ft_irc.dir/main.cpp.o: /Users/ajaidi/Documents/ft_irc/main.cpp
 CMakeFiles/ft_irc.dir/main.cpp.o: CMakeFiles/ft_irc.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/Users/naizam/Desktop/ft_irc/cmake-build-debug/CMakeFiles --progress-num=$(CMAKE_PROGRESS_1) "Building CXX object CMakeFiles/ft_irc.dir/main.cpp.o"
-	/Library/Developer/CommandLineTools/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/ft_irc.dir/main.cpp.o -MF CMakeFiles/ft_irc.dir/main.cpp.o.d -o CMakeFiles/ft_irc.dir/main.cpp.o -c /Users/naizam/Desktop/ft_irc/main.cpp
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/Users/ajaidi/Documents/ft_irc/cmake-build-debug/CMakeFiles --progress-num=$(CMAKE_PROGRESS_1) "Building CXX object CMakeFiles/ft_irc.dir/main.cpp.o"
+	/Library/Developer/CommandLineTools/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/ft_irc.dir/main.cpp.o -MF CMakeFiles/ft_irc.dir/main.cpp.o.d -o CMakeFiles/ft_irc.dir/main.cpp.o -c /Users/ajaidi/Documents/ft_irc/main.cpp
 
 CMakeFiles/ft_irc.dir/main.cpp.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/ft_irc.dir/main.cpp.i"
-	/Library/Developer/CommandLineTools/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /Users/naizam/Desktop/ft_irc/main.cpp > CMakeFiles/ft_irc.dir/main.cpp.i
+	/Library/Developer/CommandLineTools/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /Users/ajaidi/Documents/ft_irc/main.cpp > CMakeFiles/ft_irc.dir/main.cpp.i
 
 CMakeFiles/ft_irc.dir/main.cpp.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/ft_irc.dir/main.cpp.s"
-	/Library/Developer/CommandLineTools/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /Users/naizam/Desktop/ft_irc/main.cpp -o CMakeFiles/ft_irc.dir/main.cpp.s
+	/Library/Developer/CommandLineTools/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /Users/ajaidi/Documents/ft_irc/main.cpp -o CMakeFiles/ft_irc.dir/main.cpp.s
+
+CMakeFiles/ft_irc.dir/interfaces/server_interface/server.cpp.o: CMakeFiles/ft_irc.dir/flags.make
+CMakeFiles/ft_irc.dir/interfaces/server_interface/server.cpp.o: /Users/ajaidi/Documents/ft_irc/interfaces/server_interface/server.cpp
+CMakeFiles/ft_irc.dir/interfaces/server_interface/server.cpp.o: CMakeFiles/ft_irc.dir/compiler_depend.ts
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/Users/ajaidi/Documents/ft_irc/cmake-build-debug/CMakeFiles --progress-num=$(CMAKE_PROGRESS_2) "Building CXX object CMakeFiles/ft_irc.dir/interfaces/server_interface/server.cpp.o"
+	/Library/Developer/CommandLineTools/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/ft_irc.dir/interfaces/server_interface/server.cpp.o -MF CMakeFiles/ft_irc.dir/interfaces/server_interface/server.cpp.o.d -o CMakeFiles/ft_irc.dir/interfaces/server_interface/server.cpp.o -c /Users/ajaidi/Documents/ft_irc/interfaces/server_interface/server.cpp
+
+CMakeFiles/ft_irc.dir/interfaces/server_interface/server.cpp.i: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/ft_irc.dir/interfaces/server_interface/server.cpp.i"
+	/Library/Developer/CommandLineTools/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /Users/ajaidi/Documents/ft_irc/interfaces/server_interface/server.cpp > CMakeFiles/ft_irc.dir/interfaces/server_interface/server.cpp.i
+
+CMakeFiles/ft_irc.dir/interfaces/server_interface/server.cpp.s: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/ft_irc.dir/interfaces/server_interface/server.cpp.s"
+	/Library/Developer/CommandLineTools/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /Users/ajaidi/Documents/ft_irc/interfaces/server_interface/server.cpp -o CMakeFiles/ft_irc.dir/interfaces/server_interface/server.cpp.s
 
 # Object files for target ft_irc
 ft_irc_OBJECTS = \
-"CMakeFiles/ft_irc.dir/main.cpp.o"
+"CMakeFiles/ft_irc.dir/main.cpp.o" \
+"CMakeFiles/ft_irc.dir/interfaces/server_interface/server.cpp.o"
 
 # External object files for target ft_irc
 ft_irc_EXTERNAL_OBJECTS =
 
 ft_irc: CMakeFiles/ft_irc.dir/main.cpp.o
+ft_irc: CMakeFiles/ft_irc.dir/interfaces/server_interface/server.cpp.o
 ft_irc: CMakeFiles/ft_irc.dir/build.make
 ft_irc: CMakeFiles/ft_irc.dir/link.txt
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --bold --progress-dir=/Users/naizam/Desktop/ft_irc/cmake-build-debug/CMakeFiles --progress-num=$(CMAKE_PROGRESS_2) "Linking CXX executable ft_irc"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --bold --progress-dir=/Users/ajaidi/Documents/ft_irc/cmake-build-debug/CMakeFiles --progress-num=$(CMAKE_PROGRESS_3) "Linking CXX executable ft_irc"
 	$(CMAKE_COMMAND) -E cmake_link_script CMakeFiles/ft_irc.dir/link.txt --verbose=$(VERBOSE)
 
 # Rule to build all files generated by this target.
@@ -105,6 +121,6 @@ CMakeFiles/ft_irc.dir/clean:
 .PHONY : CMakeFiles/ft_irc.dir/clean
 
 CMakeFiles/ft_irc.dir/depend:
-	cd /Users/naizam/Desktop/ft_irc/cmake-build-debug && $(CMAKE_COMMAND) -E cmake_depends "Unix Makefiles" /Users/naizam/Desktop/ft_irc /Users/naizam/Desktop/ft_irc /Users/naizam/Desktop/ft_irc/cmake-build-debug /Users/naizam/Desktop/ft_irc/cmake-build-debug /Users/naizam/Desktop/ft_irc/cmake-build-debug/CMakeFiles/ft_irc.dir/DependInfo.cmake --color=$(COLOR)
+	cd /Users/ajaidi/Documents/ft_irc/cmake-build-debug && $(CMAKE_COMMAND) -E cmake_depends "Unix Makefiles" /Users/ajaidi/Documents/ft_irc /Users/ajaidi/Documents/ft_irc /Users/ajaidi/Documents/ft_irc/cmake-build-debug /Users/ajaidi/Documents/ft_irc/cmake-build-debug /Users/ajaidi/Documents/ft_irc/cmake-build-debug/CMakeFiles/ft_irc.dir/DependInfo.cmake --color=$(COLOR)
 .PHONY : CMakeFiles/ft_irc.dir/depend
 

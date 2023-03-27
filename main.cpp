@@ -11,7 +11,6 @@ int main(int argc, char *argv[])
     }
 
     std::cout << "welcome in our program\n ";
-    foo();
     (void)argv;
     return (0);
 }

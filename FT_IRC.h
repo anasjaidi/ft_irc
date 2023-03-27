@@ -6,6 +6,8 @@
 #define FT_IRC_FT_IRC_H
 #include <iostream>
 #include <string>
-void foo();
-
+# include <iostream>
+#include <sys/types.h>
+#include <sys/socket.h>
+#include <netdb.h>
 #endif //FT_IRC_FT_IRC_H
