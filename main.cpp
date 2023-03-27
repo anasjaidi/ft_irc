@@ -1,4 +1,5 @@
 #include "FT_IRC.h"
+# include "./interfaces/server/Server.hpp"
 
 int main(int argc, char *argv[])
 {
@@ -11,6 +12,9 @@ int main(int argc, char *argv[])
     }
 
     std::cout << "welcome in our program\n ";
+
+    Server *irc = new Server(AF_UNSPEC, SOCK_STREAM, argv[1]);
+
     (void)argv;
     return (0);
 }

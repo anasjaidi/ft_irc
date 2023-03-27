@@ -10,7 +10,9 @@
 class Server {
 
 private:
-    std::string port;
+    const char *port;
+    struct addrinfo hints;
+    struct addrinfo *res;
 
 public:
     /**
@@ -24,8 +26,9 @@ public:
      *
      * @param family : IPV4, IPV6
      * @param socket_type: SOCK_STREAM, SOCK_DGRAM
+     * @param port: Port number
      * */
-    Server(int family, int socket_type);
+    Server(int family, int socket_type, const char *port);
 
     /**
      * start parametrised constructor
@@ -33,11 +36,22 @@ public:
     *
     * @param family : IPV4, IPV6
     * @param socket_type: SOCK_STREAM, SOCK_DGRAM
+    * @param port: Port number
     * @param flags: other flags
     * */
-    Server(int family, int socket_type, int flags);
+    Server(int family, int socket_type, const char* port, int flags);
 
+    /**
+     * start prototype of destructor
+     * */
     ~Server();
+
+    /*
+     * start Exceptions
+    **/
+    class AddrInfoError : public std::exception {
+        virtual const char *what(void) const  throw();
+    };
 };
 
 #endif //FT_IRC_SERVER_HPP
