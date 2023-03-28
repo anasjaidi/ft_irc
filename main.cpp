@@ -13,8 +13,21 @@ int main(int argc, char *argv[])
 
     std::cout << "welcome in our program\n ";
 
-    Server *irc = new Server("www.google.com", AF_UNSPEC, SOCK_STREAM, "80" );
-//    Server *irc = new Server(AF_UNSPEC, SOCK_STREAM, argv[1]);
+
+    try {
+
+//        Server *irc = new Server("www.google.com", AF_UNSPEC, SOCK_STREAM, "80" );
+        Server *irc = new Server(AF_UNSPEC, SOCK_STREAM, argv[1]);
+
+        irc->get_socket_fd();
+        std::cout << "now we are talking !\n";
+
+
+
+    } catch (std::exception err) {
+        std::cerr << "error occurred\n";
+        std::cerr << err.what() << std::endl;
+    }
 
     (void)argv;
     return (0);

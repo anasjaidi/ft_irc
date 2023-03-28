@@ -75,6 +75,14 @@ public:
     class AddrInfoError : public std::exception {
         virtual const char *what(void) const  throw();
     };
+    class SocketFdError : public std::exception {
+        virtual const char *what(void) const  throw();
+    };
+
+    /**
+     * */
+
+    virtual void get_socket_fd() throw(SocketFdError);
 };
 
 #endif //FT_IRC_SERVER_HPP

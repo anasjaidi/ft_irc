@@ -61,6 +61,9 @@ const char *Server::AddrInfoError::what() const throw() {
     return "GetAddrInfo Function failed To fill infos!";
 }
 
+const char *Server::SocketFdError::what() const throw() {
+    return "GetSocketFd Function failed to create socket file descriptor!";
+}
 
 /*
  * start Attributes Getters and Setters
@@ -95,4 +98,18 @@ int Server::getSocketFd() const {
 
 void Server::setSocketFd(int socketFd) {
     socket_fd = socketFd;
+}
+
+
+void Server::get_socket_fd() throw(SocketFdError) {
+    int fd;
+
+    fd = socket(res->ai_family, res->ai_socktype, res->ai_protocol);
+
+    if (fd < 0)
+        throw SocketFdError();
+    else {
+        this->socket_fd = fd;
+        std::cout << "GetSocketFd Success " << this->socket_fd << std::endl;
+    }
 }
