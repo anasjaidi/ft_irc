@@ -154,10 +154,15 @@ void Server::listen_to_socket() throw(SeverErrors) {
 
 void Server::accept_incoming_requests() throw(SeverErrors) {
     int new_client_fd;
+    char buff[1024];
     struct sockaddr_storage their_addr = {};
     socklen_t addr_size;
     new_client_fd = accept(this->socket_fd, (struct sockaddr *)&their_addr, &addr_size);
-    std::cout << "how isn't going there \n";
+    recv(new_client_fd, buff, 1024, 0);
+    write(1, buff, 1024);
+
+    char res[1023] = "Hello, There\n";
+    send(new_client_fd, res, 14, 0);
     close(new_client_fd);
 
     if (new_client_fd < 0)
