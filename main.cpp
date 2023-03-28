@@ -11,7 +11,7 @@ int main(int argc, char *argv[])
         exit(EXIT_FAILURE);
     }
 
-    std::cout << "welcome in our program\n ";
+    std::cout << "welcome in our program\n";
 
 
     try {
@@ -20,13 +20,14 @@ int main(int argc, char *argv[])
         Server *irc = new Server(AF_UNSPEC, SOCK_STREAM, argv[1]);
 
         irc->get_socket_fd();
-        std::cout << "now we are talking !\n";
 
+        irc->bind_socket_fd();
 
+        std::cout << irc->getService() << std::endl;
 
     } catch (std::exception err) {
-        std::cerr << "error occurred\n";
         std::cerr << err.what() << std::endl;
+        std::cerr << "error occurred\n";
     }
 
     (void)argv;

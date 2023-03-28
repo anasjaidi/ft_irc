@@ -72,17 +72,33 @@ public:
     /*
      * start Exceptions
     **/
-    class AddrInfoError : public std::exception {
-        virtual const char *what(void) const  throw();
+
+class SeverErrors : public std::exception {
+public:
+    enum ErrorCode {
+        AddrInfoError,
+        SocketFdError,
+        BindFdError,
+        ListenError,
+        AcceptError,
+        ReadError,
+        WriteError,
+        UndefinedError
     };
-    class SocketFdError : public std::exception {
-        virtual const char *what(void) const  throw();
-    };
+    SeverErrors(ErrorCode _errorCode = ErrorCode::UndefinedError);
+
+    const char * what() const throw() override;
+private:
+    int errorCode;
+};
+
 
     /**
      * */
+    virtual void get_socket_fd() throw();
 
-    virtual void get_socket_fd() throw(SocketFdError);
+    virtual void bind_socket_fd() throw();
+
 };
 
 #endif //FT_IRC_SERVER_HPP

@@ -65,6 +65,10 @@ const char *Server::SocketFdError::what() const throw() {
     return "GetSocketFd Function failed to create socket file descriptor!";
 }
 
+const char *Server::BindFdError::what() const throw()  {
+    return "BindFd Function failed!";
+}
+
 /*
  * start Attributes Getters and Setters
  * */
@@ -112,4 +116,14 @@ void Server::get_socket_fd() throw(SocketFdError) {
         this->socket_fd = fd;
         std::cout << "GetSocketFd Success " << this->socket_fd << std::endl;
     }
+}
+
+void Server::bind_socket_fd() throw(BindFdError) {
+    int status = bind(this->socket_fd, res->ai_addr, res->ai_addrlen);
+
+    if (status < 0)
+        throw BindFdError();
+    else
+        std::cout << "BindSocketFd Success " << this->socket_fd << std::endl;
+
 }
