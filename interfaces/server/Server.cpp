@@ -6,14 +6,23 @@
 # include "./Server.hpp"
 
 
-Server::Server() {
+Server::Server() : sock_type(-1), family(-1) {
     std::cout << "Default constructor called \n";
 }
 
-Server::Server(int family, int socket_type, const char * port) : port(port) {
+Server::Server(int family, int socket_type, const char *service) : service(service), sock_type(socket_type),
+                                                                   family(family) {
     int status;
 
-    status = getaddrinfo(NULL, this->port, &hints, &res);
+    bzero(&hints, sizeof hints);
+
+    hints.ai_family = family;
+
+    hints.ai_socktype = socket_type;
+
+    hints.ai_flags = AI_PASSIVE;
+
+    status = getaddrinfo(NULL, service, &hints, &res);
 
     if (status < 0)
         throw AddrInfoError();
@@ -21,22 +30,47 @@ Server::Server(int family, int socket_type, const char * port) : port(port) {
         std::cout << "GetAddrInfo Success " << status << std::endl;
 }
 
+Server::Server(const char *node, int family, int socket_type, const char *service) : sock_type(socket_type),
+                                                                                                family(family) {
+    int status;
+
+    bzero(&hints, sizeof hints);
+
+    hints.ai_family = family;
+
+    hints.ai_socktype = socket_type;
+
+    status = getaddrinfo(node, service, &hints, &res);
+
+    if (status < 0)
+        throw AddrInfoError();
+    else
+        std::cout << "GetAddrInfo Success " << status << std::endl;
+
+}
+
 Server::~Server() {
     std::cout << "Destructor called \n";
 }
 
 
-
+/*
+ * Start Exceptions What Functions implementation
+ * */
 const char *Server::AddrInfoError::what() const throw() {
-    return  "GetAddrInfo Function failed To fill infos!";
+    return "GetAddrInfo Function failed To fill infos!";
 }
 
-const char *Server::getPort() const {
-    return port;
+
+/*
+ * start Attributes Getters and Setters
+ * */
+std::string Server::getService() const {
+    return this->service;
 }
 
-void Server::setPort(const char *port) {
-    Server::port = port;
+void Server::setService(std::string &service) {
+    this->service = service;
 }
 
 const addrinfo &Server::getHints() const {

@@ -13,7 +13,8 @@ int main(int argc, char *argv[])
 
     std::cout << "welcome in our program\n ";
 
-    Server *irc = new Server(AF_UNSPEC, SOCK_STREAM, argv[1]);
+    Server *irc = new Server("www.google.com", AF_UNSPEC, SOCK_STREAM, "80" );
+//    Server *irc = new Server(AF_UNSPEC, SOCK_STREAM, argv[1]);
 
     (void)argv;
     return (0);
