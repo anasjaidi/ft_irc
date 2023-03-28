@@ -101,6 +101,8 @@ private:
 
     virtual void listen_to_socket() throw(SeverErrors);
 
+    virtual void accept_incoming_requests() throw(SeverErrors);
+
 };
 
 #endif //FT_IRC_SERVER_HPP

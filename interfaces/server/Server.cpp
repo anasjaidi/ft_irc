@@ -151,3 +151,18 @@ void Server::listen_to_socket() throw(SeverErrors) {
     else
         std::cout <<  "Listen Success " << status << std::endl;
 }
+
+void Server::accept_incoming_requests() throw(SeverErrors) {
+    int new_client_fd;
+    struct sockaddr_storage their_addr = {};
+    socklen_t addr_size;
+    new_client_fd = accept(this->socket_fd, (struct sockaddr *)&their_addr, &addr_size);
+    std::cout << "how isn't going there \n";
+    close(new_client_fd);
+
+    if (new_client_fd < 0)
+        throw SeverErrors(SeverErrors::ErrorCode::AcceptError);
+    else
+        std::cout << "ACCEPT NEW CLIENT IN A FD: " << new_client_fd << std::endl;
+
+}

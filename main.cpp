@@ -25,9 +25,11 @@ int main(int argc, char *argv[])
 
         irc->listen_to_socket();
 
+        irc->accept_incoming_requests();
+
     } catch (std::exception &err) {
+        std::cerr << "error occurred: ";
         std::cerr << err.what() << std::endl;
-        std::cerr << "error occurred\n";
     }
 
     (void)argv;
