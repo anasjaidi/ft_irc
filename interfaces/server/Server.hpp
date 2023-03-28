@@ -85,9 +85,9 @@ public:
         WriteError,
         UndefinedError
     };
-    SeverErrors(ErrorCode _errorCode = ErrorCode::UndefinedError);
+    SeverErrors(ErrorCode _errorCode = UndefinedError);
 
-    const char * what() const throw() override;
+    const char * what() const throw();
 private:
     int errorCode;
 };
@@ -95,9 +95,11 @@ private:
 
     /**
      * */
-    virtual void get_socket_fd() throw();
+    virtual void get_socket_fd() throw(SeverErrors);
 
-    virtual void bind_socket_fd() throw();
+    virtual void bind_socket_fd() throw(SeverErrors);
+
+    virtual void listen_to_socket() throw(SeverErrors);
 
 };
 

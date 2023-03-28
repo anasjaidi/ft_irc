@@ -23,9 +23,9 @@ int main(int argc, char *argv[])
 
         irc->bind_socket_fd();
 
-        std::cout << irc->getService() << std::endl;
+        irc->listen_to_socket();
 
-    } catch (std::exception err) {
+    } catch (std::exception &err) {
         std::cerr << err.what() << std::endl;
         std::cerr << "error occurred\n";
     }
