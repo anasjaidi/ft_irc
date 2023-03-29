@@ -179,7 +179,7 @@ void Server::accept_incoming_requests() throw(SeverErrors) {
     pfds.push_back(hint);
 
     while (1) {
-        int len = poll(pfds.data(), pfds.size(), 1000);
+        int len = poll(pfds.data(), pfds.size(), -1);
 
         std::cout << len << std::endl;
 
@@ -200,6 +200,7 @@ void Server::accept_incoming_requests() throw(SeverErrors) {
                 } else {
                     // TODO: handle exist client
                     std::cout << "no its not a new member\n";
+                    recv(pfds[i].fd, buff, 1024, 0);
                     send(pfds[i].fd, "anas\n", strlen("anas\n"), 0);
                 }
             }
