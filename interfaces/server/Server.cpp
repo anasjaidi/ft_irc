@@ -161,82 +161,48 @@ void Server::accept_incoming_requests() throw(SeverErrors) {
     struct sockaddr_storage their_addr = {};
     socklen_t addr_size;
 
-    char *reply =
-            "HTTP/1.1 200 OK\n"
-            "Server: Apache/2.2.3\n"
-            "Content-Type: text/html\n"
-            "Content-Length: 15\n"
-            "Accept-Ranges: bytes\n"
-            "Connection: close\n"
-            "\n"
-            "Hello, World!";
 
-    struct pollfd hint;
 
-    hint.fd = socket_fd;
-    hint.events = POLLIN;
-
-    pfds.push_back(hint);
+    pfds.push_back((struct pollfd){.fd = socket_fd, .events = POLLIN, .revents = 0});
 
     while (1) {
         int len = poll(pfds.data(), pfds.size(), -1);
 
-        std::cout << len << std::endl;
-
         for (int i = 0; i < pfds.size(); ++i) {
             if (pfds[i].revents & POLLIN) {
                 if (pfds[i].fd == socket_fd) {
-                    std::cout << "yes its a new member\n" << pfds.size() << std::endl;
+                    std::cout << "yes its a new member " << pfds.size() << std::endl;
 
                     const int new_client_fd = accept(socket_fd, (struct sockaddr *) &their_addr, &addr_size);
 
                     if (new_client_fd < 0)
                         throw SeverErrors(SeverErrors::ErrorCode::AcceptError);
 
-                    const struct pollfd hint = {.fd = new_client_fd, .events = POLLIN};
 
-
-                    pfds.push_back(hint);
+                    pfds.push_back((struct pollfd){.fd = new_client_fd, .events = POLLIN, .revents = 0});
                 } else {
-                    // TODO: handle exist client
-                    std::cout << "no its not a new member\n";
-                    recv(pfds[i].fd, buff, 1024, 0);
-                    send(pfds[i].fd, "anas\n", strlen("anas\n"), 0);
+
+                    std::cout << "already a user\n";
+
+                    const int bytes_len = recv(pfds[i].fd, buff, 1024, 0);
+
+                    if (bytes_len <= 0) {
+
+                        if (bytes_len < 0)
+                            throw SeverErrors(SeverErrors::ErrorCode::ReadError);
+
+                        std::cout << "user: " << i << " closes the connection\n";
+                        close(pfds[i].fd);
+                        pfds.erase(pfds.begin() + i);
+
+                    }
+
+                    buff[bytes_len] = 0;
+                    send(pfds[i].fd, buff, strlen(buff), 0);
                 }
             }
-
-
-//            int key = send(new_client_fd, reply, strlen(reply), 0);
         }
 
     }
-
-
-
-
-
-
-
-
-//    if (!fork()) { // this is the child process
-//
-//        close(this->socket_fd); // child doesn't need the listener
-//
-//
-//        std::cout << "key: " << key << std::endl;
-//
-//        if ( key == -1)
-//            perror("send");
-//
-//        close(new_client_fd);
-//        exit(0);
-//    }
-//    close(new_client_fd);
-//
-//    if (new_client_fd < 0)
-//        throw SeverErrors(SeverErrors::ErrorCode::AcceptError);
-//    else
-//        std::cout << "ACCEPT NEW CLIENT IN A FD: " << new_client_fd << std::endl;
-
 }
 
