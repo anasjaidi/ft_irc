@@ -10,13 +10,14 @@
 class Server {
 
 private:
-    std::string service;
-    const std::string node;
-    const int sock_type;
-    const int family;
+    std::string service; // port
+    const std::string node; // ip
+    const int sock_type; // udp, tcp
+    const int family; // ipv4, ipv6
     struct addrinfo hints;
     struct addrinfo *res;
     int socket_fd;
+    std::vector<struct pollfd> pfds;
 public:
     const addrinfo &getHints() const;
 
@@ -47,7 +48,7 @@ public:
      *
      * @param family : IPV4, IPV6
      * @param socket_type: SOCK_STREAM, SOCK_DGRAM
-     * @param port: Port number
+     * @param service: Port number
      * */
     Server(int family, int socket_type, const char *service);
 
@@ -58,7 +59,7 @@ public:
     * @details
     *
     * @param family : IPV4, IPV6
-    * @param socket_type: SOCK_S¬TREAM, SOCK_DGRAM
+    * @param socket_type: SOCK_STREAM, SOCK_DGRAM
     * @param port: Port number
     * @param flags: other flags
     * */

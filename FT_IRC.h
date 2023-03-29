@@ -11,4 +11,6 @@
 #include <sys/socket.h>
 #include <netdb.h>
 # include <unistd.h>
+# include <libc.h>
+# include <poll.h>
 #endif //FT_IRC_FT_IRC_H

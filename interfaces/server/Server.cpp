@@ -27,7 +27,7 @@ Server::Server(int family, int socket_type, const char *service) : service(servi
     status = getaddrinfo(nullptr, service, &hints, &res);
 
     if (status < 0)
-        throw SeverErrors();
+        throw SeverErrors(Server::SeverErrors::AddrInfoError);
     else
         std::cout << "GetAddrInfo Success " << status << std::endl;
 }
@@ -45,7 +45,7 @@ Server::Server(const char *node, int family, int socket_type, const char *servic
     status = getaddrinfo(node, service, &hints, &res);
 
     if (status < 0)
-        throw SeverErrors();
+        throw SeverErrors(SeverErrors::AddrInfoError);
     else
         std::cout << "GetAddrInfo Success " << status << std::endl;
 
@@ -125,9 +125,11 @@ void Server::get_socket_fd() throw(SeverErrors) {
     int fd;
 
     fd = socket(res->ai_family, res->ai_socktype, res->ai_protocol);
-
+    int o = 1;
+    if (setsockopt(fd, SOL_SOCKET, SO_REUSEADDR, &o, sizeof(int)) < 0)
+        ;
     if (fd < 0)
-        throw SeverErrors();
+        throw SeverErrors(SeverErrors::SocketFdError);
     else {
         this->socket_fd = fd;
         std::cout << "GetSocketFd Success " << this->socket_fd << std::endl;
@@ -138,7 +140,7 @@ void Server::bind_socket_fd() throw(SeverErrors) {
     int status = bind(this->socket_fd, res->ai_addr, res->ai_addrlen);
 
     if (status < 0)
-        throw SeverErrors();
+        throw SeverErrors(SeverErrors::BindFdError);
     else
         std::cout << "BindSocketFd Success " << this->socket_fd << std::endl;
 }
@@ -153,17 +155,40 @@ void Server::listen_to_socket() throw(SeverErrors) {
 }
 
 void Server::accept_incoming_requests() throw(SeverErrors) {
+    struct pollfd t = {};
     int new_client_fd;
     char buff[1024];
     struct sockaddr_storage their_addr = {};
     socklen_t addr_size;
     new_client_fd = accept(this->socket_fd, (struct sockaddr *)&their_addr, &addr_size);
     recv(new_client_fd, buff, 1024, 0);
-    write(1, buff, 1024);
+    write(1, buff, strlen(buff));
 
-    char res[1023] = "Hello, There\n";
-    send(new_client_fd, res, 14, 0);
+    char *reply =
+            "HTTP/1.1 200 OK\n"
+//            "Date: Thu, 19 Feb 2009 12:27:04 GMT\n"
+            "Server: Apache/2.2.3\n"
+//            "Last-Modified: Wed, 18 Jun 2003 16:05:58 GMT\n"
+//            "ETag: \"56d-9989200-1132c580\"\n"
+            "Content-Type: text/html\n"
+            "Content-Length: 15\n"
+            "Accept-Ranges: bytes\n"
+            "Connection: close\n"
+            "\n"
+            "Hello, World!";
+    if (!fork()) { // this is the child process
+        close(this->socket_fd); // child doesn't need the listener
+        int key = send(new_client_fd, reply, strlen(reply), 0);
+        std::cout << "key: " << key << std::endl;
+        if ( key == -1)
+            perror("send");
+        close(new_client_fd);
+        exit(0);
+    }
     close(new_client_fd);
+
+//    std::cout << "Bytes: " << bytes << std::endl;
+//    close(new_client_fd);
 
     if (new_client_fd < 0)
         throw SeverErrors(SeverErrors::ErrorCode::AcceptError);
@@ -171,3 +196,4 @@ void Server::accept_incoming_requests() throw(SeverErrors) {
         std::cout << "ACCEPT NEW CLIENT IN A FD: " << new_client_fd << std::endl;
 
 }
+
