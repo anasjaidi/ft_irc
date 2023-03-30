@@ -7,8 +7,9 @@
 
 # include "../../abstract/server/Server.hpp"
 
+# include "./commands/Commands.hpp"
 
-class IrcServer: public Server {
+class IrcServer: public Server, public Commands{
 protected:
     IrcServer();
 public:

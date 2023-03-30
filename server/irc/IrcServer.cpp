@@ -49,5 +49,9 @@ IrcServer::SeverErrors::SeverErrors(ErrorCode _errorCode) : errorCode(_errorCode
 
 
 int IrcServer::handle(std::string req) throw() {
-    std::cout << req << std::endl;
+    std::string cmd = req.substr(0, req.find(' '));
+
+    if (cmd == "pass" || cmd == "PASS") pass(req);
+    else if (cmd == "nick" || cmd == "NICK") nick(req);
+    else if (cmd == "user" || cmd == "USER") user(req);
 }
