@@ -10,7 +10,7 @@
 
 class Server : public Socket {
 
-private:
+protected:
     std::vector<struct pollfd> pfds;
     Server();
 

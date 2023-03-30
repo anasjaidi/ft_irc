@@ -82,7 +82,7 @@ void Server::accept_incoming_requests() throw() {
                         remove_client(i);
                     }
 
-                    write_to_socket_fd(data.first, pfds[i].fd);
+                    handle(data.first);
                 }
             }
         }
