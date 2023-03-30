@@ -5,7 +5,9 @@
 
 # include "./Server.hpp"
 
-
+/**
+ * @brief Default Constructor
+ * */
 Server::Server() : sock_type(-1), family(-1) {
     std::cout << "Default constructor called \n";
 }
@@ -85,65 +87,11 @@ const char *Server::SeverErrors::what() const throw() {
     return error.c_str();
 }
 
-/*
- * start Attributes Getters and Setters
- * */
-std::string Server::getService() const {
-    return this->service;
-}
-
-void Server::setService(std::string &service) {
-    this->service = service;
-}
-
-const addrinfo &Server::getHints() const {
-    return hints;
-}
-
-void Server::setHints(const addrinfo &hints) {
-    Server::hints = hints;
-}
-
-addrinfo *Server::getRes() const {
-    return res;
-}
-
-void Server::setRes(addrinfo *res) {
-    Server::res = res;
-}
-
-int Server::getSocketFd() const {
-    return socket_fd;
-}
-
-void Server::setSocketFd(int socketFd) {
-    socket_fd = socketFd;
-}
 
 
-void Server::get_socket_fd() throw(SeverErrors) {
-    int fd;
 
-    fd = socket(res->ai_family, res->ai_socktype, res->ai_protocol);
-    int o = 1;
-    if (setsockopt(fd, SOL_SOCKET, SO_REUSEADDR, &o, sizeof(int)) < 0)
-        ;
-    if (fd < 0)
-        throw SeverErrors(SeverErrors::SocketFdError);
-    else {
-        this->socket_fd = fd;
-        std::cout << "GetSocketFd Success " << this->socket_fd << std::endl;
-    }
-}
 
-void Server::bind_socket_fd() throw(SeverErrors) {
-    int status = bind(this->socket_fd, res->ai_addr, res->ai_addrlen);
 
-    if (status < 0)
-        throw SeverErrors(SeverErrors::BindFdError);
-    else
-        std::cout << "BindSocketFd Success " << this->socket_fd << std::endl;
-}
 
 void Server::listen_to_socket() throw(SeverErrors) {
     int status = listen(this->socket_fd, 12);
@@ -169,8 +117,11 @@ void Server::accept_incoming_requests() throw(SeverErrors) {
         int len = poll(pfds.data(), pfds.size(), -1);
 
         for (int i = 0; i < pfds.size(); ++i) {
+
             if (pfds[i].revents & POLLIN) {
+
                 if (pfds[i].fd == socket_fd) {
+
                     std::cout << "yes its a new member " << pfds.size() << std::endl;
 
                     const int new_client_fd = accept(socket_fd, (struct sockaddr *) &their_addr, &addr_size);
@@ -180,6 +131,7 @@ void Server::accept_incoming_requests() throw(SeverErrors) {
 
 
                     pfds.push_back((struct pollfd){.fd = new_client_fd, .events = POLLIN, .revents = 0});
+
                 } else {
 
                     std::cout << "already a user\n";
@@ -198,7 +150,8 @@ void Server::accept_incoming_requests() throw(SeverErrors) {
                     }
 
                     buff[bytes_len] = 0;
-                    send(pfds[i].fd, buff, strlen(buff), 0);
+//                    send(pfds[i].fd, buff, strlen(buff), 0);
+                    // TODO: handle the request
                 }
             }
         }
