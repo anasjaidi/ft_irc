@@ -1,5 +1,6 @@
 #include "FT_IRC.h"
-# include "./abstract//server/Server.hpp"
+# include "./abstract/server/Server.hpp"
+# include "./server/irc/IrcServer.hpp"
 #include "./abstract/socket/Socket.hpp"
 
 int main(int argc, char *argv[])
@@ -16,10 +17,9 @@ int main(int argc, char *argv[])
 
 
     try {
-        Socket *t = new Server(AF_UNSPEC, SOCK_STREAM, argv[1]);
 
 //        Server *irc = new Server("www.google.com", AF_UNSPEC, SOCK_STREAM, "80" );
-        Server *irc = new Server(AF_UNSPEC, SOCK_STREAM, argv[1]);
+        Server *irc = new IrcServer(AF_UNSPEC, SOCK_STREAM, argv[1]);
 
         irc->get_socket_fd();
 

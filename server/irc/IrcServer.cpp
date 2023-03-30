@@ -48,6 +48,6 @@ const char *IrcServer::SeverErrors::what() const throw() {
 IrcServer::SeverErrors::SeverErrors(ErrorCode _errorCode) : errorCode(_errorCode) {}
 
 
-int IrcServer::handle(std::string req) throw(SeverErrors) {
+int IrcServer::handle(std::string req) throw() {
     std::cout << req << std::endl;
 }

@@ -38,7 +38,7 @@ public:
         int errorCode;
     };
 
-    int handle(std::string) throw(SeverErrors) override;
+    int handle(std::string) throw() override;
 };
 
 
