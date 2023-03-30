@@ -56,12 +56,9 @@ const char *Server::SeverErrors::what() const throw() {
 Server::SeverErrors::SeverErrors(ErrorCode _errorCode) : errorCode(_errorCode) {}
 
 void Server::accept_incoming_requests() throw() {
+
+
     char buff[1024];
-
-    struct sockaddr_storage their_addr = {};
-    socklen_t addr_size;
-
-
 
     pfds.push_back((struct pollfd){.fd = socket_fd, .events = POLLIN, .revents = 0});
 
@@ -73,36 +70,20 @@ void Server::accept_incoming_requests() throw() {
             if (pfds[i].revents & POLLIN) {
 
                 if (pfds[i].fd == socket_fd) {
-
-                    std::cout << "yes its a new member " << pfds.size() << std::endl;
-
-                    const int new_client_fd = accept(socket_fd, (struct sockaddr *) &their_addr, &addr_size);
-
-                    if (new_client_fd < 0)
-                        throw SeverErrors(SeverErrors::ErrorCode::AcceptError);
-
-
-                    pfds.push_back((struct pollfd){.fd = new_client_fd, .events = POLLIN, .revents = 0});
-
+                    add_new_client();
                 } else {
 
                     std::cout << "already a user\n";
 
                     std::pair<std::string, int> data = read_from_socket_fd(pfds[i].fd);
-
                     if (data.second <= 0) {
 
                         if (data.second < 0)
                             throw SeverErrors(SeverErrors::ErrorCode::ReadError);
-
-                        std::cout << "user: " << i << " closes the connection\n";
-                        close(pfds[i].fd);
-                        pfds.erase(pfds.begin() + i);
-
+                        remove_client(i);
                     }
 
                     write_to_socket_fd(data.first, pfds[i].fd);
-                    // TODO: handle the request
                 }
             }
         }
@@ -110,4 +91,30 @@ void Server::accept_incoming_requests() throw() {
     }
 }
 
+int Server::add_new_client() {
 
+    struct sockaddr_storage their_addr = {};
+    socklen_t addr_size;
+
+    std::cout << "yes its a new member " << pfds.size() << std::endl;
+
+    const int new_client_fd = accept(socket_fd, (struct sockaddr *) &their_addr, &addr_size);
+
+    if (new_client_fd < 0)
+        throw SeverErrors(SeverErrors::ErrorCode::AcceptError);
+
+
+    pfds.push_back((struct pollfd){.fd = new_client_fd, .events = POLLIN, .revents = 0});
+
+    return 0;
+}
+
+int Server::remove_client(int i) {
+
+    std::cout << "user: " << i << " closes the connection\n";
+
+    close(pfds[i].fd);
+
+    pfds.erase(pfds.begin() + i);
+    return 0;
+}

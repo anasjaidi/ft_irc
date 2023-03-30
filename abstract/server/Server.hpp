@@ -43,6 +43,9 @@ public:
 
     virtual void accept_incoming_requests() throw() override;
 
+    virtual int add_new_client();
+    virtual int remove_client(int i);
+
 };
 
 #endif //FT_IRC_SERVER_HPP
