@@ -37,6 +37,8 @@ public:
     protected:
         int errorCode;
     };
+
+    int handle(std::string) throw(SeverErrors) override;
 };
 
 
