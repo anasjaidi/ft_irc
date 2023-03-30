@@ -1,5 +1,6 @@
 #include "FT_IRC.h"
-# include "./interfaces/server/Server.hpp"
+# include "./abstract//server/Server.hpp"
+#include "./abstract/socket/Socket.hpp"
 
 int main(int argc, char *argv[])
 {
@@ -15,17 +16,18 @@ int main(int argc, char *argv[])
 
 
     try {
+        Socket *t = new Socket(AF_UNSPEC, SOCK_STREAM, argv[1]);
 
 //        Server *irc = new Server("www.google.com", AF_UNSPEC, SOCK_STREAM, "80" );
-        Server *irc = new Server(AF_UNSPEC, SOCK_STREAM, argv[1]);
+//        Server *irc = new Server(AF_UNSPEC, SOCK_STREAM, argv[1]);
 
-        irc->get_socket_fd();
-
-        irc->bind_socket_fd();
-
-        irc->listen_to_socket();
-
-        irc->accept_incoming_requests();
+//        irc->get_socket_fd();
+//
+//        irc->bind_socket_fd();
+//
+//        irc->listen_to_socket();
+//
+//        irc->accept_incoming_requests();
 
     } catch (std::exception &err) {
         std::cerr << "error occurred: ";

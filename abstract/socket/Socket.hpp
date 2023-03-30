@@ -9,6 +9,7 @@
 
 
 class Socket {
+protected:
     std::string service; // port
     const std::string node; // ip
     const int sock_type; // udp, tcp
@@ -55,6 +56,7 @@ public:
             AddrInfoError,
             SocketFdError,
             BindFdError,
+            ListenError,
             ReadError,
             WriteError,
             UndefinedError
@@ -69,6 +71,12 @@ public:
     virtual void get_socket_fd() throw(SeverErrors);
 
     virtual void bind_socket_fd() throw(SeverErrors);
+
+    virtual void listen_to_socket() throw(SeverErrors);
+
+    virtual std::pair<std::string, int> &read_from_socket_fd(int &) const;
+    int write_to_socket_fd(std::string, int &) const;
+    virtual void accept_incoming_requests() throw(SeverErrors) = 0;
 };
 
 

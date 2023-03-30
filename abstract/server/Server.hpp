@@ -6,8 +6,9 @@
 #define FT_IRC_SERVER_HPP
 
 # include "../../FT_IRC.h"
+# include "../socket/Socket.hpp"
 
-class Server {
+class Server : public Socket {
 
 private:
     std::vector<struct pollfd> pfds;
@@ -20,7 +21,7 @@ public:
      * start Exceptions
     **/
 
-class SeverErrors : public std::exception {
+    class SeverErrors : public Socket::SeverErrors {
 public:
     enum ErrorCode {
         AddrInfoError,
@@ -32,21 +33,8 @@ public:
         WriteError,
         UndefinedError
     };
-    SeverErrors(ErrorCode _errorCode = UndefinedError);
-
-    const char * what() const throw();
-private:
-    int errorCode;
+    virtual const char * what() const throw();
 };
-
-
-    /**
-     * */
-    virtual void get_socket_fd() throw(SeverErrors);
-
-    virtual void bind_socket_fd() throw(SeverErrors);
-
-    virtual void listen_to_socket() throw(SeverErrors);
 
     virtual void accept_incoming_requests() throw(SeverErrors);
 

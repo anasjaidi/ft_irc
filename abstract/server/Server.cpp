@@ -93,14 +93,7 @@ const char *Server::SeverErrors::what() const throw() {
 
 
 
-void Server::listen_to_socket() throw(SeverErrors) {
-    int status = listen(this->socket_fd, 12);
 
-    if (status < 0)
-        throw SeverErrors(SeverErrors::ErrorCode::ListenError);
-    else
-        std::cout <<  "Listen Success " << status << std::endl;
-}
 
 void Server::accept_incoming_requests() throw(SeverErrors) {
 
