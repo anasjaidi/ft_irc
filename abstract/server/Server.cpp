@@ -70,16 +70,15 @@ void Server::accept_incoming_requests() throw() {
             if (pfds[i].revents & POLLIN) {
 
                 if (pfds[i].fd == socket_fd) {
-                    add_new_client();
+                    accept_and_add_new_client();
                 } else {
 
-                    std::cout << "already a user\n";
+                    std::cout << "already a user: " << i << std::endl;
 
                     std::pair<std::string, int> data = read_from_socket_fd(pfds[i].fd);
                     if (data.second <= 0) {
 
-                        if (data.second < 0)
-                            throw SeverErrors(SeverErrors::ErrorCode::ReadError);
+                        if (data.second < 0) throw SeverErrors(SeverErrors::ErrorCode::ReadError);
                         remove_client(i);
                     }
 
@@ -91,7 +90,7 @@ void Server::accept_incoming_requests() throw() {
     }
 }
 
-int Server::add_new_client() {
+int Server::accept_and_add_new_client() throw(SeverErrors) {
 
     struct sockaddr_storage their_addr = {};
     socklen_t addr_size;

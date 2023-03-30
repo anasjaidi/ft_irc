@@ -43,9 +43,10 @@ public:
 
     virtual void accept_incoming_requests() throw() override;
 
-    virtual int add_new_client();
+    virtual int accept_and_add_new_client() throw(SeverErrors);
     virtual int remove_client(int i);
 
+    virtual int handle(std::string) throw(SeverErrors) = 0;
 };
 
 #endif //FT_IRC_SERVER_HPP
