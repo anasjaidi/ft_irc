@@ -5,6 +5,11 @@
 #include "Socket.hpp"
 
 
+Socket::Socket() : family(-1), sock_type(-1) {}
+
+Socket::~Socket() {}
+
+
 Socket::Socket(int family, int socket_type, const char *service)  : service(service), sock_type(socket_type),
                                                                    family(family) {
     int status;

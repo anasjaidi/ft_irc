@@ -17,10 +17,12 @@ protected:
     struct addrinfo hints;
     struct addrinfo *res;
     int socket_fd;
+    Socket();
 public:
     /**
      * Start default constructor
      * */
+
 
     /**
      * start parametrised constructor
@@ -64,7 +66,8 @@ public:
         SeverErrors(ErrorCode _errorCode = UndefinedError);
 
         virtual const char * what() const throw();
-    private:
+
+    protected:
         int errorCode;
     };
 

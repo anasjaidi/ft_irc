@@ -8,49 +8,15 @@
 /**
  * @brief Default Constructor
  * */
-Server::Server() : sock_type(-1), family(-1) {
+Server::Server() : Socket() {
     std::cout << "Default constructor called \n";
 }
 
-Server::SeverErrors::SeverErrors(ErrorCode _errorCode) : errorCode(_errorCode) {}
 
-Server::Server(int family, int socket_type, const char *service) : service(service), sock_type(socket_type),
-                                                                   family(family) {
-    int status;
-
-    bzero(&hints, sizeof hints);
-
-    hints.ai_family = family;
-
-    hints.ai_socktype = socket_type;
-
-    hints.ai_flags = AI_PASSIVE;
-
-    status = getaddrinfo(nullptr, service, &hints, &res);
-
-    if (status < 0)
-        throw SeverErrors(Server::SeverErrors::AddrInfoError);
-    else
-        std::cout << "GetAddrInfo Success " << status << std::endl;
+Server::Server(int family, int socket_type, const char *service) : Socket(family, socket_type, service) {
 }
 
-Server::Server(const char *node, int family, int socket_type, const char *service) : sock_type(socket_type),
-                                                                                     family(family) {
-    int status;
-
-    bzero(&hints, sizeof hints);
-
-    hints.ai_family = family;
-
-    hints.ai_socktype = socket_type;
-
-    status = getaddrinfo(node, service, &hints, &res);
-
-    if (status < 0)
-        throw SeverErrors(SeverErrors::AddrInfoError);
-    else
-        std::cout << "GetAddrInfo Success " << status << std::endl;
-
+Server::Server(const char *node, int family, int socket_type, const char *service) : Socket(node, family, socket_type, service) {
 }
 
 Server::~Server() {
@@ -87,16 +53,9 @@ const char *Server::SeverErrors::what() const throw() {
     return error.c_str();
 }
 
+Server::SeverErrors::SeverErrors(ErrorCode _errorCode) : errorCode(_errorCode) {}
 
-
-
-
-
-
-
-
-void Server::accept_incoming_requests() throw(SeverErrors) {
-
+void Server::accept_incoming_requests() throw() {
     char buff[1024];
 
     struct sockaddr_storage their_addr = {};
@@ -129,11 +88,11 @@ void Server::accept_incoming_requests() throw(SeverErrors) {
 
                     std::cout << "already a user\n";
 
-                    const int bytes_len = recv(pfds[i].fd, buff, 1024, 0);
+                    std::pair<std::string, int> data = read_from_socket_fd(pfds[i].fd);
 
-                    if (bytes_len <= 0) {
+                    if (data.second <= 0) {
 
-                        if (bytes_len < 0)
+                        if (data.second < 0)
                             throw SeverErrors(SeverErrors::ErrorCode::ReadError);
 
                         std::cout << "user: " << i << " closes the connection\n";
@@ -142,8 +101,7 @@ void Server::accept_incoming_requests() throw(SeverErrors) {
 
                     }
 
-                    buff[bytes_len] = 0;
-//                    send(pfds[i].fd, buff, strlen(buff), 0);
+                    write_to_socket_fd(data.first, pfds[i].fd);
                     // TODO: handle the request
                 }
             }
@@ -151,4 +109,5 @@ void Server::accept_incoming_requests() throw(SeverErrors) {
 
     }
 }
+
 

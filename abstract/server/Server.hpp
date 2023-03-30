@@ -12,16 +12,18 @@ class Server : public Socket {
 
 private:
     std::vector<struct pollfd> pfds;
+    Server();
 
 public:
 
     ~Server();
-
+    Server(int family, int socket_type, const char *service);
+    Server(const char *node, int family, int socket_type, const char *service);
     /*
      * start Exceptions
     **/
 
-    class SeverErrors : public Socket::SeverErrors {
+    class SeverErrors  {
 public:
     enum ErrorCode {
         AddrInfoError,
@@ -33,10 +35,13 @@ public:
         WriteError,
         UndefinedError
     };
+    SeverErrors(ErrorCode _errorCode = UndefinedError);
     virtual const char * what() const throw();
+    protected:
+        int errorCode;
 };
 
-    virtual void accept_incoming_requests() throw(SeverErrors);
+    virtual void accept_incoming_requests() throw() override;
 
 };
 

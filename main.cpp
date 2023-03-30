@@ -16,18 +16,18 @@ int main(int argc, char *argv[])
 
 
     try {
-        Socket *t = new Socket(AF_UNSPEC, SOCK_STREAM, argv[1]);
+        Socket *t = new Server(AF_UNSPEC, SOCK_STREAM, argv[1]);
 
 //        Server *irc = new Server("www.google.com", AF_UNSPEC, SOCK_STREAM, "80" );
-//        Server *irc = new Server(AF_UNSPEC, SOCK_STREAM, argv[1]);
+        Server *irc = new Server(AF_UNSPEC, SOCK_STREAM, argv[1]);
 
-//        irc->get_socket_fd();
-//
-//        irc->bind_socket_fd();
-//
-//        irc->listen_to_socket();
-//
-//        irc->accept_incoming_requests();
+        irc->get_socket_fd();
+
+        irc->bind_socket_fd();
+
+        irc->listen_to_socket();
+
+        irc->accept_incoming_requests();
 
     } catch (std::exception &err) {
         std::cerr << "error occurred: ";
