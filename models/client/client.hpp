@@ -10,6 +10,19 @@ class client {
 private:
     std::string user;
     std::string nick;
+public:
+    const std::string &getUser() const;
+
+    void setUser(const std::string &user);
+
+    const std::string &getNick() const;
+
+    void setNick(const std::string &nick);
+
+    client(const std::string &user, const std::string &nick);
+
+public:
+    virtual ~client();
 };
 
 

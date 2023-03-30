@@ -9,7 +9,9 @@
 
 # include "./commands/Commands.hpp"
 
-class IrcServer: public Server, public Commands{
+# include "../../models/client/client_manager/client_manager.hpp"
+
+class IrcServer: public Server, public Commands, public client_manager{
 protected:
     IrcServer();
 public:

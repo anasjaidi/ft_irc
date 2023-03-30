@@ -3,3 +3,25 @@
 //
 
 #include "client.hpp"
+
+client::~client() {
+
+}
+
+client::client(const std::string &user, const std::string &nick) : user(user), nick(nick) {}
+
+const std::string &client::getUser() const {
+    return user;
+}
+
+void client::setUser(const std::string &user) {
+    client::user = user;
+}
+
+const std::string &client::getNick() const {
+    return nick;
+}
+
+void client::setNick(const std::string &nick) {
+    client::nick = nick;
+}
