@@ -14,3 +14,11 @@ void Commands::user(std::string) {
 void Commands::pass(std::string) {
     std::cout << "start pass\n";
 }
+
+
+// prevamsg function
+
+
+void Commands::prevaMsg(std::string) {
+    std::cout << "start send msg"<< std::endl;
+}
