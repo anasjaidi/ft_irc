@@ -6,7 +6,7 @@
 
 
 void Commands::nick(std::string) {
-    std::cout << "start nick\n";
+    std::cout << "start nickname.\n";
 }
 void Commands::user(std::string) {
     std::cout << "start user\n";

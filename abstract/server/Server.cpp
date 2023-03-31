@@ -74,15 +74,18 @@ void Server::accept_incoming_requests() throw() {
                 } else {
 
                     std::cout << "already a user: " << i << std::endl;
+                    char buff[1024];
+                    int key = recv(pfds[i].fd, buff, 1024, 0);
+                    buff[key] = 0;
+                    std::cout << buff << std::endl;
+//                    std::pair<std::string, int> data = read_from_socket_fd(pfds[i].fd);
+                    if (key <= 0) {
 
-                    std::pair<std::string, int> data = read_from_socket_fd(pfds[i].fd);
-                    if (data.second <= 0) {
-
-                        if (data.second < 0) throw SeverErrors(SeverErrors::ErrorCode::ReadError);
+                        if (key < 0) throw SeverErrors(SeverErrors::ErrorCode::ReadError);
                         remove_client(i);
                     }
-
-                    handle(data.first);
+//                    std::cout << data.first << " " << data.second << std::endl;
+                    handle(buff);
                 }
             }
         }

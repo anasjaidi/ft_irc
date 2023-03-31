@@ -53,5 +53,5 @@ int IrcServer::handle(std::string req) throw() {
 
     if (cmd == "pass" || cmd == "PASS") pass(req);
     else if (cmd == "nick" || cmd == "NICK") nick(req);
-    else if (cmd == "user" || cmd == "USER") user(req);
+   else if (cmd == "user" || cmd == "USER") user(req);
 }
