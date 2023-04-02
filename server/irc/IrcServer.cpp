@@ -49,9 +49,22 @@ IrcServer::SeverErrors::SeverErrors(ErrorCode _errorCode) : errorCode(_errorCode
 
 
 int IrcServer::handle(std::string req) throw() {
-    std::string cmd = req.substr(0, req.find(' '));
+    int pos = req.find(' ');
 
-    if (cmd == "pass" || cmd == "PASS") pass(req);
+    if (pos == -1)
+        pos = req.find('\r');
+
+    if (pos == -1)
+        pos = req.find('\n');
+
+    std::string cmd = req.substr(0, pos);
+
+    std::string payload = req.substr(pos + 1, req.length() - 2 );
+
+    if (cmd == "pass" || cmd == "PASS") pass(payload);
     else if (cmd == "nick" || cmd == "NICK") nick(req);
    else if (cmd == "user" || cmd == "USER") user(req);
+   else if (cmd == "JOIN" || cmd == "join") {
+       std::cout << "join is called\n";
+   }
 }

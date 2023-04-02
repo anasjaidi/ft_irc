@@ -10,6 +10,9 @@ class client {
 private:
     std::string user;
     std::string nick;
+    int fd;
+    struct sockaddr_storage their_addr;
+
 public:
     const std::string &getUser() const;
 

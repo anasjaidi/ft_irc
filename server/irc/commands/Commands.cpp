@@ -11,6 +11,6 @@ void Commands::nick(std::string) {
 void Commands::user(std::string) {
     std::cout << "start user\n";
 }
-void Commands::pass(std::string) {
-    std::cout << "start pass\n";
+void Commands::pass(std::string pass) {
+    std::cout << pass << std::endl;
 }
