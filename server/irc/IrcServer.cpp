@@ -47,6 +47,15 @@ const char *IrcServer::SeverErrors::what() const throw() {
 
 IrcServer::SeverErrors::SeverErrors(ErrorCode _errorCode) : errorCode(_errorCode) {}
 
+std::vector<std::string> IrcServer::splitCmd(std::string buff) {
+    std::vector<std::string> cmd;
+    std::string word;
+    std::istringstream ss(buff);
+    while (ss >> word) {
+        cmd.push_back(word);
+    }
+    return (cmd);
+}
 
 int IrcServer::handle(std::string req) throw() {
     std::string cmd = req.substr(0, req.find(' '));

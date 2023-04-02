@@ -42,6 +42,7 @@ public:
     };
 
     int handle(std::string) throw() override;
+    std::vector<std::string> splitCmd(std::string buff);
 };
 
 

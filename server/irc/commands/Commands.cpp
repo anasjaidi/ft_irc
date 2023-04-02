@@ -12,6 +12,7 @@ void Commands::user(std::string) {
     std::cout << "start user\n";
 }
 void Commands::pass(std::string) {
+    if ()
     std::cout << "start pass\n";
 }
 
