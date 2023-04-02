@@ -7,6 +7,8 @@
 
 # include "../../abstract/server/Server.hpp"
 
+#include <sstream>
+
 # include "./commands/Commands.hpp"
 
 # include "../../models/client/client_manager/client_manager.hpp"
