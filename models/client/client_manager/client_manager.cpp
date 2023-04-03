@@ -21,10 +21,13 @@ std::vector<client>::iterator client_manager::get_client(int ID) {
 
 int client_manager::remove_client(int ID) {
     std::vector<client>::iterator to_remove = get_client(ID);
+    int client_index = std::distance(clients.begin(), to_remove)  + 1;
 
     if (to_remove != clients.end()) {
+        close(to_remove->getFd());
         clients.erase(to_remove);
-        return 0;
+
+        return client_index;
     }
     return -1;
 }

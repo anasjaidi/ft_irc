@@ -80,7 +80,5 @@ int IrcServer::handle(std::string req, int client_fd) throw() {
 }
 
 int IrcServer::signup(std::pair<struct sockaddr_storage, int> &new_client) {
-    client c(new_client.second, new_client.first);
-
-    clients.push_back(c);
+    add_client(new_client.second, new_client.first);
 }
