@@ -11,10 +11,13 @@
 
 # include "../../models/client/client_manager/client_manager.hpp"
 
-class IrcServer: public Server, public Commands, public client_manager{
+class IrcServer: public Server, public Commands{
 protected:
     IrcServer();
+
+
     std::string server_password;
+
 public:
 
     ~IrcServer();

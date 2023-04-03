@@ -48,7 +48,15 @@ const char *IrcServer::SeverErrors::what() const throw() {
 IrcServer::SeverErrors::SeverErrors(ErrorCode _errorCode) : errorCode(_errorCode) {}
 
 
+void remove_whitespaces(std::string &str) {
+    while (std::isspace(str[0])) str.erase(0, 1);
+    while (std::isspace(str[str.length() - 1])) str.erase(str.length() - 1, 1);
+}
+
 int IrcServer::handle(std::string req, int client_fd) throw() {
+
+
+
     int pos = req.find(' ');
 
     if (pos == -1)
@@ -60,6 +68,8 @@ int IrcServer::handle(std::string req, int client_fd) throw() {
     std::string cmd = req.substr(0, pos);
 
     std::string payload = req.substr(pos + 1, req.length() - 2 );
+
+    remove_whitespaces(payload);
 
     if (cmd == "pass" || cmd == "PASS") pass(payload, client_fd, server_password);
     else if (cmd == "nick" || cmd == "NICK") nick(req);

@@ -13,6 +13,14 @@ private:
     int fd;
     struct sockaddr_storage their_addr;
 public:
+    int getFd() const;
+
+    void setFd(int fd);
+
+    const sockaddr_storage &getTheirAddr() const;
+
+    void setTheirAddr(const sockaddr_storage &theirAddr);
+
     client(int fd, const sockaddr_storage &theirAddr);
 
 public:

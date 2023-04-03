@@ -7,8 +7,10 @@
 
 # include "../../../FT_IRC.h"
 
+# include "../../../models/client/client_manager/client_manager.hpp"
 
-class Commands {
+
+class Commands : public client_manager{
 public:
     void pass(std::string, int, std::string);
     void nick(std::string);
