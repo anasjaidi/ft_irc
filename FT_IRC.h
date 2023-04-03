@@ -10,4 +10,8 @@
 #include <sys/types.h>
 #include <sys/socket.h>
 #include <netdb.h>
+# include <unistd.h>
+# include <libc.h>
+# include <poll.h>
+# include <vector>
 #endif //FT_IRC_FT_IRC_H
