@@ -68,6 +68,9 @@ int IrcServer::handle(std::string req, int client_fd) throw() {
         case OptionCommands::USER:
             user(command.second, client_fd);
             break;
+        case OptionCommands::WHO:
+            who(command.second, client_fd);
+            break;
     }
 
 }
