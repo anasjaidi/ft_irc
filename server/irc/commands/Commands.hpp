@@ -15,9 +15,34 @@ public:
     void pass(std::string, int, std::string);
     void nick(std::string, int);
     void user(std::string, int);
-    //////// QUIT - ADMIN - TIME - WHO - PRIVMSG - NOTICE - NAMES - PART - MODE - KICK - INVITE - BOT - JOIN
 
 
+
+    enum OptionCommands  {
+        PASS,
+        NICK,
+        USER,
+        QUIT,
+        ADMIN,
+        TIME,
+        WHO,
+        PRIVATE_MSG,
+        NOTICE,
+        NAMES,
+        PART,
+        MODE,
+        INVITE,
+        KICK,
+        BOT,
+        JOIN,
+        UNDEFINED
+    };
+
+    std::pair<OptionCommands, std::string > get_command(std::string &request);
+
+    std::string parse_pass_command(std::string &);
+    std::string parse_nick_command(std::string &);
+    std::string parse_user_command(std::string &);
 };
 
 

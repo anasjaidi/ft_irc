@@ -3,7 +3,7 @@
 //
 
 #include "Commands.hpp"
-
+# include <sstream>
 
 void Commands::nick(std::string payload, int new_client_fd) {
     const int ID = update_client_info(update_action::UpdateNick, payload, new_client_fd);
@@ -33,4 +33,83 @@ void Commands::pass(std::string pass, int new_client_fd, std::string server_pass
             close(new_client_fd);
         }
     }
+}
+
+void remove_whitespaces(std::string &str) {
+    while (std::isspace(str[0])) str.erase(0, 1);
+    while (std::isspace(str[str.length() - 1])) str.erase(str.length() - 1, 1);
+}
+
+void UPPER_STRING(std::string &str) {
+    for (int i = 0; i < str.length(); ++i) {
+        str[i] = std::toupper(str[i]);
+    }
+}
+
+std::string get_first_word(const std::string& str) {
+    size_t pos = str.find_first_of(" \r\n");
+    if (pos == std::string::npos) {
+        return str;
+    } else {
+        return str.substr(0, pos);
+    }
+}
+
+std::string Commands::parse_pass_command(std::string &req) {
+    int start = req.find_first_not_of(" \r\n");
+    int end = req.find_last_not_of(" \r\n");
+
+    std::string password = req.substr(start, end + 1);
+}
+
+std::string Commands::parse_nick_command(std::string &req) {
+    int start = req.find_first_not_of(" \r\n");
+    int end = req.find_last_not_of(" \r\n");
+
+    std::string nick = req.substr(start, end + 1);
+}
+
+std::string Commands::parse_user_command(std::string &req) {
+    std::istringstream iss(req);
+
+    std::string word;
+
+    std::vector<std::string> words;
+
+    while (iss >> word) {
+        words.push_back(word);
+    }
+
+    if (words.size() < 5) return std::string("Error: NICK parse Error.");
+
+    return words[1];
+}
+\
+std::pair<Commands::OptionCommands, std::string> Commands::get_command(std::string &request) {
+
+
+    std::string cmd = get_first_word(request);
+
+    std::string payload;
+
+    OptionCommands action;
+
+    UPPER_STRING(cmd);
+
+    if (cmd == "PASS") {
+        payload = parse_pass_command(request);
+        action = OptionCommands::PASS;
+    } else if (cmd == "NICK") {
+        payload = parse_nick_command(request);
+        action = OptionCommands::NICK;
+    } else if (cmd == "USER") {
+        payload = parse_user_command(request);
+        action = OptionCommands::USER;
+    } else {
+        return std::make_pair(OptionCommands::UNDEFINED, std::string());
+    }
+
+
+    remove_whitespaces(payload);
+    return std::make_pair(action, payload);
 }

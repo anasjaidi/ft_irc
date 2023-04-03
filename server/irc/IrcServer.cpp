@@ -48,35 +48,28 @@ const char *IrcServer::SeverErrors::what() const throw() {
 IrcServer::SeverErrors::SeverErrors(ErrorCode _errorCode) : errorCode(_errorCode) {}
 
 
-void remove_whitespaces(std::string &str) {
-    while (std::isspace(str[0])) str.erase(0, 1);
-    while (std::isspace(str[str.length() - 1])) str.erase(str.length() - 1, 1);
-}
 
 int IrcServer::handle(std::string req, int client_fd) throw() {
 
+    std::pair<OptionCommands, std::string> command = get_command(req);
 
+    if (command.first == OptionCommands::UNDEFINED) {
+        std::cerr << command.second << std::endl;
+        return -1;
+    }
 
-    int pos = req.find(' ');
+    switch (command.first) {
+        case OptionCommands::PASS:
+            pass(command.second, client_fd, server_password);
+            break;
+        case OptionCommands::NICK:
+            nick(command.second, client_fd);
+            break;
+        case OptionCommands::USER:
+            user(command.second, client_fd);
+            break;
+    }
 
-    if (pos == -1)
-        pos = req.find('\r');
-
-    if (pos == -1)
-        pos = req.find('\n');
-
-    std::string cmd = req.substr(0, pos);
-
-    std::string payload = req.substr(pos + 1, req.length() - 2 );
-
-    remove_whitespaces(payload);
-
-    if (cmd == "pass" || cmd == "PASS") pass(payload, client_fd, server_password);
-    else if (cmd == "nick" || cmd == "NICK") nick(req, client_fd);
-   else if (cmd == "user" || cmd == "USER") user(req, client_fd);
-   else if (cmd == "JOIN" || cmd == "join") {
-       std::cout << "join is called\n";
-   }
 }
 
 int IrcServer::signup(std::pair<struct sockaddr_storage, int> &new_client) {
