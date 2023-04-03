@@ -56,17 +56,32 @@ std::string get_first_word(const std::string& str) {
 }
 
 std::string Commands::parse_pass_command(std::string &req) {
-    int start = req.find_first_not_of(" \r\n");
-    int end = req.find_last_not_of(" \r\n");
 
-    std::string password = req.substr(start, end + 1);
+    remove_whitespaces(req);
+
+    int start = req.find_first_of(" \r\n");
+
+
+    if (start == std::string::npos) return std::string("Error: parse password command.");
+
+
+    std::string password = req.substr(start, req.length());
+
+    return password;
 }
 
 std::string Commands::parse_nick_command(std::string &req) {
-    int start = req.find_first_not_of(" \r\n");
-    int end = req.find_last_not_of(" \r\n");
+    remove_whitespaces(req);
 
-    std::string nick = req.substr(start, end + 1);
+    int start = req.find_first_of(" \r\n");
+
+
+    if (start == std::string::npos) return std::string("Error: parse password command.");
+
+
+    std::string nick = req.substr(start, req.length());
+
+    return nick;
 }
 
 std::string Commands::parse_user_command(std::string &req) {
@@ -84,7 +99,7 @@ std::string Commands::parse_user_command(std::string &req) {
 
     return words[1];
 }
-\
+
 std::pair<Commands::OptionCommands, std::string> Commands::get_command(std::string &request) {
 
 
@@ -98,6 +113,7 @@ std::pair<Commands::OptionCommands, std::string> Commands::get_command(std::stri
 
     if (cmd == "PASS") {
         payload = parse_pass_command(request);
+
         action = OptionCommands::PASS;
     } else if (cmd == "NICK") {
         payload = parse_nick_command(request);
