@@ -2,6 +2,7 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
+      <module fileurl="file://$PROJECT_DIR$/.idea/FT_IRC.iml" filepath="$PROJECT_DIR$/.idea/FT_IRC.iml" />
       <module fileurl="file://$PROJECT_DIR$/.idea/ft_irc.iml" filepath="$PROJECT_DIR$/.idea/ft_irc.iml" />
     </modules>
   </component>
