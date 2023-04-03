@@ -15,6 +15,15 @@ public:
     std::vector<client>::iterator get_client(int ID);
     int remove_client(int ID);
     int add_client(int fd, struct sockaddr_storage infos);
+
+
+    enum update_action {
+        UpdateNick,
+        UpdateUserName,
+    };
+
+
+    int update_client_info(update_action action, std::string &payload, int ID);
 };
 
 

@@ -20,7 +20,7 @@ void Commands::pass(std::string pass, int new_client_fd, std::string server_pass
 
         if (ID != -1) {
             std::cout << "client Nº " <<  ID << " removed: " \
-        << "server password error " << "password mismatched" << std::endl;
+        << "server password error, " << "password mismatched" << std::endl;
         } else {
             std::cerr << "User Not Found: Internal Server Error" << std::endl;
         }

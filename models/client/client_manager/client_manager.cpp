@@ -31,3 +31,21 @@ int client_manager::remove_client(int ID) {
     }
     return -1;
 }
+
+int client_manager::update_client_info(update_action action, std::string &payload, int ID) {
+    std::vector<client>::iterator to_update = get_client(ID);
+
+    if (to_update == clients.end())
+        return -1;
+
+    int client_index = std::distance(clients.begin(), to_update)  + 1;
+
+    switch (action) {
+        case update_action::UpdateNick:
+            to_update->setNick(payload);
+            break;
+        case update_action::UpdateUserName:
+            break;
+    }
+    return client_index;
+}
