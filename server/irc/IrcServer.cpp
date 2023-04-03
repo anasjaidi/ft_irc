@@ -72,8 +72,8 @@ int IrcServer::handle(std::string req, int client_fd) throw() {
     remove_whitespaces(payload);
 
     if (cmd == "pass" || cmd == "PASS") pass(payload, client_fd, server_password);
-    else if (cmd == "nick" || cmd == "NICK") nick(req);
-   else if (cmd == "user" || cmd == "USER") user(req);
+    else if (cmd == "nick" || cmd == "NICK") nick(req, client_fd);
+   else if (cmd == "user" || cmd == "USER") user(req, client_fd);
    else if (cmd == "JOIN" || cmd == "join") {
        std::cout << "join is called\n";
    }

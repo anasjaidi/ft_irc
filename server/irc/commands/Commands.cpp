@@ -5,10 +5,17 @@
 #include "Commands.hpp"
 
 
-void Commands::nick(std::string) {
-    std::cout << "start nickname.\n";
+void Commands::nick(std::string payload, int new_client_fd) {
+    const int ID = update_client_info(update_action::UpdateNick, payload, new_client_fd);
+
+    if (ID == -1) {
+        std::cerr << "User Not Found: Internal Server Error." << std::endl;
+        close(new_client_fd);
+    } else {
+        std::cout << "User Nº " << ID << ": update hes nickname." << std::endl;
+    }
 }
-void Commands::user(std::string) {
+void Commands::user(std::string, int new_client_fd) {
     std::cout << "start user\n";
 }
 
@@ -23,6 +30,7 @@ void Commands::pass(std::string pass, int new_client_fd, std::string server_pass
         << "server password error, " << "password mismatched" << std::endl;
         } else {
             std::cerr << "User Not Found: Internal Server Error" << std::endl;
+            close(new_client_fd);
         }
     }
 }
