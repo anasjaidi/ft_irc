@@ -20,6 +20,8 @@ void Commands::pass(std::string) {
 // prevamsg function
 
 
-void Commands::prevaMsg(std::string) {
+void Commands::sentPrivMsg(std::string cmd) {
+
+    spliCmd(cmd);
     std::cout << "start send msg"<< std::endl;
 }
