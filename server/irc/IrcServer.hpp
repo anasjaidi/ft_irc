@@ -14,11 +14,12 @@
 class IrcServer: public Server, public Commands, public client_manager{
 protected:
     IrcServer();
+    std::string server_password;
 public:
 
     ~IrcServer();
-    IrcServer(int family, int socket_type, const char *service);
-    IrcServer(const char *node, int family, int socket_type, const char *service);
+    IrcServer(int family, int socket_type, const char *service, std::string server_pass);
+    IrcServer(const char *node, int family, int socket_type, const char *service, std::string server_pass);
     /*
      * start Exceptions
     **/
@@ -41,7 +42,8 @@ public:
         int errorCode;
     };
 
-    int handle(std::string) throw() override;
+    int handle(std::string, int) throw() override;
+    int signup(std::pair<struct sockaddr_storage, int> &) override;
 };
 
 

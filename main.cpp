@@ -19,7 +19,7 @@ int main(int argc, char *argv[])
     try {
 
 //        Server *irc = new Server("www.google.com", AF_UNSPEC, SOCK_STREAM, "80" );
-        Server *irc = new IrcServer(AF_UNSPEC, SOCK_STREAM, argv[1]);
+        Server *irc = new IrcServer(AF_UNSPEC, SOCK_STREAM, argv[1], argv[2]);
 
         irc->get_socket_fd();
 

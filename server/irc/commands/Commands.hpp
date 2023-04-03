@@ -10,7 +10,7 @@
 
 class Commands {
 public:
-    void pass(std::string);
+    void pass(std::string, int, std::string);
     void nick(std::string);
     void user(std::string);
     //////// QUIT - ADMIN - TIME - WHO - PRIVMSG - NOTICE - NAMES - PART - MODE - KICK - INVITE - BOT - JOIN

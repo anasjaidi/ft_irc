@@ -12,6 +12,8 @@ private:
     std::string nick;
     int fd;
     struct sockaddr_storage their_addr;
+public:
+    client(int fd, const sockaddr_storage &theirAddr);
 
 public:
     const std::string &getUser() const;
@@ -26,6 +28,8 @@ public:
 
 public:
     virtual ~client();
+
+    client();
 };
 
 

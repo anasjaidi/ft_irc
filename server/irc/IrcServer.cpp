@@ -12,10 +12,10 @@ IrcServer::~IrcServer() {
     std::cout << "Destructor called \n";
 }
 
-IrcServer::IrcServer(int family, int socket_type, const char *service) : Server(family, socket_type, service) {
+IrcServer::IrcServer(int family, int socket_type, const char *service, std::string server_pass) : Server(family, socket_type, service), server_password(server_pass) {
 }
 
-IrcServer::IrcServer(const char *node, int family, int socket_type, const char *service) : Server(node, family, socket_type, service) {
+IrcServer::IrcServer(const char *node, int family, int socket_type, const char *service , std::string server_pass) : Server(node, family, socket_type, service), server_password(server_pass) {
 }
 
 
@@ -48,7 +48,7 @@ const char *IrcServer::SeverErrors::what() const throw() {
 IrcServer::SeverErrors::SeverErrors(ErrorCode _errorCode) : errorCode(_errorCode) {}
 
 
-int IrcServer::handle(std::string req) throw() {
+int IrcServer::handle(std::string req, int client_fd) throw() {
     int pos = req.find(' ');
 
     if (pos == -1)
@@ -61,10 +61,16 @@ int IrcServer::handle(std::string req) throw() {
 
     std::string payload = req.substr(pos + 1, req.length() - 2 );
 
-    if (cmd == "pass" || cmd == "PASS") pass(payload);
+    if (cmd == "pass" || cmd == "PASS") pass(payload, client_fd, server_password);
     else if (cmd == "nick" || cmd == "NICK") nick(req);
    else if (cmd == "user" || cmd == "USER") user(req);
    else if (cmd == "JOIN" || cmd == "join") {
        std::cout << "join is called\n";
    }
+}
+
+int IrcServer::signup(std::pair<struct sockaddr_storage, int> &new_client) {
+    client c(new_client.second, new_client.first);
+
+    clients.push_back(c);
 }
