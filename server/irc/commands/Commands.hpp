@@ -16,6 +16,7 @@ public:
     void nick(std::string, int);
     void user(std::string, int);
     void who(std::string, int);
+    void part(std::string, int);
 
 
 
@@ -43,6 +44,7 @@ public:
     std::string parse_nick_command(std::string &);
     std::string parse_user_command(std::string &);
     std::string parse_who_command(std::string &);
+    std::string parse_part_command(std::string &);
 };
 
 
