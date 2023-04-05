@@ -7,6 +7,9 @@
 
 # include "../../FT_IRC.h"
 # include "../socket/Socket.hpp"
+# include "../../server/irc/channel/channel.hpp"
+#include <map>
+#include <vector>
 
 class Server : public Socket {
 
@@ -19,6 +22,8 @@ public:
     ~Server();
     Server(int family, int socket_type, const char *service);
     Server(const char *node, int family, int socket_type, const char *service);
+    std::map<std::string, channel> mapChannel;
+    std::vector<std::string> channelNames;
     /*
      * start Exceptions
     **/
@@ -40,6 +45,7 @@ public:
     protected:
         int errorCode;
 };
+
 
     virtual void accept_incoming_requests() throw() override;
 

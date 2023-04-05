@@ -16,10 +16,18 @@ int     channel::createChannel(Server *server, std::vector<std::string> cmd, int
         set.password = cmd[2];
         set.key = true;
         set.mumberLimited = 42;
-        set.fds_channel = push_back(fd);
+        set.fds_channel.push_back(fd);
     }
     else
     {
+        set.name = cmd[1];
+        set.key = false;
+        set.fds_channel.push_back(fd);
+        set.mumberLimited = 42;
 
     }
+    std::string msg;
+    server->mapChannel.insert(std::make_pair(cmd[1], set));
+    server->channelNames.push_back(set.name);
+
 }
