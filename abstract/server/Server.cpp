@@ -74,11 +74,9 @@ void Server::accept_incoming_requests() throw() {
                     signup(r);
                 } else {
 
-                    std::cout << "already a user: " << i << std::endl;
                     char buff[1024];
                     int key = recv(pfds[i].fd, buff, 1024, 0);
                     buff[key] = 0;
-                    std::cout << buff << std::endl;
                     if (key <= 0) {
 
                         if (key < 0) throw SeverErrors(SeverErrors::ErrorCode::ReadError);

@@ -45,7 +45,18 @@ int client_manager::update_client_info(update_action action, std::string &payloa
             to_update->setNick(payload);
             break;
         case update_action::UpdateUserName:
+            to_update->setUser(payload);
             break;
     }
     return client_index;
+}
+
+int client_manager::get_client_id(int fd) {
+    std::vector<client>::iterator to_update = get_client(fd);
+
+    if (to_update == clients.end())
+        return -1;
+
+    int client_index = std::distance(clients.begin(), to_update)  + 1;
+    return  client_index;
 }

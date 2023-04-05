@@ -18,6 +18,8 @@ protected:
 
     std::string server_password;
 
+    std::string server_name;
+
 public:
 
     ~IrcServer();

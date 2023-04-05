@@ -15,6 +15,8 @@ public:
     void pass(std::string, int, std::string);
     void nick(std::string, int);
     void user(std::string, int);
+    void who(std::string, int);
+    void part(std::string, int);
 
 
 
@@ -24,11 +26,9 @@ public:
         USER,
         QUIT,
         ADMIN,
-        TIME,
         WHO,
         PRIVATE_MSG,
         NOTICE,
-        NAMES,
         PART,
         MODE,
         INVITE,
@@ -43,6 +43,8 @@ public:
     std::string parse_pass_command(std::string &);
     std::string parse_nick_command(std::string &);
     std::string parse_user_command(std::string &);
+    std::string parse_who_command(std::string &);
+    std::string parse_part_command(std::string &);
 };
 
 

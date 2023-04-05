@@ -15,8 +15,24 @@ void Commands::nick(std::string payload, int new_client_fd) {
         std::cout << "User Nº " << ID << ": update hes nickname." << std::endl;
     }
 }
-void Commands::user(std::string, int new_client_fd) {
-    std::cout << "start user\n";
+void Commands::user(std::string payload, int new_client_fd) {
+    const int ID = update_client_info(update_action::UpdateUserName, payload, new_client_fd);
+
+    if (ID == -1) {
+        std::cerr << "User Not Found: Internal Server Error." << std::endl;
+        close(new_client_fd);
+    } else {
+        std::cout << "User Nº " << ID << ": update hes username." << std::endl;
+        std::vector<client>::iterator updated_client = get_client(new_client_fd);
+
+        if (updated_client == clients.end()) {
+            std::cerr << "Error." << std::endl;
+        } else {
+            std::cout << "user: " << updated_client->getUser() << "\n" << "nick: " << updated_client->getNick() << std::endl;
+        }
+
+
+    }
 }
 
 
@@ -32,6 +48,9 @@ void Commands::pass(std::string pass, int new_client_fd, std::string server_pass
             std::cerr << "User Not Found: Internal Server Error" << std::endl;
             close(new_client_fd);
         }
+    } else {
+        int ID = get_client_id(new_client_fd);
+        std::cout << "client Nº " << ID << " authenticated with password." << std::endl;
     }
 }
 
@@ -100,6 +119,21 @@ std::string Commands::parse_user_command(std::string &req) {
     return words[1];
 }
 
+std::string Commands::parse_who_command(std::string &req) {
+
+    remove_whitespaces(req);
+
+    int start = req.find_first_of(" \r\n");
+
+
+    if (start == std::string::npos) return std::string("Error: parse password command.");
+
+
+    std::string who = req.substr(start + 1, req.length());
+
+    return who;
+}
+
 std::pair<Commands::OptionCommands, std::string> Commands::get_command(std::string &request) {
 
 
@@ -121,6 +155,15 @@ std::pair<Commands::OptionCommands, std::string> Commands::get_command(std::stri
     } else if (cmd == "USER") {
         payload = parse_user_command(request);
         action = OptionCommands::USER;
+    } else if(cmd == "JOIN") {
+        payload = parse_user_command(request);
+        action = OptionCommands::JOIN;
+    } else if (cmd == "WHO") {
+        payload = parse_who_command(request);
+        action = OptionCommands::WHO;
+    } else if (cmd == "PART") {
+        payload = parse_part_command(req);
+        action = OptionCommands::PART;
     } else {
         return std::make_pair(OptionCommands::UNDEFINED, std::string());
     }
@@ -129,3 +172,11 @@ std::pair<Commands::OptionCommands, std::string> Commands::get_command(std::stri
     remove_whitespaces(payload);
     return std::make_pair(action, payload);
 }
+
+
+void Commands::who(std::string payload, int new_client_fd) {
+
+}
+
+// "anas*12*13"
+111f

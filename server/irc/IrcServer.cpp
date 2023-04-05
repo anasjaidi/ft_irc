@@ -68,8 +68,14 @@ int IrcServer::handle(std::string req, int client_fd) throw() {
         case OptionCommands::USER:
             user(command.second, client_fd);
             break;
+        case OptionCommands::WHO:
+            who(command.second, client_fd);
+            break;
+        case OptionCommands::PART:
+            part(command.second, client_fd, server_password, server_name);
+            break;
     }
-
+    clients[0].getTheirAddr()
 }
 
 int IrcServer::signup(std::pair<struct sockaddr_storage, int> &new_client) {
