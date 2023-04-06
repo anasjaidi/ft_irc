@@ -37,6 +37,8 @@ public:
 public:
     virtual ~client();
 
+    std::string client_info();
+
     client();
     std::vector<int> idChannels;
     std::vector<std::string> nameChannels;

@@ -23,6 +23,7 @@ public:
     ~Server();
     Server(int family, int socket_type, const char *service);
     Server(const char *node, int family, int socket_type, const char *service);
+
     std::map<int, client> clientMap;
     std::map<std::string, channel> mapChannel;
     std::vector<std::string> channelNames;
