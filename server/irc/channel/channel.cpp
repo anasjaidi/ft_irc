@@ -35,7 +35,7 @@ int     channel::createChannel(Server *server, std::vector<std::string> cmd, int
     server->mapChannel.insert(std::make_pair(cmd[1], set));
     server->channelNames.push_back(set.name);
     server->serIdChannel++;
-    msg = ":" +server->clientMap[fd].client_info() + " JOIN " + cmd[1] + "\r\n" // TODO : fix client_info() whith roben
+    msg = ":" +server->clientMap[fd].clientInformations() + " JOIN " + cmd[1] + "\r\n" // TODO : fix client_info() whith roben
           + ":loclahost" + " MODE " + cmd[1] + " +nt\r\n"
           + ":localhost" + " 353 " + server->clientMap[fd].getNick() + " = " + cmd[1] + " :@" + server->clientMap[fd].getNick() + "\r\n"
           + ":localhost" + " 366 " + server->clientMap[fd].getNick() + " " + cmd[1] + " :End of /NAMES list\r\n";

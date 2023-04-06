@@ -14,4 +14,7 @@
 # include <libc.h>
 # include <poll.h>
 # include <vector>
+# include <map>
+# include <sstream>
+
 #endif //FT_IRC_FT_IRC_H

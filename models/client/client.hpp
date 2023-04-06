@@ -37,11 +37,12 @@ public:
 public:
     virtual ~client();
 
-    std::string client_info();
+    std::string clientInformations();
 
     client();
     std::vector<int> idChannels;
     std::vector<std::string> nameChannels;
+    struct sockaddr_in ipAddr;
 };
 
 

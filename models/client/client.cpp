@@ -46,11 +46,11 @@ void client::setTheirAddr(const sockaddr_storage &theirAddr) {
     their_addr = theirAddr;
 }
 
-std::string client::client_info()
+std::string client::clientInformations()
 {
     std::string ip;
     std::stringstream ss;
-    ss << this->their_addr.sin_addr.s_addr; // TODO : fix addr problem
+    ss << this->ipAddr.sin_addr.s_addr;
     ss >> ip;
     return (nick + "!" + user + "@" + ip);
 }
