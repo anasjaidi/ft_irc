@@ -38,6 +38,8 @@ public:
     virtual ~client();
 
     client();
+    std::vector<int> idChannels;
+    std::vector<std::string> nameChannels;
 };
 
 

@@ -8,6 +8,7 @@
 # include "../../FT_IRC.h"
 # include "../socket/Socket.hpp"
 # include "../../server/irc/channel/channel.hpp"
+# include "../../models/client/client.hpp"
 #include <map>
 #include <vector>
 
@@ -22,8 +23,11 @@ public:
     ~Server();
     Server(int family, int socket_type, const char *service);
     Server(const char *node, int family, int socket_type, const char *service);
+    std::map<int, client> clientMap;
     std::map<std::string, channel> mapChannel;
     std::vector<std::string> channelNames;
+    int serIdChannel;
+
     /*
      * start Exceptions
     **/
