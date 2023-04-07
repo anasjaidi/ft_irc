@@ -156,10 +156,12 @@ std::string Commands::parse_join_command(std::string &req)
         std::cerr << "Error: arguments is not exist !" << std::endl;
     else
     {
-        for(i = 0; i < v)
+        i = 0;
+        while(i < v)
         {
             std::string FinalCmd += "join" + OneChannel[i];
             if (OneKey.size() > i)
+                FinalCmd = " " + OneKey[i];
 
         }
     }
