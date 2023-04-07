@@ -142,8 +142,21 @@ std::vector<std::string> Commands::split(std::string line, char c)
     return (command);
 }
 
+std::string join(std::vector<std::string> &vec, char c)
+{
+    std::string result = "";
+    for (int i = 0; i < vec.size(); i++) {
+        result += vec[i];
+        if (i != vec.size() - 1) {
+            result += c;
+        }
+    }
+    return result;
+}
+
 std::string Commands::parse_join_command(std::string &req)
 {
+    std::string FinalCmd;
     req.erase(0, 5);
     int v;
     bool priv = true;
@@ -159,20 +172,21 @@ std::string Commands::parse_join_command(std::string &req)
     {
         for(int j=0; j < v; j++)
         {
-            std::string FinalCmd = "join" + OneChannel[j];
+            FinalCmd = "join" + OneChannel[j];
             if (OneKey.size() > j)
                 FinalCmd += " " + OneKey[j];
             if (OneChannel[j][0] != '&' && OneChannel[j][0] != '#'){
                 priv = false;
                 break;}
-            if (join(FinalCmd) == EXIT_FAILURE)return;
         }
     }
     if (priv == false)
     {
         FinalCmd = ":localhost 461 " + ;
     }
-
+    // reach of success
+    std::string payload = join(OneChannel, '*') + std::string("&") + join(OneKey, '*');
+    return (payload);
 }
 
 std::pair<Commands::OptionCommands, std::string> Commands::get_command(std::string &request)

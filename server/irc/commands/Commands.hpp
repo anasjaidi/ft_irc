@@ -6,7 +6,7 @@
 #define FT_IRC_COMMANDS_HPP
 
 # include "../../../FT_IRC.h"
-
+#include "../IrcServer.hpp"
 # include "../../../models/client/client_manager/client_manager.hpp"
 
 

@@ -45,7 +45,11 @@ const char *IrcServer::SeverErrors::what() const throw() {
     return error.c_str();
 }
 
-IrcServer::SeverErrors::SeverErrors(ErrorCode _errorCode) : errorCode(_errorCode) {}
+IrcServer::SeverErrors::SeverErrors(ErrorCode _errorCode) : errorCode(_errorCode) {
+
+
+    //////
+}
 
 
 
@@ -73,6 +77,9 @@ int IrcServer::handle(std::string req, int client_fd) throw() {
             break;
         case OptionCommands::PART:
             part(command.second, client_fd, server_password, server_name);
+            break;
+        case OptionCommands::JOIN:
+            join(command.second, client_fd);
             break;
     }
     clients[0].getTheirAddr()
