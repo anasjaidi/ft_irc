@@ -146,6 +146,7 @@ std::string Commands::parse_join_command(std::string &req)
 {
     req.erase(0, 5);
     int v;
+    bool priv = true;
     std::vector<std::string> command = split(req, ' ');
     std::string AllChannels = command[0], AllKeys = command[1];
     for (int i = 0; req[i] != ' '; i++)
@@ -156,14 +157,20 @@ std::string Commands::parse_join_command(std::string &req)
         std::cerr << "Error: arguments is not exist !" << std::endl;
     else
     {
-        i = 0;
-        while(i < v)
+        for(int j=0; j < v; j++)
         {
-            std::string FinalCmd += "join" + OneChannel[i];
-            if (OneKey.size() > i)
-                FinalCmd = " " + OneKey[i];
-
+            std::string FinalCmd = "join" + OneChannel[j];
+            if (OneKey.size() > j)
+                FinalCmd += " " + OneKey[j];
+            if (OneChannel[j][0] != '&' && OneChannel[j][0] != '#'){
+                priv = false;
+                break;}
+            if (join(FinalCmd) == EXIT_FAILURE)return;
         }
+    }
+    if (priv == false)
+    {
+        FinalCmd = ":localhost 461 " + ;
     }
 
 }
