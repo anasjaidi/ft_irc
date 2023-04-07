@@ -47,6 +47,8 @@ public:
     virtual int remove_client(int i);
 
     virtual int handle(std::string) throw(SeverErrors) = 0;
+
+    std::map<int, Client> mapClient;
 };
 
 #endif //FT_IRC_SERVER_HPP
