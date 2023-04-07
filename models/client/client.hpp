@@ -35,14 +35,15 @@ public:
     client(const std::string &user, const std::string &nick);
 
 public:
-    virtual ~client();
 
     std::string clientInformations();
 
-    client();
     std::vector<int> idChannels;
     std::vector<std::string> nameChannels;
     struct sockaddr_in ipAddr;
+
+    client();
+    virtual ~client();
 };
 
 

@@ -35,8 +35,6 @@ void Commands::user(std::string payload, int new_client_fd) {
     }
 }
 
-
-
 void Commands::pass(std::string pass, int new_client_fd, std::string server_pass) {
     if (pass != server_pass) {
         int  ID = remove_client(new_client_fd);
@@ -119,7 +117,7 @@ std::string Commands::parse_user_command(std::string &req) {
     return words[1];
 }
 
-std::string Commands::parse_who_command(std::string &req) {
+std::string Commands::parse_who_command(std::string &req) { //////// not yet finished
 
     remove_whitespaces(req);
 
@@ -133,10 +131,43 @@ std::string Commands::parse_who_command(std::string &req) {
 
     return who;
 }
+std::vector<std::string> Commands::split(std::string line, char c)
+{
 
-std::pair<Commands::OptionCommands, std::string> Commands::get_command(std::string &request) {
+    std::vector<std::string> command;
+    std::stringstream ss(line);
+    std::string str;
+    while (getline(ss, str, c))
+        command.push_back(str);
+    return (command);
+}
 
+std::string Commands::parse_join_command(std::string &req)
+{
+    req.erase(0, 5);
+    int v;
+    std::vector<std::string> command = split(req, ' ');
+    std::string AllChannels = command[0], AllKeys = command[1];
+    for (int i = 0; req[i] != ' '; i++)
+        if (req[i] == ',')v++;
+    std::vector<std::string> OneChannel = split(AllChannels, ',');
+    std::vector<std::string> OneKey = split(AllKeys, ',');
+    if (OneChannel.size() < OneKey.size())
+        std::cerr << "Error: arguments is not exist !" << std::endl;
+    else
+    {
+        for(i = 0; i < v)
+        {
+            std::string FinalCmd += "join" + OneChannel[i];
+            if (OneKey.size() > i)
 
+        }
+    }
+
+}
+
+std::pair<Commands::OptionCommands, std::string> Commands::get_command(std::string &request)
+{
     std::string cmd = get_first_word(request);
 
     std::string payload;
@@ -156,13 +187,13 @@ std::pair<Commands::OptionCommands, std::string> Commands::get_command(std::stri
         payload = parse_user_command(request);
         action = OptionCommands::USER;
     } else if(cmd == "JOIN") {
-        payload = parse_user_command(request);
+        payload = parse_join_command(request);
         action = OptionCommands::JOIN;
     } else if (cmd == "WHO") {
         payload = parse_who_command(request);
         action = OptionCommands::WHO;
     } else if (cmd == "PART") {
-        payload = parse_part_command(req);
+        payload = parse_part_command(request);
         action = OptionCommands::PART;
     } else {
         return std::make_pair(OptionCommands::UNDEFINED, std::string());
@@ -179,4 +210,3 @@ void Commands::who(std::string payload, int new_client_fd) {
 }
 
 // "anas*12*13"
-111f
