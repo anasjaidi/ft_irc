@@ -212,6 +212,7 @@ void Commands::join(std::string payload, int client_fd) {
     std::string key = payload.substr(pos+1, payload.length());
     std::vector<std::string> channels = split(channel, '*');
     std::vector<std::string> keys = split(key, '*');
+
     std::vector<std::string>::iterator it;
 
     for (it = channels.begin(); it != channels.end(); ++it) {
@@ -221,21 +222,17 @@ void Commands::join(std::string payload, int client_fd) {
             {
                 if (IsChannelBanned(server, client_fd, *it) == true)
                 {
-                    msg = ":localhost 474 " + *it + " " + server->clientMap[client_fd].getNick() +
-                          ":Cannot join channel (+b)\r\n";
+                    msg = ":localhost 474 " + *it + " " + server->clientMap[client_fd].getNick() + ":Cannot join channel (+b)\r\n";
                     send(client_fd, msg.c_str(), msg.size(), 0);
                 }
 
             }
             else
                 std::vector<std::string> cmd =
-                createChannel(server, )
+                createChannel(server, )  //// here TODO pased command line to createChannel() with name the channel and his password as parameters
 
         }
     }
-
-
-
 
     for(int i = 0; i < channels.size(); i++){
 
