@@ -188,20 +188,58 @@ std::string Commands::parse_join_command(std::string &req, int client_fd)
     return (payload);
 }
 
+bool    IsChannelBanned(Server *server, int client_fd, std::string NameChannel)
+{
+    unsigned int ip = server->clientMap[client_fd].getFd();
+    std::vector<unsigned int> ban = server->mapChannel[NameChannel].mumbers_banned;
+    for (size_t i = 0; i < ban.size(); i++)
+    {
+        if(ban[i] == ip)
+            return (true);
+    }
+    return false;
+}
 
 void Commands::join(std::string payload, int client_fd) {
     std::string msg;
-
+    Server *server;
+    bool isExistChannel = true;
     //deserialize
-
     int pos = payload.find("&");
     if (pos == -1)
-        msg = "error";
+        msg = "error";/////////////////TODO print error whit  std::cout<< "";
     std::string channel = payload.substr(0, pos);
     std::string key = payload.substr(pos+1, payload.length());
     std::vector<std::string> channels = split(channel, '*');
     std::vector<std::string> keys = split(key, '*');
+    std::vector<std::string>::iterator it;
 
+    for (it = channels.begin(); it != channels.end(); ++it) {
+        for (int index = 0; index < server->channelNames[index].size(); index++)
+        {
+            if (server->channelNames[index] == *it)
+            {
+                if (IsChannelBanned(server, client_fd, *it) == true)
+                {
+                    msg = ":localhost 474 " + *it + " " + server->clientMap[client_fd].getNick() +
+                          ":Cannot join channel (+b)\r\n";
+                    send(client_fd, msg.c_str(), msg.size(), 0);
+                }
+
+            }
+            else
+                std::vector<std::string> cmd =
+                createChannel(server, )
+
+        }
+    }
+
+
+
+
+    for(int i = 0; i < channels.size(); i++){
+
+    }
 }
 
 std::pair<Commands::OptionCommands, std::string> Commands::get_command(std::string &request, int client_fd)

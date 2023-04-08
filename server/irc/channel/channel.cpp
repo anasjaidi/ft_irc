@@ -7,7 +7,7 @@
 channel::channel(){}
 channel::~channel(){}
 
-int     channel::createChannel(Server *server, std::vector<std::string> cmd, int fd)
+int     createChannel(Server *server, std::vector<std::string> cmd, int fd)
 {
     channel set;
     if (cmd.size() > 2)

@@ -24,12 +24,12 @@ public:
     bool key;
 
     std::vector<int> fds_channel;
-    std::vector<int> mumbers_banned;
+    std::vector<unsigned int> mumbers_banned;
     channel();
     ~channel();
 
-    int     createChannel(Server *server, std::vector<std::string> cmd, int fd);
 
 };
+    int     createChannel(Server *server, std::vector<std::string> cmd, int fd);
 
 #endif //FT_IRC_CHANNEL_H

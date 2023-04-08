@@ -8,6 +8,8 @@
 # include "../../../FT_IRC.h"
 #include "../IrcServer.hpp"
 # include "../../../models/client/client_manager/client_manager.hpp"
+# include "../channel/channel.hpp"
+class channel;
 class Server;
 
 class Commands : public client_manager{
