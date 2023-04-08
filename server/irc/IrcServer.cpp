@@ -55,7 +55,7 @@ IrcServer::SeverErrors::SeverErrors(ErrorCode _errorCode) : errorCode(_errorCode
 
 int IrcServer::handle(std::string req, int client_fd) throw() {
 
-    std::pair<OptionCommands, std::string> command = get_command(req);
+    std::pair<OptionCommands, std::string> command = get_command(req, client_fd);
 
     if (command.first == OptionCommands::UNDEFINED) {
         std::cerr << command.second << std::endl;

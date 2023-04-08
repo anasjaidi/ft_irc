@@ -142,7 +142,7 @@ std::vector<std::string> Commands::split(std::string line, char c)
     return (command);
 }
 
-std::string join(std::vector<std::string> &vec, char c)
+std::string joinByMe(std::vector<std::string> &vec, char c)
 {
     std::string result = "";
     for (int i = 0; i < vec.size(); i++) {
@@ -154,8 +154,9 @@ std::string join(std::vector<std::string> &vec, char c)
     return result;
 }
 
-std::string Commands::parse_join_command(std::string &req)
+std::string Commands::parse_join_command(std::string &req, int client_fd)
 {
+    Server *server;
     std::string FinalCmd;
     req.erase(0, 5);
     int v;
@@ -172,9 +173,6 @@ std::string Commands::parse_join_command(std::string &req)
     {
         for(int j=0; j < v; j++)
         {
-            FinalCmd = "join" + OneChannel[j];
-            if (OneKey.size() > j)
-                FinalCmd += " " + OneKey[j];
             if (OneChannel[j][0] != '&' && OneChannel[j][0] != '#'){
                 priv = false;
                 break;}
@@ -182,14 +180,31 @@ std::string Commands::parse_join_command(std::string &req)
     }
     if (priv == false)
     {
-        FinalCmd = ":localhost 461 " + ;
+        FinalCmd = ":localhost 461 " + server->clientMap[client_fd].getNick() + ": Not enough parameters \r\n";
+        send(client_fd, FinalCmd.c_str(), FinalCmd.size(), 0);
     }
     // reach of success
-    std::string payload = join(OneChannel, '*') + std::string("&") + join(OneKey, '*');
+    std::string payload = joinByMe(OneChannel, '*') + std::string("&") + joinByMe(OneKey, '*');
     return (payload);
 }
 
-std::pair<Commands::OptionCommands, std::string> Commands::get_command(std::string &request)
+
+void Commands::join(std::string payload, int client_fd) {
+    std::string msg;
+
+    //deserialize
+
+    int pos = payload.find("&");
+    if (pos == -1)
+        msg = "error";
+    std::string channel = payload.substr(0, pos);
+    std::string key = payload.substr(pos+1, payload.length());
+    std::vector<std::string> channels = split(channel, '*');
+    std::vector<std::string> keys = split(key, '*');
+
+}
+
+std::pair<Commands::OptionCommands, std::string> Commands::get_command(std::string &request, int client_fd)
 {
     std::string cmd = get_first_word(request);
 
@@ -210,7 +225,7 @@ std::pair<Commands::OptionCommands, std::string> Commands::get_command(std::stri
         payload = parse_user_command(request);
         action = OptionCommands::USER;
     } else if(cmd == "JOIN") {
-        payload = parse_join_command(request);
+        payload = parse_join_command(request, client_fd);
         action = OptionCommands::JOIN;
     } else if (cmd == "WHO") {
         payload = parse_who_command(request);

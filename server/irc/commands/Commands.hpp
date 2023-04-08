@@ -8,7 +8,7 @@
 # include "../../../FT_IRC.h"
 #include "../IrcServer.hpp"
 # include "../../../models/client/client_manager/client_manager.hpp"
-
+class Server;
 
 class Commands : public client_manager{
 public:
@@ -17,6 +17,7 @@ public:
     void user(std::string, int);
     void who(std::string, int);
     void part(std::string, int);
+    void join(std::string, int);
 
 
 
@@ -38,7 +39,7 @@ public:
         UNDEFINED
     };
 
-    std::pair<OptionCommands, std::string > get_command(std::string &request);
+    std::pair<OptionCommands, std::string > get_command(std::string &request, int client_fd);
     std::vector<std::string> split(std::string line, char c);
 
     std::string parse_pass_command(std::string &);
@@ -46,7 +47,7 @@ public:
     std::string parse_user_command(std::string &);
     std::string parse_who_command(std::string &);
     std::string parse_part_command(std::string &);
-    std::string parse_join_command(std::string &);
+    std::string parse_join_command(std::string &, int);
 
 };
 
