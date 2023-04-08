@@ -178,7 +178,7 @@ std::string Commands::parse_join_command(std::string &req, int client_fd)
                 break;}
         }
     }
-    if (priv == false)
+    if (!priv)
     {
         FinalCmd = ":localhost 461 " + server->clientMap[client_fd].getNick() + ": Not enough parameters \r\n";
         send(client_fd, FinalCmd.c_str(), FinalCmd.size(), 0);
@@ -200,6 +200,10 @@ bool    IsChannelBanned(Server *server, int client_fd, std::string NameChannel)
     return false;
 }
 
+int joinChannel(Server *server,std::vector<std::string> cmd, int client_fd) {
+
+}
+
 void Commands::join(std::string payload, int client_fd) {
     std::string msg;
     Server *server;
@@ -214,22 +218,37 @@ void Commands::join(std::string payload, int client_fd) {
     std::vector<std::string> keys = split(key, '*');
 
     std::vector<std::string>::iterator it;
+//    size_t len = 0;
+    size_t len = 0;
 
-    for (it = channels.begin(); it != channels.end(); ++it) {
+    for(size_t j = 0; j > channels.size();j++) {
+//    for (it = channels.begin(); it != channels.end(); ++it) {
         for (int index = 0; index < server->channelNames[index].size(); index++)
         {
-            if (server->channelNames[index] == *it)
+            if (server->channelNames[index] == channels[j])
             {
-                if (IsChannelBanned(server, client_fd, *it) == true)
+                if (IsChannelBanned(server, client_fd, channels[j]))
                 {
-                    msg = ":localhost 474 " + *it + " " + server->clientMap[client_fd].getNick() + ":Cannot join channel (+b)\r\n";
+                    msg = ":localhost 474 " + channels[j] + " " + server->clientMap[client_fd].getNick() + ":Cannot join channel (+b)\r\n";
                     send(client_fd, msg.c_str(), msg.size(), 0);
+                }
+                // TODO check mode channel
+
+                else if (keys.size() > j) {
+
+                    std::string buff = "JOIN " + channels[j] + " " + keys[j];
+                    std::string buf = "JOIN " + channels[j];
+                    std::vector<std::string> cmd = split(buf, ' ');
+                    joinChannel(server, cmd, client_fd);
                 }
 
             }
-            else
-                std::vector<std::string> cmd =
-                createChannel(server, ); // TODO problem to pased command line to createChannel() with name the channel and his password as parameters
+            else // check existing pass in channel and creat it
+                    if (keys.size() > j)
+                        std::string buff = "JOIN " + channels[j] + " " + keys[j];
+                    std::string buff = "JOIN " + channels[j];
+                    std::vector<std::string> cmd = split(buff, ' ');
+                createChannel(server, cmd, client_fd); // TODO problem to pased command line to createChannel() with name the channel and his password as parameters
 
         }
     }
