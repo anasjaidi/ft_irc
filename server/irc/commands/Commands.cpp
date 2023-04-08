@@ -229,7 +229,7 @@ void Commands::join(std::string payload, int client_fd) {
             }
             else
                 std::vector<std::string> cmd =
-                createChannel(server, )  //// here TODO pased command line to createChannel() with name the channel and his password as parameters
+                createChannel(server, ); // TODO problem to pased command line to createChannel() with name the channel and his password as parameters
 
         }
     }

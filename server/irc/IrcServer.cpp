@@ -48,7 +48,7 @@ const char *IrcServer::SeverErrors::what() const throw() {
 IrcServer::SeverErrors::SeverErrors(ErrorCode _errorCode) : errorCode(_errorCode) {
 
 
-    //////
+    //TODO si robin sawb had lmlawi
 }
 
 
