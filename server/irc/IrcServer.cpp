@@ -62,7 +62,8 @@ int IrcServer::handle(std::string req, int client_fd) throw() {
         return -1;
     }
 
-    switch (command.first) {
+    switch (command.first)
+    {
         case OptionCommands::PASS:
             pass(command.second, client_fd, server_password);
             break;
@@ -82,7 +83,7 @@ int IrcServer::handle(std::string req, int client_fd) throw() {
             join(command.second, client_fd);
             break;
     }
-    clients[0].getTheirAddr()
+    clients[0].getTheirAddr();
 }
 
 int IrcServer::signup(std::pair<struct sockaddr_storage, int> &new_client) {

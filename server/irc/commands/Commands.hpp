@@ -18,7 +18,7 @@ public:
     void nick(std::string, int);
     void user(std::string, int);
     void who(std::string, int);
-    void part(std::string, int);
+    void part(std::string, int, std::string, std::string);
     void join(std::string, int);
 
 

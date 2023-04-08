@@ -11,8 +11,12 @@
 # include "../../models/client/client.hpp"
 #include <map>
 #include <vector>
+class channel;
+class client;
+typedef std::map<std::string, channel>::iterator IteratorForChannel;
 
-class Server : public Socket {
+class Server : public Socket
+        {
 
 protected:
     std::vector<struct pollfd> pfds;

@@ -201,7 +201,53 @@ bool    IsChannelBanned(Server *server, int client_fd, std::string NameChannel)
 }
 
 int joinChannel(Server *server,std::vector<std::string> cmd, int client_fd) {
+    channel myChannel = server->mapChannel[cmd[1]];
 
+    if(myChannel.key)
+    {
+        if(myChannel.password != cmd[2]) {
+            std::string msg = "475 * " + myChannel.name + " :Cannot join channel (+k)\r\n";
+            send(client_fd, msg.c_str(), msg.size(), 0);
+            return EXIT_FAILURE;
+        }
+    }
+    for(size_t i = 0; i < myChannel.fds_channel.size(); i++) {
+        if(myChannel.fds_channel[i] == client_fd)
+        {
+            std::string msg = "443 * " + server->clientMap[client_fd].getNick() + " " + myChannel.name + " :is already on channel\r\n";
+            send(client_fd, msg.c_str(), msg.size(), 0);
+            return (EXIT_FAILURE);
+        }
+    }
+    //check if number of mumberslimits is full
+    if (myChannel.fds_channel.size() > (size_t)myChannel.mumberLimited)
+    {
+        std::string msg = "471 * " + myChannel.name + " :Cannot join channel (+l)\r\n";
+        send(client_fd, msg.c_str(), msg.size(), 0);
+        return (EXIT_FAILURE);
+    }
+    // added fd client to the channel
+    std::string msgSend = ":" + server->clientMap[client_fd].clientInformations()+ " JOIN " + cmd[1] + "\r\n"
+      ":localhost 332 " + server->clientMap[client_fd].getNick() + " " + cmd[1] + " :This is my cool channel! https://irc.com\r\n"
+      ":localhost 333 " + server->clientMap[client_fd].getNick() + " " + cmd[1] + " " + server->clientMap[client_fd].getNick() +"!" +server->clientMap[client_fd].getChannel() +"@localhost"  " 1547691506\r\n"
+      ":localhost 353 " + server->clientMap[client_fd].getNick() + " @ " + cmd[1] + " :" + server->clientMap[client_fd].getNick() + " @"+ server->clientMap[client_fd].getNick() + "\r\n";
+     send(client_fd, msgSend.c_str(), msgSend.size(), 0);
+    for (IteratorForChannel it = server->mapChannel.begin(); it != server->mapChannel.end(); it++)
+    {
+        if (it->second.name == cmd[1])
+        {
+            server->clientMap[client_fd].nameChannels.push_back(cmd[1]);
+            it->second.fds_channel.push_back(client_fd);
+            it->second.mumbers.push_back(client_fd);
+            msgSend = ":" + server->clientMap[ client_fd].clientInformations() + " JOIN " + cmd[1] + "\r\n";
+            for (size_t i = 0; i < it->second.fds_channel.size(); i++)
+            {
+                if (it->second.fds_channel[i] != client_fd)
+                    send(it->second.fds_channel[i], msgSend.c_str(), msgSend.size(), 0);
+            }
+        }
+    }
+    return (EXIT_SUCCESS);
 }
 
 void Commands::join(std::string payload, int client_fd) {
@@ -225,30 +271,36 @@ void Commands::join(std::string payload, int client_fd) {
 //    for (it = channels.begin(); it != channels.end(); ++it) {
         for (int index = 0; index < server->channelNames[index].size(); index++)
         {
+            std::string buff;
             if (server->channelNames[index] == channels[j])
             {
-                if (IsChannelBanned(server, client_fd, channels[j]))
+                if (IsChannelBanned(server, client_fd, channels[j])) // true
                 {
                     msg = ":localhost 474 " + channels[j] + " " + server->clientMap[client_fd].getNick() + ":Cannot join channel (+b)\r\n";
                     send(client_fd, msg.c_str(), msg.size(), 0);
                 }
                 // TODO check mode channel
 
-                else if (keys.size() > j) {
-
-                    std::string buff = "JOIN " + channels[j] + " " + keys[j];
-                    std::string buf = "JOIN " + channels[j];
-                    std::vector<std::string> cmd = split(buf, ' ');
+                else if(!IsChannelBanned(server, client_fd, channels[j])) // false
+                {
+                    if (keys.size() > j)
+                         buff = "JOIN " + channels[j] + " " + keys[j];
+                    else
+                         buff = "JOIN " + channels[j];
+                    std::vector<std::string> cmd = split(buff, ' ');
                     joinChannel(server, cmd, client_fd);
                 }
 
             }
             else // check existing pass in channel and creat it
+            {
                     if (keys.size() > j)
-                        std::string buff = "JOIN " + channels[j] + " " + keys[j];
-                    std::string buff = "JOIN " + channels[j];
+                         buff = "JOIN " + channels[j] + " " + keys[j];
+                    else
+                         buff = "JOIN " + channels[j];
                     std::vector<std::string> cmd = split(buff, ' ');
-                createChannel(server, cmd, client_fd); // TODO problem to pased command line to createChannel() with name the channel and his password as parameters
+                createChannel(server, cmd, client_fd);
+            }
 
         }
     }

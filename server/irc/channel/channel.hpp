@@ -19,7 +19,8 @@ class channel
 public:
     std::string name;
     std::string password;
-    std::vector<std::string> mumbers;
+    std::vector<int> mumbers;
+    std::vector<int> operators;
     int mumberLimited;
     bool key;
 

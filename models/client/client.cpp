@@ -26,6 +26,14 @@ void client::setNick(const std::string &nick) {
     client::nick = nick;
 }
 
+const std::string &client::getChannel() const {
+    return channel;
+}
+
+void client::setChannel(const std::string &channel) {
+    client::channel = channel;
+}
+
 client::client() {}
 
 client::client(int fd, const sockaddr_storage &theirAddr) : fd(fd), their_addr(theirAddr) {}

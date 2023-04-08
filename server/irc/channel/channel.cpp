@@ -17,6 +17,7 @@ int     createChannel(Server *server, std::vector<std::string> cmd, int fd)
         set.key = true;
         set.mumberLimited = 42;
         set.fds_channel.push_back(fd);
+        set.operators.push_back(fd);
         server->clientMap[fd].idChannels.push_back(server->serIdChannel);
         server->clientMap[fd].nameChannels.push_back(cmd[1]);
 
@@ -25,6 +26,7 @@ int     createChannel(Server *server, std::vector<std::string> cmd, int fd)
     {
         set.name = cmd[1];
         set.key = false;
+        set.operators.push_back(fd);
         set.fds_channel.push_back(fd);
         set.mumberLimited = 42;
         server->clientMap[fd].idChannels.push_back(server->serIdChannel);

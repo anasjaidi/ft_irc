@@ -11,6 +11,7 @@ private:
     std::string user;
     std::string nick;
     int fd;
+    std::string channel;
     struct sockaddr_storage their_addr;
 public:
     int getFd() const;
@@ -31,6 +32,10 @@ public:
     const std::string &getNick() const;
 
     void setNick(const std::string &nick);
+
+    const std::string &getChannel() const;
+
+    void setChannel(const std::string &channel);
 
     client(const std::string &user, const std::string &nick);
 
