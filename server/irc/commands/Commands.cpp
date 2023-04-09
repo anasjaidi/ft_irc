@@ -162,7 +162,7 @@ std::pair<Commands::OptionCommands, std::string> Commands::get_command(std::stri
         payload = parse_who_command(request);
         action = OptionCommands::WHO;
     } else if (cmd == "PART") {
-        payload = parse_part_command(req);
+//        payload = parse_part_command(request);
         action = OptionCommands::PART;
     } else {
         return std::make_pair(OptionCommands::UNDEFINED, std::string());
@@ -177,6 +177,3 @@ std::pair<Commands::OptionCommands, std::string> Commands::get_command(std::stri
 void Commands::who(std::string payload, int new_client_fd) {
 
 }
-
-// "anas*12*13"
-111f
