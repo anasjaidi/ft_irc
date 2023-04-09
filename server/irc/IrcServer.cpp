@@ -74,6 +74,9 @@ int IrcServer::handle(std::string req, int client_fd) throw() {
         case OptionCommands::PART:
 //            part(command.second, client_fd, server_password, server_name);
             break;
+        case OptionCommands::JOIN:
+
+            break;
     }
     clients[0].getTheirAddr();
 }
