@@ -175,5 +175,5 @@ std::pair<Commands::OptionCommands, std::string> Commands::get_command(std::stri
 
 
 void Commands::who(std::string payload, int new_client_fd) {
-
+std::cout <<"heloo who "  << payload <<"     "<< new_client_fd << std::endl;
 }
