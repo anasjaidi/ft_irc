@@ -4,29 +4,32 @@
 
 #include "channel_manager.hpp"
 
-int channel_manager::create_channel(int client_fd, std::string channel, std::string key)
+int channel_manager::create_channel(int client_fd, std::string ch, std::string key)
 {
     if (key != "@notfound@")
     {
-        channels. = channel; //TODO here is not completed
-        channels.password = key;
-        channels.setKey(key) = true;
-        channels.mumberLimited = 42;
-        channels.fds_channel.push_back(fd);
-        channels.operators.push_back(fd);
-        server->clientMap[fd].idChannels.push_back(server->serIdChannel);
-        server->clientMap[fd].nameChannels.push_back(cmd[1]);
+//        channels. = channel; //TODO here is not completed
+//        channels.password = key;
+//        channels.setKey(key) = true;
+//        channels.mumberLimited = 42;
+//        channels.fds_channel.push_back(fd);
+//        channels.operators.push_back(fd);
+//        server->clientMap[fd].idChannels.push_back(server->serIdChannel);
+//        server->clientMap[fd].nameChannels.push_back(cmd[1]);
+
+    channels.push_back(channel(ch, key, 42, client_fd));
 
     }
     else
     {
-        set.name = cmd[1];
-        set.key = false;
-        set.operators.push_back(fd);
-        set.fds_channel.push_back(fd);
-        set.mumberLimited = 42;
-        server->clientMap[fd].idChannels.push_back(server->serIdChannel);
-        server->clientMap[fd].nameChannels.push_back(cmd[1]);
+//        set.name = cmd[1];
+//        set.key = false;
+//        set.operators.push_back(fd);
+//        set.fds_channel.push_back(fd);
+//        set.mumberLimited = 42;
+//        server->clientMap[fd].idChannels.push_back(server->serIdChannel);
+//        server->clientMap[fd].nameChannels.push_back(cmd[1]);
+    channels.push_back(channel(ch, 42, client_fd));
 
     }
     std::string msg;

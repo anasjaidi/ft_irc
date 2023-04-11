@@ -15,27 +15,45 @@ class channel {
 private:
     std::string name;
     std::string password;
-    std::vector<int> mumbers;
+
+public:
+    const std::string &getName() const;
+
+    void setName(const std::string &name);
+
+    const std::string &getPassword() const;
+
+    channel(const std::string &name, const std::string &password, int memberLimit,  int client_fd);
+
+    channel(const std::string &name, int memberLimit, int client_fd);
+
+    void setPassword(const std::string &password);
+
+    int getMemberLimit() const;
+
+    void setMemberLimit(int memberLimit);
+
+    bool isKey() const;
+
+    void setKey(bool key);
+
+    long long int getModes() const;
+
+    void setModes(long long int modes);
+
+private:
+
+    std::vector<int> members;
     std::vector<int> operators;
-    int mumberLimited;
+    int memberLimit;
     bool key;
 
     std::vector<int> fdsChannel;
-    std::vector<char> modes;
-    std::vector<unsigned int> bans;
+    long long modes;
+    std::vector<int> bans;
 
-public:
-    void setName(const std::string &name);
 
-    const std::string &getName() const;
 
-    void setKey(const bool &key);
-
-    bool getKey() const;
-
-    void setPass(const std::string &pass);
-
-    const std::string &getPass() const;
 };
 
 
