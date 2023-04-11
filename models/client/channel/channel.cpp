@@ -55,3 +55,31 @@ channel::channel(const std::string &name, int memberLimit, int client_fd) : name
     operators.push_back(client_fd);
     key = false;
 }
+
+
+void channel::add_to_channel(int client_fd) {
+    members.push_back(client_fd);
+    fdsChannel.push_back(client_fd);
+}
+
+bool channel::check_if_already_memebr(int client_fd) {
+    std::vector<int>::iterator  it = members.begin();
+
+    for (; it != members.end(); it++) {
+        if (*it == client_fd) {
+            return true;
+        }
+    }
+    return false;
+}
+
+bool channel::check_if_banned(int client_fd) {
+    std::vector<int>::iterator  it = bans.begin();
+
+    for (; it != bans.end(); it++) {
+        if (*it == client_fd) {
+            return true;
+        }
+    }
+    return false;
+}

@@ -11,6 +11,8 @@
 
 # include "../../models/client/client_manager/client_manager.hpp"
 
+# include "../../FT_IRC.h"
+
 class IrcServer: public Server, public Commands{
 protected:
     IrcServer();

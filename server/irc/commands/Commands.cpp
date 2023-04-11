@@ -156,7 +156,7 @@ std::pair<Commands::OptionCommands, std::string> Commands::get_command(std::stri
         payload = parse_user_command(request);
         action = OptionCommands::USER;
     } else if(cmd == "JOIN") {
-        payload = parse_user_command(request);
+        payload = parse_join_command(request);
         action = OptionCommands::JOIN;
     } else if (cmd == "WHO") {
         payload = parse_who_command(request);
@@ -176,4 +176,92 @@ std::pair<Commands::OptionCommands, std::string> Commands::get_command(std::stri
 
 void Commands::who(std::string payload, int new_client_fd) {
 std::cout <<"heloo who "  << payload <<"     "<< new_client_fd << std::endl;
+}
+
+std::vector<std::string> split(std::string line, char c)
+{
+
+    std::vector<std::string> command;
+    std::stringstream ss(line);
+    std::string str;
+    while (getline(ss, str, c))
+        command.push_back(str);
+    return (command);
+}
+
+std::string joinByMe(std::vector<std::string> &vec, char c)
+{
+    std::string result = "";
+    for (int i = 0; i < vec.size(); i++) {
+        result += vec[i];
+        if (i != vec.size() - 1) {
+            result += c;
+        }
+    }
+    return result;
+}
+
+std::string Commands::parse_join_command(std::string &req)
+{
+    req.erase(0, 5);
+
+    std::vector<std::string> splited_command = split(req, ' ');
+
+    if (splited_command.size() > 2 || !splited_command.size()) {
+        //  error case
+    }
+
+    std::vector<std::string> channels = split(splited_command[0], ',');
+
+    std::vector<std::string> keys;
+    if (splited_command.size() == 2)
+        keys = split(splited_command[1], ',');
+
+    for (std::string ch : channels) {
+        if (ch[0] != '#' && ch[0] != '&') {
+            // case error
+        }
+    }
+    return (
+            joinByMe(channels, '*') + std::string("|") + joinByMe(keys, '*')
+    );
+}
+
+void Commands::join(std::string payload, int client_fd, t_join_client infos) {
+
+    std::vector<std::string> desr = split(payload, '|');
+
+    std::vector<std::string> channels_names = split(desr[0], '*');
+    std::vector<std::string> keys;
+
+    if (desr.size() == 2) {
+        keys = split(desr[1], '*');
+    }
+
+    for (int i = 0; i < channels_names.size(); i++) {
+        std::vector<channel>::iterator it = get_channel_by_name(channels_names[i]);
+
+        if (i >= keys.size()) {
+            if (it != channels.end()) {
+                if (it->getPassword() != "") {
+                    std::cout << "pass is incorrect for adding to: " << channels_names[i] << std::endl;
+                    return ;
+                }
+
+                add_to_exist(*it, "", client_fd, infos);
+            } else {
+                create_channel(client_fd, channels_names[i], infos);
+            }
+        } else {
+            if (it != channels.end()) {
+                if (it->getPassword() != keys[i]) {
+                    std::cout << "pass is incorrect for adding to: " << channels_names[i] << std::endl;
+                    return ;
+                }
+                add_to_exist(*it, "", client_fd, infos);
+            } else {
+                create_channel(client_fd, channels_names[i], infos, keys[i]);
+            }
+        }
+    }
 }

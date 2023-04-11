@@ -8,13 +8,21 @@
 
 
 # include "../../../FT_IRC.h"
-#include "channel_manager/channel_manager.hpp"
 
 
 class channel {
 private:
     std::string name;
     std::string password;
+
+    std::vector<int> members;
+    std::vector<int> operators;
+    int memberLimit;
+    bool key;
+
+    std::vector<int> fdsChannel;
+    long long modes;
+    std::vector<int> bans;
 
 public:
     const std::string &getName() const;
@@ -41,18 +49,12 @@ public:
 
     void setModes(long long int modes);
 
-private:
 
-    std::vector<int> members;
-    std::vector<int> operators;
-    int memberLimit;
-    bool key;
+    void add_to_channel(int client_fd);
 
-    std::vector<int> fdsChannel;
-    long long modes;
-    std::vector<int> bans;
+    bool check_if_banned(int client_fd);
 
-
+    bool check_if_already_memebr(int client_fd);
 
 };
 

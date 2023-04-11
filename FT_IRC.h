@@ -14,4 +14,10 @@
 # include <libc.h>
 # include <poll.h>
 # include <vector>
+
+typedef struct join_client_info {
+    std::string nick;
+    std::string user;
+    struct sockaddr_in *info;
+}   t_join_client;
 #endif //FT_IRC_FT_IRC_H

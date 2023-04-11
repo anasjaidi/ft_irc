@@ -75,7 +75,10 @@ int IrcServer::handle(std::string req, int client_fd) throw() {
 //            part(command.second, client_fd, server_password, server_name);
             break;
         case OptionCommands::JOIN:
-
+            std::vector<client>::iterator cl = this->get_client(client_fd);
+            struct sockaddr_storage addrInfos = cl->getTheirAddr();
+            join(command.second, client_fd, (t_join_client){.nick=cl->getNick(), .user=cl->getUser(), .info=(struct sockaddr_in*)&cl->getTheirAddr()});
+            render_channels();
             break;
     }
     clients[0].getTheirAddr();
