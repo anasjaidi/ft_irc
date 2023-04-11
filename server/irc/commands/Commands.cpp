@@ -244,7 +244,8 @@ void Commands::join(std::string payload, int client_fd, t_join_client infos) {
         if (i >= keys.size()) {
             if (it != channels.end()) {
                 if (it->getPassword() != "") {
-                    std::cout << "pass is incorrect for adding to: " << channels_names[i] << std::endl;
+                    std::string msgError = "475 * " + it->getName() + " :Cannot join channel (+k)\r\n";
+                    send(client_fd, msgError.c_str(), msgError.size(), 0);
                     return ;
                 }
 
@@ -255,7 +256,8 @@ void Commands::join(std::string payload, int client_fd, t_join_client infos) {
         } else {
             if (it != channels.end()) {
                 if (it->getPassword() != keys[i]) {
-                    std::cout << "pass is incorrect for adding to: " << channels_names[i] << std::endl;
+                    std::string msgError = "464 * :Password incorrect \r\n";
+                    send(client_fd, msgError.c_str(), msgError.size(), 0);
                     return ;
                 }
                 add_to_exist(*it, "", client_fd, infos);

@@ -60,11 +60,17 @@ std::vector<channel>::iterator channel_manager::get_channel_by_name(std::string 
 int channel_manager::add_to_exist(channel &ch, std::string key, int client_fd, t_join_client infos) {
     std::cout<< "adding to channel: " << ch.getName() << std::endl;
 
-    if (ch.check_if_banned(client_fd) || ch.check_if_already_memebr(client_fd)) {
-        std::cout << "error in adding" << std::endl;
+    if (ch.check_if_already_memebr(client_fd)) {
+        std::string msg = "443 * " + infos.nick + " " + ch.getName() + " :is already on channel\r\n";
+        send(client_fd, msg.c_str(), msg.size(), 0);
         return 1;
     }
-
+    if (ch.check_if_banned(client_fd))
+    {
+       std::string msgError = ":localhost 474 " + ch.getName() + " " + infos.nick + ":Cannot join channel (+b)\r\n";
+        send(client_fd, msgError.c_str(), msgError.size(), 0);
+        return 1;
+    }
     ch.add_to_channel(client_fd);
     send(client_fd, "anas jaidi", 10, 0);
 }
