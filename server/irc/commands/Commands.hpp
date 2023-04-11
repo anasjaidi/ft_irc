@@ -19,6 +19,7 @@ public:
     void who(std::string, int);
     void part(std::string, int);
     void join(std::string, int, t_join_client infos);
+    void mode(std::string,int, t_join_client infos);
 
 
 
@@ -47,6 +48,7 @@ public:
     std::string parse_user_command(std::string &);
     std::string parse_who_command(std::string &);
     std::string parse_join_command(std::string &req);
+    std::string parse_mode_command(std::string &req);
 
 //    std::string parse_part_command(std::string &);
 };

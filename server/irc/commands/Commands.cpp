@@ -267,3 +267,58 @@ void Commands::join(std::string payload, int client_fd, t_join_client infos) {
         }
     }
 }
+
+std::vector<std::string> parse_and_get_modes(std::string &modes) {
+    std::vector<std::string> returned_modes;
+    std::string availble_modes = "iNcSMRmlksptn";
+     //  +mti-obl todo : robin you have to rename your variables, examples with the correct names ;
+     // todo robin you have to go back to your fucking indian country
+    for (int i = 0; i < modes.length(); i++) {
+        if (modes[i] == '-') {
+
+            while (availble_modes.find((modes[i + 1])) == -1) {
+                returned_modes.push_back(std::string("-") + modes.substr(i, 1));
+                i++;
+            }
+
+        } else if (modes[i] == '+') {
+            while (availble_modes.find((modes[i + 1])) == -1) {
+                returned_modes.push_back(std::string("+") + modes.substr(i, 1));
+                i++;
+            }
+
+        } else {
+            // case error
+        }
+    }
+    return returned_modes;
+}
+
+
+std::string Commands::parse_mode_command(std::string &req) {
+    req = req.erase(0, 5);
+
+    std::vector<std::string> parts = split(req, ' ');
+
+    if (parts.size() < 2) {
+        // error case
+    }
+
+    std::string target = parts[0];
+
+    std::string modes_str = parts[1];
+
+    std::string args;
+
+    if (parts.size() == 3) {
+        args = parts[2];
+    }
+
+    std::vector<std::string> modes = parse_and_get_modes(modes_str);
+
+    return (
+            target + std::string("|") + joinByMe(modes, '*') + std::string("|") + (
+                parts.size() == 3 ? args : "" //// stoped here
+            )
+    );
+}
