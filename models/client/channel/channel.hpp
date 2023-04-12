@@ -72,26 +72,30 @@ public:
      * @details control channel privacy
      * */
 
+    int privacy_mode_handler(bool);
+
     /**
      *
      * @mode m
      *
      * @details control message blocking
      * */
-
+    int message_blocking_mode_handler(bool);
     /**
      *
      * @modes p, s
      *
      * @details control channel visibility
      * */
-
+    int channel_visibility_mode_handler(bool);
     /**
      *
      * @mode t
      *
      * @details control topic enabling
      * */
+    int channel_topic_mode_handler(bool);
+
 
     /**
      *
@@ -144,7 +148,7 @@ public:
      *
      * */
 
-
+    int public_mode_handler(bool);
 
 };
 
