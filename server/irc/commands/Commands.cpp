@@ -164,6 +164,9 @@ std::pair<Commands::OptionCommands, std::string> Commands::get_command(std::stri
     } else if (cmd == "PART") {
 //        payload = parse_part_command(request);
         action = OptionCommands::PART;
+    } else if (cmd == "MODE") {
+        payload = parse_mode_command(request);
+        action = OptionCommands::MODE;
     } else {
         return std::make_pair(OptionCommands::UNDEFINED, std::string());
     }
@@ -269,22 +272,42 @@ void Commands::join(std::string payload, int client_fd, t_join_client infos) {
 }
 
 std::vector<std::string> parse_and_get_modes(std::string &modes) {
-    std::vector<std::string> returned_modes;
-    std::string availble_modes = "iNcSMRmlksptn";
-     //  +mti-obl todo : robin you have to rename your variables, examples with the correct names ;
-     // todo robin you have to go back to your fucking indian country
-    for (int i = 0; i < modes.length(); i++) {
-        if (modes[i] == '-') {
 
-            while (availble_modes.find((modes[i + 1])) == -1) {
-                returned_modes.push_back(std::string("-") + modes.substr(i, 1));
+    std::vector<std::string> returned_modes;
+
+    std::string availble_modes = "iNcSMRmlksptn";
+
+    if (modes.length() && modes[modes.length() - 1] == '-' && modes[modes.length() - 1] == '+') {
+        // case error
+    }
+
+    modes = modes.substr(modes.find_first_not_of(" \r\t\n"));
+
+    modes = modes.substr(0, modes.find_last_not_of(" \r\t\n") + 1);
+
+
+     //  +ispx
+
+    for (int i = 0; i < modes.length(); i++) {
+        if (modes[i] && modes[i] == '-' && modes[i + 1] != modes[i]) {
+
+            while ( modes[i + 1] && availble_modes.find((modes[i + 1])) != -1) {
+                returned_modes.push_back(std::string("-") + modes.substr(i + 1, 1));
                 i++;
             }
+            if (availble_modes.find((modes[i + 1])) == -1 && modes[i + 1] != '-' && modes[i + 1] != '+'  && modes[i + 1] != '\0') {
+                // error case
 
-        } else if (modes[i] == '+') {
-            while (availble_modes.find((modes[i + 1])) == -1) {
-                returned_modes.push_back(std::string("+") + modes.substr(i, 1));
+            }
+
+        } else if (modes[i] && modes[i] == '+' && modes[i + 1] != modes[i]) {
+            while ( modes[i + 1] && availble_modes.find((modes[i + 1])) != -1) {
+                returned_modes.push_back(std::string("+") + modes.substr(i + 1, 1));
                 i++;
+            }
+            if (availble_modes.find((modes[i + 1])) == -1 && modes[i + 1] != '-' && modes[i + 1] != '+' && modes[i + 1] != '\0' ) {
+                // error case
+
             }
 
         } else {
@@ -300,7 +323,7 @@ std::string Commands::parse_mode_command(std::string &req) {
 
     std::vector<std::string> parts = split(req, ' ');
 
-    if (parts.size() < 2) {
+    if (parts.size() <= 2) {
         // error case
     }
 
@@ -318,7 +341,32 @@ std::string Commands::parse_mode_command(std::string &req) {
 
     return (
             target + std::string("|") + joinByMe(modes, '*') + std::string("|") + (
-                parts.size() == 3 ? args : "" //// stoped here
+                parts.size() == 3 ? args : ""
             )
     );
+}
+
+void Commands::mode(std::string payload, int client_fd, t_join_client infos) {
+    std::vector<std::string> parts = split(payload, '|');
+    if (parts.size() < 2) {
+        // case error
+    }
+    std::string channel_name = parts[0];
+    std::vector<std::string> modes = split(parts[1], '*');
+
+    std::string args;
+
+    if (parts.size() >= 3) {
+        args = parts[2];
+    }
+
+    std::vector<channel>::iterator it = get_channel_by_name(channel_name);
+
+    if (it == channels.end()) {
+        // case error
+    }
+
+    channel targeted_channel = *it;
+
+    
 }

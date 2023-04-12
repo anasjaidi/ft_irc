@@ -10,6 +10,14 @@
 # include "../../../FT_IRC.h"
 
 
+enum MODES : char {
+    PRIVACY_ENABLED = 0b00000001,
+    MESSAGE_BLOCKING = 0b00000010,
+    VISIBILITY_ENABLED = 0b00000100,
+    TOPIC_ENABLED = 0b00001000,
+    PUBLIC_ENABLED = 0b00010000,
+};
+
 class channel {
 private:
     std::string name;
@@ -21,7 +29,7 @@ private:
     bool key;
 
     std::vector<int> fdsChannel;
-    long long modes;
+    char modes;
     std::vector<int> bans;
 
 public:
@@ -55,6 +63,88 @@ public:
     bool check_if_banned(int client_fd);
 
     bool check_if_already_memebr(int client_fd);
+
+
+
+    /**
+     * @mode i
+     *
+     * @details control channel privacy
+     * */
+
+    /**
+     *
+     * @mode m
+     *
+     * @details control message blocking
+     * */
+
+    /**
+     *
+     * @modes p, s
+     *
+     * @details control channel visibility
+     * */
+
+    /**
+     *
+     * @mode t
+     *
+     * @details control topic enabling
+     * */
+
+    /**
+     *
+     * @mode b
+     *
+     * @arg user nick
+     *
+     * @details  ban a user
+     * */
+
+    /**
+     *
+     * @mode o
+     *
+     * @arg user nick
+     *
+     * @details add user as admin
+     * */
+
+    /**
+     *
+     * @mode v
+     *
+     * @arg user nick
+     *
+     * @details permit user to talk besides the admins when chat is blocked
+     * */
+
+    /**
+     *
+     * @mode k
+     *
+     * @arg control password
+     * */
+
+    /**
+     *
+     * @mode l
+     *
+     * @arg new limit
+     *
+     * @details control channel limit
+     * */
+
+    /**
+     *
+     * @mode n
+     *
+     * @details make channel public
+     *
+     * */
+
+
 
 };
 

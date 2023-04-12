@@ -57,6 +57,7 @@ int IrcServer::handle(std::string req, int client_fd) throw() {
         std::cerr << command.second << std::endl;
         return -1;
     }
+    std::vector<client>::iterator cl = this->get_client(client_fd);
 
     switch (command.first) {
         case OptionCommands::PASS:
@@ -75,10 +76,9 @@ int IrcServer::handle(std::string req, int client_fd) throw() {
 //            part(command.second, client_fd, server_password, server_name);
             break;
         case OptionCommands::MODE:
-
+            mode(command.second, client_fd, (t_join_client){.nick=cl->getNick(), .user=cl->getUser(), .info=(struct sockaddr_in*)&cl->getTheirAddr()});
             break;
         case OptionCommands::JOIN:
-            std::vector<client>::iterator cl = this->get_client(client_fd);
             struct sockaddr_storage addrInfos = cl->getTheirAddr();
             join(command.second, client_fd, (t_join_client){.nick=cl->getNick(), .user=cl->getUser(), .info=(struct sockaddr_in*)&cl->getTheirAddr()});
             render_channels();
