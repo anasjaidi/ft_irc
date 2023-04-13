@@ -69,11 +69,8 @@ int IrcServer::handle(std::string req, int client_fd) throw() {
         case OptionCommands::USER:
             user(command.second, client_fd);
             break;
-        case OptionCommands::WHO:
-            who(command.second, client_fd);
-            break;
         case OptionCommands::PART:
-//            part(command.second, client_fd, server_password, server_name);
+            part(command.second, client_fd);
             break;
         case OptionCommands::MODE:
             mode(command.second, client_fd, (t_join_client){.nick=cl->getNick(), .user=cl->getUser(), .info=(struct sockaddr_in*)&cl->getTheirAddr()});

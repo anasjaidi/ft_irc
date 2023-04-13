@@ -17,6 +17,7 @@ public:
     int add_to_exist(channel &channel, std::string key,int client_fd, t_join_client infos);
     std::vector<channel>::iterator  get_channel_by_name(std::string &name);
     void render_channels();
+    void delete_from_channel(int client_fd, std::string &channel_name);
 
 };
 

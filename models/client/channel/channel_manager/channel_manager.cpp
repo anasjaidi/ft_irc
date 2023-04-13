@@ -6,10 +6,7 @@
 
 #include <sstream>
 
-
-
-
-std::string clientInformations(struct join_client_info infos) {
+static std::string clientInformations(struct join_client_info infos) {
     struct sockaddr_in *i  = (struct sockaddr_in*)(infos.info);
     std::string ip;
     std::stringstream ss;
@@ -30,12 +27,10 @@ int channel_manager::create_channel(int client_fd, std::string ch,  t_join_clien
     else
     {
         std::cout << "second" << std::endl;
-    channels.push_back(channel(ch, 42, client_fd));
+        channels.push_back(channel(ch, 42, client_fd));
 
     }
-
-    std::string msg;
-    msg = ":" + clientInformations(infos) + " JOIN " + ch + "\r\n"
+    std::string msg = ":" + clientInformations(infos) + " JOIN " + ch + "\r\n"
           + ":loclahost" + " MODE " + ch + " +nt\r\n"
           + ":localhost" + " 353 " + infos.nick + " = " + ch + " :@" + infos.nick + "\r\n"
           + ":localhost" + " 366 " + infos.nick + " " +  ch + " :End of /NAMES list\r\n";
@@ -80,4 +75,19 @@ void channel_manager::render_channels() {
     for (channel ch : channels) {
         std::cout  << "name: " << ch.getName() << " | " << "pass: " << ch.getPassword() << std::endl;
     }
+}
+
+
+void channel_manager::delete_from_channel(int client_fd, std::string &channel_name) {
+    std::vector<channel>::iterator it = get_channel_by_name(channel_name);
+
+    if (it == channels.end()) {
+        // error case
+    }
+    if(it->itIsInChannel())
+        it->delete_client(client_fd, 'k');
+    else
+        //Error
+
+    ////
 }

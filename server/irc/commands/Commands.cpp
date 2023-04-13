@@ -5,6 +5,18 @@
 #include "Commands.hpp"
 # include <sstream>
 
+std::string joinByMe(std::vector<std::string> &vec, char c)
+{
+    std::string result = "";
+    for (int i = 0; i < vec.size(); i++) {
+        result += vec[i];
+        if (i != vec.size() - 1) {
+            result += c;
+        }
+    }
+    return result;
+}
+
 void Commands::nick(std::string payload, int new_client_fd) {
     const int ID = update_client_info(update_action::UpdateNick, payload, new_client_fd);
 
@@ -119,20 +131,7 @@ std::string Commands::parse_user_command(std::string &req) {
     return words[1];
 }
 
-std::string Commands::parse_who_command(std::string &req) {
 
-    remove_whitespaces(req);
-
-    int start = req.find_first_of(" \r\n");
-
-
-    if (start == std::string::npos) return std::string("Error: parse password command.");
-
-
-    std::string who = req.substr(start + 1, req.length());
-
-    return who;
-}
 
 std::pair<Commands::OptionCommands, std::string> Commands::get_command(std::string &request) {
 
@@ -158,11 +157,8 @@ std::pair<Commands::OptionCommands, std::string> Commands::get_command(std::stri
     } else if(cmd == "JOIN") {
         payload = parse_join_command(request);
         action = OptionCommands::JOIN;
-    } else if (cmd == "WHO") {
-        payload = parse_who_command(request);
-        action = OptionCommands::WHO;
     } else if (cmd == "PART") {
-//        payload = parse_part_command(request);
+        payload = parse_part_command(request);
         action = OptionCommands::PART;
     } else if (cmd == "MODE") {
         payload = parse_mode_command(request);
@@ -176,11 +172,6 @@ std::pair<Commands::OptionCommands, std::string> Commands::get_command(std::stri
     return std::make_pair(action, payload);
 }
 
-
-void Commands::who(std::string payload, int new_client_fd) {
-std::cout <<"heloo who "  << payload <<"     "<< new_client_fd << std::endl;
-}
-
 std::vector<std::string> split(std::string line, char c)
 {
 
@@ -192,16 +183,34 @@ std::vector<std::string> split(std::string line, char c)
     return (command);
 }
 
-std::string joinByMe(std::vector<std::string> &vec, char c)
+std::string Commands::parse_part_command(std::string &req)
 {
-    std::string result = "";
-    for (int i = 0; i < vec.size(); i++) {
-        result += vec[i];
-        if (i != vec.size() - 1) {
-            result += c;
+    channel_manager manage;
+    std::string payload;
+    std::vector<std::string> cmd = split(req,' ');
+    std::vector<std::string> chanls = split(cmd[1], ',');
+    if (cmd.size() != 2) {
+        return "Error";
+    }
+    for (int i = 0; i < chanls.size(); i++) {
+
+         if(chanls[i][0] != '#'){
+             return "Error";
         }
     }
-    return result;
+
+    payload = joinByMe(chanls, '*');
+
+    return (payload);
+}
+
+void Commands::part(std::string payload, int client_fd) {
+    if (payload == "Error"){
+
+        //case error
+    }else {
+
+    }
 }
 
 std::string Commands::parse_join_command(std::string &req)

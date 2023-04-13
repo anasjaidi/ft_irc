@@ -8,7 +8,7 @@
 
 
 # include "../../../FT_IRC.h"
-
+#include <sstream>
 
 enum MODES : char {
     PRIVACY_ENABLED = 0b00000001,
@@ -64,6 +64,9 @@ public:
 
     bool check_if_already_memebr(int client_fd);
 
+    void delete_client(int client_fd, char z);
+
+    std::string clientInformationsForChannel(struct join_client_info infos);
 
 
     /**
@@ -107,10 +110,10 @@ public:
      * */
 
     /**
-     *
+     * MODE #channel +o nick
      * @mode o
      *
-     * @arg user nick
+     * @arg <channel, user nick>
      *
      * @details add user as admin
      * */
