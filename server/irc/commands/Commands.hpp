@@ -19,6 +19,7 @@ public:
     void part(std::string, int);
     void join(std::string, int, t_join_client infos);
     void mode(std::string,int, t_join_client infos);
+    void join(std::string,int, t_join_client infos);
 
     enum OptionCommands  {
         PASS, // valide
