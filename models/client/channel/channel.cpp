@@ -204,12 +204,34 @@ std::string channel::pass_mode_handler(bool on, std::string &newPass) {
 
 int channel::operator_friend_mode_handler(bool on, int client_fd) {
     if (on) {
-        if (std::find(operator_friends.begin(), operators.end(), client_fd) != operator_friends.end()) return 1;
+        if (std::find(operator_friends.begin(), operator_friends.end(), client_fd) != operator_friends.end()) return 1;
         operator_friends.push_back(client_fd);
     }
     else {
-        if (std::find(operator_friends.begin(), operators.end(), client_fd) == operator_friends.end()) return 1;
+        if (std::find(operator_friends.begin(), operator_friends.end(), client_fd) == operator_friends.end()) return 1;
         operator_friends.erase(std::remove(operator_friends.begin(), operator_friends.end(), client_fd));
+    }
+    return 0;
+}
+int channel::operator_mode_handler(bool on, int client_fd) {
+    if (on) {
+        if (std::find(operators.begin(), operators.end(), client_fd) != operators.end()) return 1;
+        operators.push_back(client_fd);
+    }
+    else {
+        if (std::find(operators.begin(), operators.end(), client_fd) == operators.end()) return 1;
+        operators.erase(std::remove(operators.begin(), operators.end(), client_fd));
+    }
+    return 0;
+}
+int channel::ban_mode_handler(bool on, int client_fd) {
+    if (on) {
+        if (std::find(bans.begin(), bans.end(), client_fd) != bans.end()) return 1;
+        bans.push_back(client_fd);
+    }
+    else {
+        if (std::find(bans.begin(), bans.end(), client_fd) == bans.end()) return 1;
+        bans.erase(std::remove(bans.begin(), bans.end(), client_fd));
     }
     return 0;
 }

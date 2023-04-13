@@ -112,6 +112,8 @@ public:
      * @details  ban a user
      * */
 
+    int ban_mode_handler(bool, int);
+
     /**
      * MODE #channel +o nick
      * @mode o
@@ -120,6 +122,7 @@ public:
      *
      * @details add user as admin
      * */
+    int operator_mode_handler(bool, int);
 
     /**
      *
@@ -129,8 +132,8 @@ public:
      *
      * @details permit user to talk besides the admins when chat is blocked
      * */
-
     int operator_friend_mode_handler(bool, int);
+
 
     /**
      *
