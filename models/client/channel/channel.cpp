@@ -146,3 +146,70 @@ bool channel::itIsInChannel(int client_fd) {
     }
     return false;
 }
+
+int channel::privacy_mode_handler(bool on) {
+    if (on)
+        modes |= PRIVACY_ENABLED;
+    else
+        modes &= ~PRIVACY_ENABLED;
+    return 0;
+}
+int channel::message_blocking_mode_handler(bool on) {
+    if (on)
+        modes |= MESSAGE_BLOCKING;
+    else
+        modes &= ~MESSAGE_BLOCKING;
+    return 0;
+}
+
+int channel::channel_visibility_mode_handler(bool on) {
+    if (on)
+        modes |= VISIBILITY_ENABLED;
+    else
+        modes &= ~VISIBILITY_ENABLED;
+    return 0;
+}
+
+int channel::channel_topic_mode_handler(bool on) {
+    if (on)
+        modes |= TOPIC_ENABLED;
+    else
+        modes &= ~TOPIC_ENABLED;
+    return 0;
+}
+
+int channel::public_mode_handler(bool on) {
+    if (on)
+        modes |= PUBLIC_ENABLED;
+    else
+        modes &= ~PUBLIC_ENABLED;
+    return 0;
+}
+
+int channel::limit_mode_handler(bool on, int new_limit) {
+    if (on)
+        this->memberLimit = new_limit;
+    else
+        this->memberLimit = -1;
+    return this->memberLimit;
+}
+
+std::string channel::pass_mode_handler(bool on, std::string &newPass) {
+    if (on)
+        this->password = newPass;
+    else
+        this->password = "";
+    return this->password;
+}
+
+int channel::operator_friend_mode_handler(bool on, int client_fd) {
+    if (on) {
+        if (std::find(operator_friends.begin(), operators.end(), client_fd) != operator_friends.end()) return 1;
+        operator_friends.push_back(client_fd);
+    }
+    else {
+        if (std::find(operator_friends.begin(), operators.end(), client_fd) == operator_friends.end()) return 1;
+        operator_friends.erase(std::remove(operator_friends.begin(), operator_friends.end(), client_fd));
+    }
+    return 0;
+}

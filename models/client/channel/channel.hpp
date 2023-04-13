@@ -67,6 +67,7 @@ public:
     void delete_client(int client_fd, char z);
 
     bool itIsInChannel(int client_fd);
+    std::vector<int> operator_friends;
 
     std::string clientInformationsForChannel(struct join_client_info infos);
 
@@ -129,12 +130,16 @@ public:
      * @details permit user to talk besides the admins when chat is blocked
      * */
 
+    int operator_friend_mode_handler(bool, int);
+
     /**
      *
      * @mode k
      *
      * @arg control password
      * */
+
+    std::string pass_mode_handler(bool, std::string &);
 
     /**
      *
@@ -144,6 +149,8 @@ public:
      *
      * @details control channel limit
      * */
+
+    int limit_mode_handler(bool, int);
 
     /**
      *
