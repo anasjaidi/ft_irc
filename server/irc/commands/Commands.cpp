@@ -160,7 +160,10 @@ std::pair<Commands::OptionCommands, std::string> Commands::get_command(std::stri
     } else if (cmd == "PART") {
         payload = parse_part_command(request);
         action = OptionCommands::PART;
-    } else if (cmd == "MODE") {
+    } else if (cmd == "KICK"){
+        payload = parse_kick_command(request);
+        action = OptionCommands::KICK;
+    }else if (cmd == "MODE") {
         payload = parse_mode_command(request);
         action = OptionCommands::MODE;
     } else {
@@ -198,9 +201,7 @@ std::string Commands::parse_part_command(std::string &req)
              return "Error";
         }
     }
-
     payload = joinByMe(chanls, '*');
-
     return (payload);
 }
 

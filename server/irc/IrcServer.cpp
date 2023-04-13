@@ -66,6 +66,9 @@ int IrcServer::handle(std::string req, int client_fd) throw() {
         case OptionCommands::NICK:
             nick(command.second, client_fd);
             break;
+        case OptionCommands::KICK:
+            kick(command.second, client_fd);
+            break;
         case OptionCommands::USER:
             user(command.second, client_fd);
             break;
