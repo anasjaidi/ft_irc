@@ -31,6 +31,7 @@ private:
     std::vector<int> fdsChannel;
     char modes;
     std::vector<int> bans;
+    std::vector<int> invited;
 
 public:
     const std::string &getName() const;

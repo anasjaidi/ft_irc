@@ -19,7 +19,7 @@ public:
     void part(std::string, int);
     void join(std::string, int, t_join_client infos);
     void mode(std::string,int, t_join_client infos);
-    void join(std::string,int, t_join_client infos);
+    void invite(std::string,int);
 
     enum OptionCommands  {
         PASS, // valide
@@ -45,7 +45,17 @@ public:
     std::string parse_join_command(std::string &req);
     std::string parse_mode_command(std::string &req);
     std::string parse_part_command(std::string &);
+    std::string parse_invite_command(std::string &);
 };
+
+
+
+
+
+
+
+std::vector<std::string> split(std::string line, char c);
+std::string joinByMe(std::vector<std::string> &vec, char c);
 
 
 #endif //FT_IRC_COMMANDS_HPP
