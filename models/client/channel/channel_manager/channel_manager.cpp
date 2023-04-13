@@ -82,12 +82,12 @@ void channel_manager::delete_from_channel(int client_fd, std::string &channel_na
     std::vector<channel>::iterator it = get_channel_by_name(channel_name);
 
     if (it == channels.end()) {
-        // error case
+        return;// error case channel not exist
     }
-    if(it->itIsInChannel())
+    if(it->itIsInChannel(client_fd))
         it->delete_client(client_fd, 'k');
     else
-        //Error
+        return;//Error is not a client in this channel
 
     ////
 }

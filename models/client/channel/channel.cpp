@@ -137,3 +137,12 @@ void channel::delete_client(int client_fd, char z) {
     }
 
 }
+
+bool channel::itIsInChannel(int client_fd) {
+    std::vector<int>::iterator it = this->fdsChannel.begin();
+    for(; it != this->fdsChannel.end(); it++) {
+        if(this->fdsChannel[client_fd] == client_fd)
+            return true;
+    }
+    return false;
+}

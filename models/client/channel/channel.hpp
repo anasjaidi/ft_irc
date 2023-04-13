@@ -66,6 +66,8 @@ public:
 
     void delete_client(int client_fd, char z);
 
+    bool itIsInChannel(int client_fd);
+
     std::string clientInformationsForChannel(struct join_client_info infos);
 
 
