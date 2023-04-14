@@ -32,6 +32,9 @@ void Commands::invite(std::string payload, int client_fd)
     // desirlize[1] = #channel
     std::vector<channel>::iterator ch_it = get_channel_by_name(desirlize[1]);
     //TODO here i have to check this channel if have it mode "i"=invite in my modes
+    {
+        ////
+    }
     if (ch_it == channels.end())
     {
         msg.clear();
