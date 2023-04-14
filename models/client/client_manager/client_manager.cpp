@@ -19,6 +19,15 @@ std::vector<client>::iterator client_manager::get_client(int ID) {
     return clients.end();
 }
 
+int client_manager::get_client_id_by_nick(std::string &nick)  {
+    for (std::vector<client>::iterator it = clients.begin(); it != clients.end(); it++) {
+        if (it->getNick() == nick) {
+            return it->getFd();
+        }
+    }
+    return -1;
+}
+
 int client_manager::remove_client(int ID) {
     std::vector<client>::iterator to_remove = get_client(ID);
     int client_index = std::distance(clients.begin(), to_remove)  + 1;

@@ -20,6 +20,7 @@ public:
     int add_client(int fd, struct sockaddr_storage infos);
 
     int get_client_id(int fd);
+    int get_client_id_by_nick(std::string &);
 
 
     enum update_action {

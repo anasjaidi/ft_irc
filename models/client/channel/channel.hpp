@@ -68,6 +68,7 @@ public:
     void delete_client(int client_fd, char z);
 
     bool itIsInChannel(int client_fd);
+    std::vector<int> operator_friends;
 
     std::string clientInformationsForChannel(struct join_client_info infos);
 
@@ -115,6 +116,8 @@ public:
      * @details  ban a user
      * */
 
+    int ban_mode_handler(bool, int);
+
     /**
      * MODE #channel +o nick
      * @mode o
@@ -123,6 +126,7 @@ public:
      *
      * @details add user as admin
      * */
+    int operator_mode_handler(bool, int);
 
     /**
      *
@@ -132,6 +136,8 @@ public:
      *
      * @details permit user to talk besides the admins when chat is blocked
      * */
+    int operator_friend_mode_handler(bool, int);
+
 
     /**
      *
@@ -139,6 +145,8 @@ public:
      *
      * @arg control password
      * */
+
+    std::string pass_mode_handler(bool, std::string &);
 
     /**
      *
@@ -148,6 +156,8 @@ public:
      *
      * @details control channel limit
      * */
+
+    int limit_mode_handler(bool, int);
 
     /**
      *
