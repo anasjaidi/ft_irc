@@ -51,6 +51,8 @@ IrcServer::SeverErrors::SeverErrors(ErrorCode _errorCode) : errorCode(_errorCode
 
 int IrcServer::handle(std::string req, int client_fd) throw() {
 
+    req = req.substr(req.find_first_not_of(" \t\r\n\v\f"));
+    req = req.substr(0, req.find_last_not_of(" \t\r\n\v\f") + 1);
     std::pair<OptionCommands, std::string> command = get_command(req);
 
     if (command.first == OptionCommands::UNDEFINED) {

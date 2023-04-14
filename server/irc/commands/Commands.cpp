@@ -5,6 +5,8 @@
 #include "Commands.hpp"
 # include <sstream>
 
+# define log(x) std::cout<< x << std::endl;
+
 std::string joinByMe(std::vector<std::string> &vec, char c)
 {
     std::string result = "";
@@ -19,7 +21,8 @@ std::string joinByMe(std::vector<std::string> &vec, char c)
 
 void Commands::nick(std::string payload, int new_client_fd) {
     const int ID = update_client_info(update_action::UpdateNick, payload, new_client_fd);
-
+    payload = payload.substr(payload.find_first_not_of(" \t\r\n\v\f"));
+    payload = payload.substr(0, payload.find_first_not_of(" \t\r\n\v\f") + 1);
     if (ID == -1) {
         std::cerr << "User Not Found: Internal Server Error." << std::endl;
         close(new_client_fd);
@@ -50,6 +53,9 @@ void Commands::user(std::string payload, int new_client_fd) {
 
 
 void Commands::pass(std::string pass, int new_client_fd, std::string server_pass) {
+
+    log(pass);
+    log(server_pass);
     if (pass != server_pass) {
         int  ID = remove_client(new_client_fd);
 
@@ -284,7 +290,7 @@ std::vector<std::string> parse_and_get_modes(std::string &modes) {
 
     std::vector<std::string> returned_modes;
 
-    std::string availble_modes = "iNcSMRmlksptn";
+    std::string availble_modes = "impstbovkln";
 
     if (modes.length() && modes[modes.length() - 1] == '-' && modes[modes.length() - 1] == '+') {
         // case error
@@ -359,6 +365,8 @@ void Commands::mode(std::string payload, int client_fd, t_join_client infos) {
     std::vector<std::string> parts = split(payload, '|');
     if (parts.size() < 2) {
         // case error
+        std::cout << "parse error" << std::endl;
+        return ;
     }
     std::string channel_name = parts[0];
     std::vector<std::string> modes = split(parts[1], '*');
@@ -373,9 +381,81 @@ void Commands::mode(std::string payload, int client_fd, t_join_client infos) {
 
     if (it == channels.end()) {
         // case error
+        std::cout << "channel not found" << std::endl;
+        return ;
     }
+    int new_client_fd;
 
     channel targeted_channel = *it;
+
+    for (int i = 0; i < modes.size(); i++) {
+        switch (modes[i][1]) {
+            case 'i':
+                if (modes[i][0] == '+') targeted_channel.privacy_mode_handler(1);
+                else targeted_channel.privacy_mode_handler(0);
+            break;
+            case 'm':
+                if (modes[i][0] == '+') targeted_channel.message_blocking_mode_handler(1);
+                else targeted_channel.message_blocking_mode_handler(0);
+            break;
+            case 'p':
+                if (modes[i][0] == '+') targeted_channel.channel_visibility_mode_handler(1);
+                else targeted_channel.channel_visibility_mode_handler(0);
+            break;
+            case 's':
+                if (modes[i][0] == '+') targeted_channel.channel_visibility_mode_handler(1);
+                else targeted_channel.channel_visibility_mode_handler(0);
+            break;
+            case 't':
+                if (modes[i][0] == '+') targeted_channel.channel_topic_mode_handler(1);
+                else targeted_channel.channel_topic_mode_handler(0);
+            break;
+            case 'b':
+                new_client_fd = get_client_id_by_nick(args);
+                if (new_client_fd == -1) {
+                    // error case
+                    std::cout << "nick  exists." << std::endl;
+                } else {
+                    std::cout << "nick not exists." << std::endl;
+                    exit(0);
+                }
+                if (modes[i][0] == '+') targeted_channel.ban_mode_handler(1, client_fd);
+                else targeted_channel.ban_mode_handler(0, client_fd);
+            break;
+            case 'o':
+                std::cout << clients.size()  << " | " << clients[0].getNick()  << (clients[0].getNick() == args) << std::endl;
+                std::cout << "inside operator mode" << std::endl;
+                new_client_fd = get_client_id_by_nick(args);
+                if (new_client_fd == -1) {
+                    std::cout << "nick  exists." << std::endl;
+                } else {
+                    std::cout << "nick not exists." << std::endl;
+                }
+                if (modes[i][0] == '+') targeted_channel.operator_mode_handler(1, client_fd);
+                else targeted_channel.operator_mode_handler(0, client_fd);
+            break;
+            case 'v':
+                new_client_fd = get_client_id_by_nick(args);
+                if (new_client_fd == -1) {
+                    std::cout << "nick  exists." << std::endl;
+                } else {
+                    std::cout << "nick not exists." << std::endl;
+                }
+                if (modes[i][0] == '+') targeted_channel.operator_friend_mode_handler(1, client_fd);
+                else targeted_channel.operator_friend_mode_handler(0, client_fd);
+            break;
+            case 'k':
+
+                if (modes[i][0] == '+') targeted_channel.pass_mode_handler(1, args);
+                else targeted_channel.pass_mode_handler(0, args);
+            break;
+            case 'l':
+
+                if (modes[i][0] == '+') targeted_channel.limit_mode_handler(1, std::stoi(args));
+                else targeted_channel.limit_mode_handler(0, std::stoi(args));
+            break;
+        }
+    }
 
     
 }
