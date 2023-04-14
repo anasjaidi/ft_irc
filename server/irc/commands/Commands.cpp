@@ -157,6 +157,9 @@ std::pair<Commands::OptionCommands, std::string> Commands::get_command(std::stri
     } else if(cmd == "JOIN") {
         payload = parse_join_command(request);
         action = OptionCommands::JOIN;
+    } else if (cmd == "INVITE") {
+        payload = parse_invite_command(request);
+        action = OptionCommands::INVITE;
     } else if (cmd == "PART") {
         payload = parse_part_command(request);
         action = OptionCommands::PART;
