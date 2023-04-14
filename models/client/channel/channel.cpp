@@ -146,3 +146,12 @@ bool channel::itIsInChannel(int client_fd) {
     }
     return false;
 }
+
+bool channel::adminChannel(int fd) {
+    std::vector<int>::iterator it = this->operators.begin();
+    for (; it != this->operators.end(); it++) {
+        if(*it == fd)
+            return true;
+    }
+    return false;
+}

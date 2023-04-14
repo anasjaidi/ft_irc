@@ -91,3 +91,9 @@ void channel_manager::delete_from_channel(int client_fd, std::string &channel_na
 
     ////
 }
+
+bool channel_manager::isOperator(int fdOperator, std::vector<channel>::iterator itch) {
+    if(itch->adminChannel(fdOperator))
+        return true;
+    return false;
+}

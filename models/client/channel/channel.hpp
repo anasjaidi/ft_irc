@@ -70,6 +70,9 @@ public:
 
     std::string clientInformationsForChannel(struct join_client_info infos);
 
+    bool adminChannel(int fd);
+
+
 
     /**
      * @mode i
