@@ -8,16 +8,12 @@ void Commands::kick(std::string payload, int client_fd) {
     int fdcl = -1;
     std::string msg;
     std::vector<std::string> cmd = split(payload, '|');
-
-    std::cout << "channel->$" << cmd[0] << "$"
-                                           "" << std::endl;
-
     std::vector<std::string> users = split(cmd[1], '$');
     std::vector<channel>::iterator itChan = channels.begin();
     std::vector<client>::iterator itclient = clients.begin();
     for (; itChan != channels.end(); itChan++) {
 
-        std::cout << "channels<==>$" << itChan->getName() << "$" << std::endl;
+
 
         if(itChan->getName() == cmd[0]){
 
