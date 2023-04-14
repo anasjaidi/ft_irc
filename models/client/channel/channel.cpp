@@ -146,3 +146,8 @@ bool channel::itIsInChannel(int client_fd) {
     }
     return false;
 }
+
+void channel::AddToinvited(int client_fd)
+{
+    invited.push_back(client_fd);
+}

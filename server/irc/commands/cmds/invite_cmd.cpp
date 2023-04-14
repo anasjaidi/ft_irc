@@ -25,9 +25,29 @@ void Commands::invite(std::string payload, int client_fd)
     {
         msg = ":localhost 461 " + clients[client_fd].getNick() + ": Not enough parameters \r\n";
         send(client_fd, msg.c_str(), msg.size(), 0);
+        return ;
     }
     std::vector<std::string> desirlize = split(payload, '|');
     // desirlize[0] = nickname
     // desirlize[1] = #channel
+    std::vector<channel>::iterator ch_it = get_channel_by_name(desirlize[1]);
+    if (ch_it == channels.end())
+    {
+        msg.clear();
+        msg =  ":localhost 401 " + desirlize[1] + " : No such nick/channel\r\n";
+        send(client_fd, msg.c_str(), msg.size(), 0);
+        return ;
+    }
+    else
+    {
+        if (ch_it->getName() == desirlize[0])
+        {
+            ch_it->AddToinvited(client_fd);
+        }
+        msg.clear();
+        msg = ":" + clients[client_fd].getNick() + " INVITE " + desirlize[0] + " " + desirlize[1] + "\r\n";
+        send(client_fd, msg.c_str(), msg.size(), 0);
+        return ;
+    }
 
 }

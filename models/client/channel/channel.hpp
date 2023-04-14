@@ -155,7 +155,7 @@ public:
      * */
 
     int public_mode_handler(bool);
-
+    void AddToinvited(int client_fd);
 };
 
 
