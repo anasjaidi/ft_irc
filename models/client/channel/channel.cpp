@@ -155,3 +155,7 @@ bool channel::adminChannel(int fd) {
     }
     return false;
 }
+void channel::AddToinvited(std::string nick_name)
+{
+    invited.push_back(nick_name);
+}

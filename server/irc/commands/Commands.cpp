@@ -170,7 +170,6 @@ std::pair<Commands::OptionCommands, std::string> Commands::get_command(std::stri
         return std::make_pair(OptionCommands::UNDEFINED, std::string());
     }
 
-
     remove_whitespaces(payload);
     return std::make_pair(action, payload);
 }

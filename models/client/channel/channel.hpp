@@ -31,6 +31,7 @@ private:
     std::vector<int> fdsChannel;
     char modes;
     std::vector<int> bans;
+    std::vector<std::string> invited;
 
 public:
     const std::string &getName() const;
@@ -157,7 +158,7 @@ public:
      * */
 
     int public_mode_handler(bool);
-
+    void AddToinvited(std::string nick_name);
 };
 
 
