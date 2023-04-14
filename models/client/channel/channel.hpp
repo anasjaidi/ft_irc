@@ -10,13 +10,13 @@
 # include "../../../FT_IRC.h"
 #include <sstream>
 
-enum MODES : char {
-    PRIVACY_ENABLED = 0b00000001,
-    MESSAGE_BLOCKING = 0b00000010,
-    VISIBILITY_ENABLED = 0b00000100,
-    TOPIC_ENABLED = 0b00001000,
-    PUBLIC_ENABLED = 0b00010000,
-};
+// enum MODES : char {
+//     PRIVACY_ENABLED = 0b00000001,
+//     MESSAGE_BLOCKING = 0b00000010,
+//     VISIBILITY_ENABLED = 0b00000100,
+//     TOPIC_ENABLED = 0b00001000,
+//     PUBLIC_ENABLED = 0b00010000,
+// };
 
 class channel {
 private:

@@ -4,12 +4,24 @@
 
 # include "../Commands.hpp"
 
+enum MODES : char
+{
+    PRIVACY_ENABLED = 0b00000001,
+    MESSAGE_BLOCKING = 0b00000010,
+    VISIBILITY_ENABLED = 0b00000100,
+    TOPIC_ENABLED = 0b00001000,
+    PUBLIC_ENABLED = 0b00010000,
+};
+
 std::string Commands::parse_invite_command(std::string &req)
 {
 
     req.erase(0, 6);
+
+    std::cout << req << std::endl;
     std::string payload;
     std::vector<std::string> cmd = split(req, ' ');
+    std::cout << cmd[0] << " | " << cmd[1] << std::endl;
     if (cmd.size() != 2 && cmd[1][0] != '#')
         return "enough"; // not enough param
     else {
@@ -20,6 +32,7 @@ std::string Commands::parse_invite_command(std::string &req)
 
 void Commands::invite(std::string payload, int client_fd)
 {
+    std::cout << "go in invite\n" << std::endl;
     std::string msg;
     if (payload == "enough")
     {
@@ -32,15 +45,22 @@ void Commands::invite(std::string payload, int client_fd)
     // desirlize[1] = #channel
     std::vector<channel>::iterator ch_it = get_channel_by_name(desirlize[1]);
     //TODO here i have to check this channel if have it mode "i"=invite in my modes
-    {
-        ////
-    }
+
     if (ch_it == channels.end())
     {
         msg.clear();
         msg =  ":localhost 401 " + desirlize[1] + " : No such nick/channel\r\n";
         send(client_fd, msg.c_str(), msg.size(), 0);
         return ;
+    }
+    else if (ch_it->getModes() & (PRIVACY_ENABLED))
+    {
+
+    }
+    else if (!(ch_it->getModes() & (PRIVACY_ENABLED)))
+    {
+        // case error
+        std::cout << "dont have invite mode" << std::endl;
     }
     else
     {

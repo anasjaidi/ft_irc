@@ -80,6 +80,9 @@ int IrcServer::handle(std::string req, int client_fd) throw() {
         case OptionCommands::MODE:
             mode(command.second, client_fd, (t_join_client){.nick=cl->getNick(), .user=cl->getUser(), .info=(struct sockaddr_in*)&cl->getTheirAddr()});
             break;
+        case OptionCommands::INVITE:
+            invite(command.second, client_fd);
+            break;
         case OptionCommands::JOIN:
             struct sockaddr_storage addrInfos = cl->getTheirAddr();
             join(command.second, client_fd, (t_join_client){.nick=cl->getNick(), .user=cl->getUser(), .info=(struct sockaddr_in*)&cl->getTheirAddr()});
