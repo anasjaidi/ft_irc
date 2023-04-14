@@ -147,7 +147,7 @@ bool channel::itIsInChannel(int client_fd) {
     return false;
 }
 
-void channel::AddToinvited(int client_fd)
+void channel::AddToinvited(std::string nick_name)
 {
-    invited.push_back(client_fd);
+    invited.push_back(nick_name);
 }

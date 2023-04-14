@@ -20,7 +20,7 @@ std::string Commands::parse_invite_command(std::string &req)
 
 void Commands::invite(std::string payload, int client_fd)
 {
-    std::string msg,
+    std::string msg;
     if (payload == "enough")
     {
         msg = ":localhost 461 " + clients[client_fd].getNick() + ": Not enough parameters \r\n";
@@ -31,6 +31,7 @@ void Commands::invite(std::string payload, int client_fd)
     // desirlize[0] = nickname
     // desirlize[1] = #channel
     std::vector<channel>::iterator ch_it = get_channel_by_name(desirlize[1]);
+    //TODO here i have to check this channel if have it mode "i"=invite in my modes
     if (ch_it == channels.end())
     {
         msg.clear();
@@ -42,12 +43,12 @@ void Commands::invite(std::string payload, int client_fd)
     {
         if (ch_it->getName() == desirlize[0])
         {
-            ch_it->AddToinvited(client_fd);
+            std::string nick_name = desirlize[0];
+            ch_it->AddToinvited(nick_name);
         }
         msg.clear();
-        msg = ":" + clients[client_fd].getNick() + " INVITE " + desirlize[0] + " " + desirlize[1] + "\r\n";
+        msg = ":" + clients[client_fd].getNick() + " INVITE ========>" + desirlize[0] + " " + desirlize[1] + "\r\n";
         send(client_fd, msg.c_str(), msg.size(), 0);
         return ;
     }
-
 }
