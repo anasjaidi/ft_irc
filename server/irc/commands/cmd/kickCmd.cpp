@@ -3,6 +3,62 @@
 //
 #include "../Commands.hpp"
 
+//void Commands::kick(std::string payload, int client_fd) {
+//
+//    int fdcl = -1;
+//    std::string msg;
+//    std::vector<std::string> cmd = split(payload, '|');
+//    std::vector<std::string> users = split(cmd[1], '$');
+//    std::vector<channel>::iterator itChan = channels.begin();
+//    std::vector<client>::iterator itclient = clients.begin();
+//    for (; itChan != channels.end(); itChan++) {
+//
+//        std::string name = itChan->getName();
+//        trim_fun(name);
+//
+//        if(name == cmd[0]){
+//
+//            for(; itclient != clients.end(); itclient++) {
+//                std::string clName = itclient->getNick();
+//                trim_fun(clName);
+//                int i= 0;
+//                while(i < users.size()){
+//                    if(clName == users[i]){
+//                        fdcl = itclient->getFd();
+//                    std::cout << "fdClient :" << fdcl;
+//                    }
+//                    i++;
+//                }
+//                if(fdcl == -1){
+//                    msg = "-> :localhost 401 " + users[i] + " : No such nick/channel\r\n";
+//                    send(client_fd,msg.c_str(),msg.size(),0);
+//                }
+//                if(!this->isOperator(client_fd ,itChan)){
+//                    msg = ":localhost 482 " + itclient->getNick() + ":You're not channel operator\r\n";
+//                    send(client_fd, msg.c_str(),msg.size(), 0);
+//                }
+//                if(itChan->itIsInChannel(fdcl))
+//                    itChan->delete_client(fdcl, 'k');
+//                else{
+//                    msg = ":localhost 441 " + users[i]  + " :isn't on that channel\r\n";
+//                    send(client_fd, msg.c_str(),msg.size(), 0);
+//                    return;
+//                }
+//                    // error
+//
+//            }
+//
+//        }
+//
+//    }
+//    msg = ":localhost 401 " + cmd[0] + " : No such nick/channel\r\n";
+//    send(client_fd, msg.c_str(),msg.size(), 0);
+//    return;
+//
+//
+//
+//}
+
 void Commands::kick(std::string payload, int client_fd) {
 
     int fdcl = -1;
@@ -13,51 +69,49 @@ void Commands::kick(std::string payload, int client_fd) {
     std::vector<client>::iterator itclient = clients.begin();
     for (; itChan != channels.end(); itChan++) {
 
+        std::string name = itChan->getName();
+        trim_fun(name);
 
-
-        if(itChan->getName() == cmd[0]){
-
-            for(; itclient != clients.end(); itclient++) {
-                int i= 0;
-                while(i < users.size()){
-                    if(itclient->getNick() == users[i]){
-
+        if(name == cmd[0]){
+            std::string clName = itclient->getNick();
+            trim_fun(clName);
+            int i= 0;
+            while(i < users.size()){
+                for(; itclient != clients.end(); itclient++) {
+                    if(clName == users[i]){
                         fdcl = itclient->getFd();
-                    std::cout << "fdClient :" << fdcl;
+                        if(this->isOperator(client_fd ,itChan)){
+                            if(itChan->itIsInChannel(fdcl)){
+                                itChan->delete_client(fdcl, 'k');
+                                msg = users[i] + "is kicked\r\n";
+                                send(client_fd, msg.c_str(), msg.size(), 0);
+                            }
+                            msg = ":localhost 441 " + users[i]  + " :isn't on that channel\r\n";
+                            send(client_fd, msg.c_str(),msg.size(), 0);
+                            return;
+                        }
+                        msg = ":localhost 482 " + itclient->getNick() + ":You're not channel operator\r\n";
+                        send(client_fd, msg.c_str(),msg.size(), 0);
+                        return;
                     }
-                    i++;
+                        std::cout << "fdClient :" << fdcl;
+                    }
                 }
-                std::cout << "fdClient :" << fdcl << std::endl;
-
-                if(fdcl == -1){
-                    msg = "-> :localhost 401 " + users[i] + " : No such nick/channel\r\n";
-                    send(client_fd,msg.c_str(),msg.size(),0);
-                }
-                if(!this->isOperator(client_fd ,itChan)){
-                    msg = ":localhost 482 " + itclient->getNick() + ":You're not channel operator\r\n";
-                    send(client_fd, msg.c_str(),msg.size(), 0);
-                }
-                if(itChan->itIsInChannel(fdcl))
-                    itChan->delete_client(fdcl, 'k');
-                else{
-                    msg = ":localhost 441 " + users[i]  + " :isn't on that channel\r\n";
-                    send(client_fd, msg.c_str(),msg.size(), 0);
-                    return;
-                }
-                    // error
-
+                i++;
             }
-
+        msg = "-> :localhost 401 " + users[0] + " : No such nick/channel\r\n";
+        send(client_fd,msg.c_str(),msg.size(),0);
         }
-
     }
-    msg = ":localhost 401 " + cmd[0] + " : No such nick/channel\r\n";
-    send(client_fd, msg.c_str(),msg.size(), 0);
-    return;
 
 
 
-}
+
+
+
+
+
+
 
 std::string Commands::parse_kick_command(std::string &req) {
      std::string payload;
@@ -73,4 +127,11 @@ std::string Commands::parse_kick_command(std::string &req) {
      }
      std::cout << payload <<std::endl;
     return (payload);
+}
+
+
+
+void trim_fun(std::string &str) {
+    str = str.substr(str.find_first_not_of(" \t\f\v\n\r"));
+    str = str.substr(0, str.find_last_not_of(" \t\f\v\n\r") + 1);
 }

@@ -51,6 +51,7 @@ public:
 };
 std::vector<std::string> split(std::string line, char c);
 std::string joinByMe(std::vector<std::string> &vec, char c);
+void trim_fun(std::string &str);
 
 
 
