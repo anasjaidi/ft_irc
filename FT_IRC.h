@@ -20,4 +20,5 @@ typedef struct join_client_info {
     std::string user;
     struct sockaddr_in *info;
 }   t_join_client;
+void trim_fun(std::string &str);
 #endif //FT_IRC_FT_IRC_H

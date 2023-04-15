@@ -19,6 +19,7 @@ public:
     void render_channels();
     void delete_from_channel(int client_fd, std::string &channel_name);
     bool isOperator(int fdOperator, std::vector<channel>::iterator itch);
+//    bool isOperator(int fdOperator, std::vector<channel>::iterator itch);
 
 };
 

@@ -82,6 +82,8 @@ void channel_manager::render_channels() {
 
 
 void channel_manager::delete_from_channel(int client_fd, std::string &channel_name) {
+
+    std::string  msg;
     std::vector<channel>::iterator it = get_channel_by_name(channel_name);
 
     if (it == channels.end()) {
@@ -89,7 +91,13 @@ void channel_manager::delete_from_channel(int client_fd, std::string &channel_na
     }
     if(it->itIsInChannel(client_fd))
         it->delete_client(client_fd, 'k');
-    else
+    else {
+        std::string Name = it->getName();
+        trim_fun(Name);
+        msg = ":localhost 441 " + Name  + " :you are not on that channel\r\n";
+    }
+    send(client_fd, msg.c_str(),msg.size(), 0);
+    return;
         return;//Error is not a client in this channel
 
     ////
