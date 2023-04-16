@@ -84,7 +84,7 @@ void UPPER_STRING(std::string &str) {
 }
 
 std::string get_first_word(const std::string& str) {
-    size_t pos = str.find_first_of(" \r\n");
+    size_t pos = str.find_first_of(" \r\n\t\v\f\n");
     if (pos == std::string::npos) {
         return str;
     } else {
@@ -94,47 +94,57 @@ std::string get_first_word(const std::string& str) {
 
 std::string Commands::parse_pass_command(std::string &req) {
 
-    remove_whitespaces(req);
+   req = req.substr(4);
 
-    int start = req.find_first_of(" \r\n");
+    trim_fun(req);
 
+    if (req.empty()) {
+        // error case
+    }
 
-    if (start == std::string::npos) return std::string("Error: parse password command.");
-
-
-    std::string password = req.substr(start, req.length());
-
-    return password;
+    return std::string(req);
 }
 
 std::string Commands::parse_nick_command(std::string &req) {
-    remove_whitespaces(req);
+    req = req.substr(4);
 
-    int start = req.find_first_of(" \r\n");
+    trim_fun(req);
 
+    if (req.empty()) {
+        // error case
+    }
 
-    if (start == std::string::npos) return std::string("Error: parse password command.");
-
-
-    std::string nick = req.substr(start, req.length());
-
-    return nick;
+    return std::string(req);
 }
 
 std::string Commands::parse_user_command(std::string &req) {
-    std::istringstream iss(req);
+
+    req = req.substr(4);
+
+    std::vector<std::string> parts = split(req, ':');
+
+    if (parts.size() < 2) {
+        // error case
+    }
+
+    std::istringstream iss(parts[0]);
 
     std::string word;
+
+    std::string real_name = std::string(":") + parts[1];
 
     std::vector<std::string> words;
 
     while (iss >> word) {
+        trim_fun(word);
         words.push_back(word);
     }
 
-    if (words.size() < 5) return std::string("Error: NICK parse Error.");
+    if (words.size() != 3 || words[1] != "*" || words[2] != "0") {
+        // error case
+    }
 
-    return words[1];
+    return words[0];
 }
 
 
