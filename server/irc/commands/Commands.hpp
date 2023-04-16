@@ -21,6 +21,7 @@ public:
     void mode(std::string,int, t_join_client infos);
     void kick(std::string, int);
     void invite(std::string,int);
+    void bot(std::string, int client_fd);
 
     enum OptionCommands  {
         PASS, // valide
@@ -48,6 +49,7 @@ public:
     std::string parse_part_command(std::string &);
     std::string parse_kick_command(std::string &);
     std::string parse_invite_command(std::string &);
+    std::string parse_bot_command(std::string &req);
 };
 std::vector<std::string> split(std::string line, char c);
 std::string joinByMe(std::vector<std::string> &vec, char c);
