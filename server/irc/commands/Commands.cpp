@@ -163,6 +163,9 @@ std::pair<Commands::OptionCommands, std::string> Commands::get_command(std::stri
     } else if(cmd == "JOIN") {
         payload = parse_join_command(request);
         action = OptionCommands::JOIN;
+    } else if (cmd == "BOT") {
+        payload = parse_bot_command(request);
+        action = OptionCommands::BOT;
     } else if (cmd == "INVITE") {
         payload = parse_invite_command(request);
         action = OptionCommands::INVITE;
@@ -197,29 +200,31 @@ std::vector<std::string> split(std::string line, char c)
 std::string Commands::parse_part_command(std::string &req)
 {
     channel_manager manage;
-    std::string payload;
     std::vector<std::string> cmd = split(req,' ');
-    std::vector<std::string> chanls = split(cmd[1], ',');
+    std::string nameChannel = cmd[1];
+    trim_fun(nameChannel);
     if (cmd.size() != 2) {
-        return "Error";
+        return "Not enough parameters"; // rpl = ":localhost 441 " + clientname  + " : Not enough parameters"
     }
-    for (int i = 0; i < chanls.size(); i++) {
-
-         if(chanls[i][0] != '#'){
-             return "Error";
-        }
+    if(nameChannel[0] != '#') {
+        return "No such nick/channel"; // rpl = ":localhost 401 " + nameChannel + " : No such nick/channel\r\n"
     }
-    payload = joinByMe(chanls, '*');
-    return (payload);
+    return (nameChannel);
 }
 
 void Commands::part(std::string payload, int client_fd) {
-    if (payload == "Error"){
-
-        //case error
-    }else {
-
+    std::string msg;
+    if (payload == "Not enough parameters") {
+        msg = ":localhost 441 : Not enough parameters";
+        send(client_fd, msg.c_str(), msg.size(), 0);
+        return;
     }
+    else if(payload == "No such nick/channel"){
+        msg = ":localhost 401 : No such nick/channel\r\n";
+        send(client_fd, msg.c_str(), msg.size(), 0);
+        return;
+    } else
+        delete_from_channel(client_fd, payload);
 }
 
 std::string Commands::parse_join_command(std::string &req)

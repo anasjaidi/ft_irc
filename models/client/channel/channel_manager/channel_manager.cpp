@@ -45,7 +45,9 @@ std::vector<channel>::iterator channel_manager::get_channel_by_name(std::string 
     std::vector<channel>::iterator  it = channels.begin();
 
     for (; it != channels.end(); it++) {
-        if (it->getName() == name) {
+        std::string nameChannel = it->getName();
+        trim_fun(nameChannel);
+        if (nameChannel == name) {
             return it;
         }
     }
@@ -82,17 +84,26 @@ void channel_manager::render_channels() {
 
 
 void channel_manager::delete_from_channel(int client_fd, std::string &channel_name) {
+
+    std::string  msg;
     std::vector<channel>::iterator it = get_channel_by_name(channel_name);
 
     if (it == channels.end()) {
+        msg = ":localhost 401 "+  channel_name +" : No such nick/channel\r\n";
+        send(client_fd, msg.c_str(), msg.size(), 0);
+        return;
         return;// error case channel not exist
     }
     if(it->itIsInChannel(client_fd))
+        // TODO: check bane
         it->delete_client(client_fd, 'k');
-    else
-        return;//Error is not a client in this channel
-
-    ////
+    else {
+        std::string Nick = it->getName();
+        trim_fun(Nick);
+        msg = ":localhost 441 " + Nick  + " :you are not on that channel\r\n";
+        send(client_fd, msg.c_str(),msg.size(), 0);
+        return;
+    }
 }
 
 bool channel_manager::isOperator(int fdOperator, std::vector<channel>::iterator itch) {

@@ -3,6 +3,7 @@
 //
 
 #include "channel.hpp"
+# include "../../../FT_IRC.h"
 
 const std::string &channel::getName() const {
     return name;
@@ -102,30 +103,31 @@ void channel::delete_client(int client_fd, char z) {
     t_join_client infos;
     std::string msg;
     std::vector<int>::iterator mumber = this->members.begin();
-    for (; mumber != this->members.end(); mumber++) {
-        if (*mumber == this->members[client_fd])
-            this->members.erase(mumber);
+    for (int i = 0; i < this->members.size(); i++){
+        if(this->members[i] == client_fd)
+            this->members.erase(this->members.begin() + i);
     }
     std::vector<int>::iterator operate = this->operators.begin();
-    for (; operate != this->operators.end(); operate++) {
-        if (*operate == this->operators[client_fd])
-            this->operators.erase(operate);
+    for (int i = 0; i < this->operators.size(); i++) {
+        if (this->operators[i] == client_fd)
+            this->operators.erase(this->operators.begin() + i);
     }
     std::vector<int>::iterator allFds = this->fdsChannel.begin();
-    for (; allFds != this->fdsChannel.end(); allFds++) {
-        if (*allFds == this->fdsChannel[client_fd])
-            this->fdsChannel.erase(allFds);
+    for (int i = 0; i < this->fdsChannel.size(); i++) {
+        if (this->fdsChannel[i] == client_fd)
+            this->fdsChannel.erase(this->fdsChannel.begin() + i);
     }
     if (z == 'k') {
         /// send message for one;
         msg = ":" + clientInformationsForChannel(infos) + " PART " + this->name + "\r\n";
         send(client_fd, msg.c_str(), msg.size(), 0);
-        ///// here i send message to all mumbers is this dude kicked in the roome
-        msg.clear();
-        msg = clientInformationsForChannel(infos) + " PART " + this->name + "\\r\n";
-        allFds = this->fdsChannel.begin();
-        for (; allFds != this->fdsChannel.end(); allFds++) {
-            send(*allFds, msg.c_str(), msg.size(), 0);
+    ///// here i send message to all mumbers is this dude kicked in the roome
+    msg.clear();
+    msg = clientInformationsForChannel(infos) + " PART " + this->name + "\r\n";
+    allFds = this->fdsChannel.begin();
+        for(; allFds != this->fdsChannel.end(); allFds++)
+        {
+            send(*allFds, msg.c_str(),msg.size(), 0);
         }
     }
     if (z == 'b') {
@@ -142,8 +144,9 @@ void channel::delete_client(int client_fd, char z) {
 
 bool channel::itIsInChannel(int client_fd) {
     std::vector<int>::iterator it = this->fdsChannel.begin();
-    for (; it != this->fdsChannel.end(); it++) {
-        if (this->fdsChannel[client_fd] == client_fd)
+
+    for(; it != this->fdsChannel.end(); it++) {
+        if(*it == client_fd)
             return true;
     }
     return false;
