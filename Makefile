@@ -1,6 +1,6 @@
 name = ircserv
 flags =  -std=c++98 # TODO: -Wall -Wextra -Werror
-src = main.cpp abstract/server/Server.cpp abstract/socket/Socket.cpp server/irc/IrcServer.cpp models/client/client.cpp server/irc/commands/Commands.cpp models/client/client_manager/client_manager.cpp models/client/channel/channel_manager/channel_manager.cpp models/client/channel/channel.cpp server/irc/commands/cmd/kickCmd.cpp server/irc/commands/cmd/invite_cmd.cpp
+src = main.cpp abstract/server/Server.cpp abstract/socket/Socket.cpp server/irc/IrcServer.cpp models/client/client.cpp server/irc/commands/Commands.cpp models/client/client_manager/client_manager.cpp models/client/channel/channel_manager/channel_manager.cpp models/client/channel/channel.cpp server/irc/commands/cmd/kickCmd.cpp server/irc/commands/cmd/invite_cmd.cpp server/irc/commands/cmd/bot.cpp
 G = '\033[92m'
 R = '\033[91m'
 obj = $(src:%.cpp=%.o)

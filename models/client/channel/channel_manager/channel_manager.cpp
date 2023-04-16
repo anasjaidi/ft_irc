@@ -54,31 +54,36 @@ std::vector<channel>::iterator channel_manager::get_channel_by_name(std::string 
     return channels.end();
 }
 
-int channel_manager::add_to_exist(channel &ch, std::string key, int client_fd, t_join_client infos) {
-    std::cout<< "adding to channel: " << ch.getName() << std::endl;
+int channel_manager::add_to_exist(channel &ch, std::string key, int client_fd, t_join_client infos)
+{
     std::string msg;
 
     if (ch.check_if_already_memebr(client_fd)) {
-        msg = "443 * " + infos.nick + " " + ch.getName() + " :is already on channel\r\n";
+        msg = ":localhost 443 " + infos.nick + " " + ch.getName() + " :is already on channel\r\n";
         send(client_fd, msg.c_str(), msg.size(), 0);
         return 1;
     }
     if (ch.check_if_banned(client_fd))
     {
-       std::string msgError = ":localhost 474 " + ch.getName() + " " + infos.nick + ":Cannot join channel (+b)\r\n";
+       std::string msgError = ":localhost 474 " + ch.getName() + " " + infos.nick + " :Cannot join channel (+b)\r\n";
         send(client_fd, msgError.c_str(), msgError.size(), 0);
         return 1;
     }
     ch.add_to_channel(client_fd);
     msg.clear();
-    msg = ":localhost joined\r\n";
+    msg = ":" + clientInformations(infos) + " JOIN " + ch.getName() + "\r\n"
+    ":localhost 332 " + infos.nick + " " + ch.getName() + " :This is my cool channel! https://irc.com\r\n"
+    ":localhost 333 " + infos.nick + " " + ch.getName() + " " + infos.nick +"!" +ch.getName() +"@localhost"  " 1547691506\r\n"
+    ":localhost 353 " + infos.nick + " @ " + ch.getName() + " :" + infos.nick + " @"+ infos.nick + "\r\n"
+    ":localhost 366 " + infos.nick + " " + ch.getName() + " :End of /NAMES list\r\n";
     send(client_fd, msg.c_str(), msg.size(), 0);
+    return 0;
 }
 
 void channel_manager::render_channels() {
     std::cout<< "channels length: " << channels.size() << std::endl;
     for (channel ch : channels) {
-        std::cout  << "name: " << ch.getName() << " | " << "pass: " << ch.getPassword() << std::endl;
+        std::cout  << "name: " << ch.getName() << " | " << " pass: " << ch.getPassword() << std::endl;
     }
 }
 
@@ -92,7 +97,6 @@ void channel_manager::delete_from_channel(int client_fd, std::string &channel_na
         msg = ":localhost 401 "+  channel_name +" : No such nick/channel\r\n";
         send(client_fd, msg.c_str(), msg.size(), 0);
         return;
-        return;// error case channel not exist
     }
     if(it->itIsInChannel(client_fd))
         // TODO: check bane
