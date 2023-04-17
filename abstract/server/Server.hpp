@@ -44,7 +44,7 @@ public:
     virtual void accept_incoming_requests() throw() override;
 
     virtual std::pair<struct sockaddr_storage, int> accept_and_add_new_client() throw(SeverErrors);
-    virtual int remove_client(int i);
+    virtual int remove_client_from_server(int i);
 
     virtual int handle(std::string , int) throw(SeverErrors) = 0;
     virtual int signup(std::pair<struct sockaddr_storage, int> &) = 0 ;

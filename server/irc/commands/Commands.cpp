@@ -7,10 +7,10 @@
 
 # define log(x) std::cout<< x << std::endl;
 
-std::string joinByMe(std::vector<std::string> &vec, char c)
-{
+std::string joinByMe(std::vector<std::string> &vec, char c) {
     std::string result = "";
     for (int i = 0; i < vec.size(); i++) {
+        trim_fun(vec[i]);
         result += vec[i];
         if (i != vec.size() - 1) {
             result += c;
@@ -19,57 +19,76 @@ std::string joinByMe(std::vector<std::string> &vec, char c)
     return result;
 }
 
-void Commands::nick(std::string payload, int new_client_fd) {
+int Commands::nick(std::string payload, int new_client_fd) {
+
     const int ID = update_client_info(update_action::UpdateNick, payload, new_client_fd);
-    payload = payload.substr(payload.find_first_not_of(" \t\r\n\v\f"));
-    payload = payload.substr(0, payload.find_first_not_of(" \t\r\n\v\f") + 1);
+
+    trim_fun(payload);
+
     if (ID == -1) {
         std::cerr << "User Not Found: Internal Server Error." << std::endl;
-        close(new_client_fd);
+        return 1;
     } else {
         std::cout << "User Nº " << ID << ": update hes nickname." << std::endl;
     }
+    return 0;
 }
-void Commands::user(std::string payload, int new_client_fd) {
+
+int Commands::user(std::string payload, int new_client_fd) {
+
+    std::vector<client>::iterator it = get_client(new_client_fd);
+
+    if (it == clients.end() || it->getNick().empty()) {
+        return 1;
+    }
     const int ID = update_client_info(update_action::UpdateUserName, payload, new_client_fd);
 
     if (ID == -1) {
         std::cerr << "User Not Found: Internal Server Error." << std::endl;
-        close(new_client_fd);
+        return 1;
     } else {
         std::cout << "User Nº " << ID << ": update hes username." << std::endl;
         std::vector<client>::iterator updated_client = get_client(new_client_fd);
 
         if (updated_client == clients.end()) {
             std::cerr << "Error." << std::endl;
+            return 1;
         } else {
-            std::cout << "user: " << updated_client->getUser() << "\n" << "nick: " << updated_client->getNick() << std::endl;
+            std::cout << "user: " << updated_client->getUser() << "\n" << "nick: " << updated_client->getNick()
+                      << std::endl;
         }
 
 
     }
+    return 0;
 }
 
 
+int Commands::pass(std::string pass, int new_client_fd, std::string server_pass) {
 
-void Commands::pass(std::string pass, int new_client_fd, std::string server_pass) {
-
-    log(pass);
-    log(server_pass);
     if (pass != server_pass) {
-        int  ID = remove_client(new_client_fd);
+        int ID = remove_client(new_client_fd);
 
         if (ID != -1) {
-            std::cout << "client Nº " <<  ID << " removed: " \
-        << "server password error, " << "password mismatched" << std::endl;
+            std::cout << "client Nº " << ID << " removed: " << "server password error, " << "password mismatched" << std::endl;
+            return 1;
         } else {
             std::cerr << "User Not Found: Internal Server Error" << std::endl;
             close(new_client_fd);
+            remove_client(new_client_fd);
+            return 1;
         }
     } else {
         int ID = get_client_id(new_client_fd);
+        std::vector<client>::iterator it = get_client(new_client_fd);
+        if (it == clients.end()) {
+            std::cout << "password error client not found." << std::endl;
+            return 1;
+        }
+        it->setIsAuth(true);
         std::cout << "client Nº " << ID << " authenticated with password." << std::endl;
     }
+    return 0;
 }
 
 void remove_whitespaces(std::string &str) {
@@ -83,8 +102,8 @@ void UPPER_STRING(std::string &str) {
     }
 }
 
-std::string get_first_word(const std::string& str) {
-    size_t pos = str.find_first_of(" \r\n");
+std::string get_first_word(const std::string &str) {
+    size_t pos = str.find_first_of(" \r\n\t\v\f\n");
     if (pos == std::string::npos) {
         return str;
     } else {
@@ -94,49 +113,67 @@ std::string get_first_word(const std::string& str) {
 
 std::string Commands::parse_pass_command(std::string &req) {
 
-    remove_whitespaces(req);
+    if (req.length() < 5) {
+        std::string("%%{ERROR}%%");
+    }
 
-    int start = req.find_first_of(" \r\n");
+    req = req.substr(4);
+    trim_fun(req);
 
+    if (req.empty()) {
+        return std::string("%%{ERROR}%%");
+    }
 
-    if (start == std::string::npos) return std::string("Error: parse password command.");
-
-
-    std::string password = req.substr(start, req.length());
-
-    return password;
+    return std::string(req);
 }
 
 std::string Commands::parse_nick_command(std::string &req) {
-    remove_whitespaces(req);
+    req = req.substr(4);
 
-    int start = req.find_first_of(" \r\n");
+    trim_fun(req);
 
+    std::vector<std::string> parts = split(req, ' ');
 
-    if (start == std::string::npos) return std::string("Error: parse password command.");
+    if (parts.size() != 1) {
+        return std::string("%%{ERROR}%%");
+    }
 
+    if (req.empty()) {
+        return std::string("%%{ERROR}%%");
+    }
 
-    std::string nick = req.substr(start, req.length());
-
-    return nick;
+    return std::string(req);
 }
 
 std::string Commands::parse_user_command(std::string &req) {
-    std::istringstream iss(req);
+
+    req = req.substr(4);
+
+    std::vector<std::string> parts = split(req, ':');
+
+    if (parts.size() < 2) {
+        return std::string("%%{ERROR}%%");
+    }
+
+    std::istringstream iss(parts[0]);
 
     std::string word;
+
+    std::string real_name = std::string(":") + parts[1];
 
     std::vector<std::string> words;
 
     while (iss >> word) {
+        trim_fun(word);
         words.push_back(word);
     }
 
-    if (words.size() < 5) return std::string("Error: NICK parse Error.");
+    if (words.size() != 3 || words[1] != "*" || words[2] != "0") {
+        return std::string("%%{ERROR}%%");
+    }
 
-    return words[1];
+    return words[0];
 }
-
 
 
 std::pair<Commands::OptionCommands, std::string> Commands::get_command(std::string &request) {
@@ -153,6 +190,7 @@ std::pair<Commands::OptionCommands, std::string> Commands::get_command(std::stri
     if (cmd == "PASS") {
         payload = parse_pass_command(request);
 
+
         action = OptionCommands::PASS;
     } else if (cmd == "NICK") {
         payload = parse_nick_command(request);
@@ -160,7 +198,7 @@ std::pair<Commands::OptionCommands, std::string> Commands::get_command(std::stri
     } else if (cmd == "USER") {
         payload = parse_user_command(request);
         action = OptionCommands::USER;
-    } else if(cmd == "JOIN") {
+    } else if (cmd == "JOIN") {
         payload = parse_join_command(request);
         action = OptionCommands::JOIN;
     } else if (cmd == "BOT") {
@@ -172,12 +210,15 @@ std::pair<Commands::OptionCommands, std::string> Commands::get_command(std::stri
     } else if (cmd == "PART") {
         payload = parse_part_command(request);
         action = OptionCommands::PART;
-    } else if (cmd == "KICK"){
+    } else if (cmd == "KICK") {
         payload = parse_kick_command(request);
         action = OptionCommands::KICK;
-    }else if (cmd == "MODE") {
+    } else if (cmd == "MODE") {
         payload = parse_mode_command(request);
         action = OptionCommands::MODE;
+    } else if (cmd == "PRIVMSG") {
+        payload = parse_privmsg_command(request);
+        action = OptionCommands::PRIVATE_MSG;
     } else {
         return std::make_pair(OptionCommands::UNDEFINED, std::string());
     }
@@ -186,8 +227,7 @@ std::pair<Commands::OptionCommands, std::string> Commands::get_command(std::stri
     return std::make_pair(action, payload);
 }
 
-std::vector<std::string> split(std::string line, char c)
-{
+std::vector<std::string> split(std::string line, char c) {
 
     std::vector<std::string> command;
     std::stringstream ss(line);
@@ -197,16 +237,15 @@ std::vector<std::string> split(std::string line, char c)
     return (command);
 }
 
-std::string Commands::parse_part_command(std::string &req)
-{
+std::string Commands::parse_part_command(std::string &req) {
     channel_manager manage;
-    std::vector<std::string> cmd = split(req,' ');
+    std::vector<std::string> cmd = split(req, ' ');
     std::string nameChannel = cmd[1];
     trim_fun(nameChannel);
     if (cmd.size() != 2) {
         return "Not enough parameters"; // rpl = ":localhost 441 " + clientname  + " : Not enough parameters"
     }
-    if(nameChannel[0] != '#') {
+    if (nameChannel[0] != '#') {
         return "No such nick/channel"; // rpl = ":localhost 401 " + nameChannel + " : No such nick/channel\r\n"
     }
     return (nameChannel);
@@ -218,8 +257,7 @@ void Commands::part(std::string payload, int client_fd) {
         msg = ":localhost 441 : Not enough parameters";
         send(client_fd, msg.c_str(), msg.size(), 0);
         return;
-    }
-    else if(payload == "No such nick/channel"){
+    } else if (payload == "No such nick/channel") {
         msg = ":localhost 401 : No such nick/channel\r\n";
         send(client_fd, msg.c_str(), msg.size(), 0);
         return;
@@ -227,25 +265,33 @@ void Commands::part(std::string payload, int client_fd) {
         delete_from_channel(client_fd, payload);
 }
 
-std::string Commands::parse_join_command(std::string &req)
-{
+std::string Commands::parse_join_command(std::string &req) {
     req.erase(0, 5);
-
+    trim_fun(req);
     std::vector<std::string> splited_command = split(req, ' ');
 
+    std::cout << "size of splitted: " << splited_command.size() << std::endl;
+
+    std::cout << "channels: " <<  "\"" <<splited_command[0] << "\"" << std::endl;
+    if (splited_command.size() == 2)
+        std::cout << "keys: " <<  "\"" <<splited_command[1] << "\"" << std::endl;
+
     if (splited_command.size() > 2 || !splited_command.size()) {
-        //  error case
+        return std::string("%%{ERROR}%%");
     }
 
+    trim_fun(splited_command[0]);
     std::vector<std::string> channels = split(splited_command[0], ',');
 
     std::vector<std::string> keys;
-    if (splited_command.size() == 2)
+    if (splited_command.size() == 2) {
+        trim_fun(splited_command[1]);
         keys = split(splited_command[1], ',');
+    }
 
-    for (std::string ch : channels) {
+    for (std::string ch: channels) {
         if (ch[0] != '#' && ch[0] != '&') {
-            // case error
+            return std::string("%%{ERROR}%%");
         }
     }
     return (
@@ -272,7 +318,7 @@ void Commands::join(std::string payload, int client_fd, t_join_client infos) {
                 if (it->getPassword() != "") {
                     std::string msgError = "475 * " + it->getName() + " :Cannot join channel (+k)\r\n";
                     send(client_fd, msgError.c_str(), msgError.size(), 0);
-                    return ;
+                    return;
                 }
 
                 add_to_exist(*it, "", client_fd, infos);
@@ -284,7 +330,7 @@ void Commands::join(std::string payload, int client_fd, t_join_client infos) {
                 if (it->getPassword() != keys[i]) {
                     std::string msgError = "464 * :Password incorrect \r\n";
                     send(client_fd, msgError.c_str(), msgError.size(), 0);
-                    return ;
+                    return;
                 }
                 add_to_exist(*it, "", client_fd, infos);
             } else {
@@ -309,26 +355,28 @@ std::vector<std::string> parse_and_get_modes(std::string &modes) {
     modes = modes.substr(0, modes.find_last_not_of(" \r\t\n") + 1);
 
 
-     //  +ispx
+    //  +ispx
 
     for (int i = 0; i < modes.length(); i++) {
         if (modes[i] && modes[i] == '-' && modes[i + 1] != modes[i]) {
 
-            while ( modes[i + 1] && availble_modes.find((modes[i + 1])) != -1) {
+            while (modes[i + 1] && availble_modes.find((modes[i + 1])) != -1) {
                 returned_modes.push_back(std::string("-") + modes.substr(i + 1, 1));
                 i++;
             }
-            if (availble_modes.find((modes[i + 1])) == -1 && modes[i + 1] != '-' && modes[i + 1] != '+'  && modes[i + 1] != '\0') {
+            if (availble_modes.find((modes[i + 1])) == -1 && modes[i + 1] != '-' && modes[i + 1] != '+' &&
+                modes[i + 1] != '\0') {
                 // error case
 
             }
 
         } else if (modes[i] && modes[i] == '+' && modes[i + 1] != modes[i]) {
-            while ( modes[i + 1] && availble_modes.find((modes[i + 1])) != -1) {
+            while (modes[i + 1] && availble_modes.find((modes[i + 1])) != -1) {
                 returned_modes.push_back(std::string("+") + modes.substr(i + 1, 1));
                 i++;
             }
-            if (availble_modes.find((modes[i + 1])) == -1 && modes[i + 1] != '-' && modes[i + 1] != '+' && modes[i + 1] != '\0' ) {
+            if (availble_modes.find((modes[i + 1])) == -1 && modes[i + 1] != '-' && modes[i + 1] != '+' &&
+                modes[i + 1] != '\0') {
                 // error case
 
             }
@@ -364,7 +412,7 @@ std::string Commands::parse_mode_command(std::string &req) {
 
     return (
             target + std::string("|") + joinByMe(modes, '*') + std::string("|") + (
-                parts.size() == 3 ? args : ""
+                    parts.size() == 3 ? args : ""
             )
     );
 }
@@ -374,7 +422,7 @@ void Commands::mode(std::string payload, int client_fd, t_join_client infos) {
     if (parts.size() < 2) {
         // case error
         std::cout << "parse error" << std::endl;
-        return ;
+        return;
     }
     std::string channel_name = parts[0];
     std::vector<std::string> modes = split(parts[1], '*');
@@ -390,7 +438,7 @@ void Commands::mode(std::string payload, int client_fd, t_join_client infos) {
     if (it == channels.end()) {
         // case error
         std::cout << "channel not found" << std::endl;
-        return ;
+        return;
     }
     int new_client_fd;
 
@@ -401,26 +449,26 @@ void Commands::mode(std::string payload, int client_fd, t_join_client infos) {
             case 'i':
                 if (modes[i][0] == '+') targeted_channel.privacy_mode_handler(1);
                 else targeted_channel.privacy_mode_handler(0);
-            break;
+                break;
             case 'm':
                 if (modes[i][0] == '+') targeted_channel.message_blocking_mode_handler(1);
                 else targeted_channel.message_blocking_mode_handler(0);
-            break;
+                break;
             case 'p':
                 if (modes[i][0] == '+') targeted_channel.channel_visibility_mode_handler(1);
                 else targeted_channel.channel_visibility_mode_handler(0);
-            break;
+                break;
             case 's':
                 if (modes[i][0] == '+') targeted_channel.channel_visibility_mode_handler(1);
                 else targeted_channel.channel_visibility_mode_handler(0);
-            break;
+                break;
             case 't':
                 if (modes[i][0] == '+') targeted_channel.channel_topic_mode_handler(1);
                 else targeted_channel.channel_topic_mode_handler(0);
-            break;
+                break;
             case 'b':
                 new_client_fd = get_client_id_by_nick(args);
-                if (new_client_fd == -1) {
+                if (new_client_fd != -1) {
                     // error case
                     std::cout << "nick  exists." << std::endl;
                 } else {
@@ -429,9 +477,10 @@ void Commands::mode(std::string payload, int client_fd, t_join_client infos) {
                 }
                 if (modes[i][0] == '+') targeted_channel.ban_mode_handler(1, client_fd);
                 else targeted_channel.ban_mode_handler(0, client_fd);
-            break;
+                break;
             case 'o':
-                std::cout << clients.size()  << " | " << clients[0].getNick()  << (clients[0].getNick() == args) << std::endl;
+                std::cout << clients.size() << " | " << clients[0].getNick() << (clients[0].getNick() == args)
+                          << std::endl;
                 std::cout << "inside operator mode" << std::endl;
                 new_client_fd = get_client_id_by_nick(args);
                 if (new_client_fd == -1) {
@@ -441,7 +490,7 @@ void Commands::mode(std::string payload, int client_fd, t_join_client infos) {
                 }
                 if (modes[i][0] == '+') targeted_channel.operator_mode_handler(1, client_fd);
                 else targeted_channel.operator_mode_handler(0, client_fd);
-            break;
+                break;
             case 'v':
                 new_client_fd = get_client_id_by_nick(args);
                 if (new_client_fd == -1) {
@@ -451,19 +500,86 @@ void Commands::mode(std::string payload, int client_fd, t_join_client infos) {
                 }
                 if (modes[i][0] == '+') targeted_channel.operator_friend_mode_handler(1, client_fd);
                 else targeted_channel.operator_friend_mode_handler(0, client_fd);
-            break;
+                break;
             case 'k':
 
                 if (modes[i][0] == '+') targeted_channel.pass_mode_handler(1, args);
                 else targeted_channel.pass_mode_handler(0, args);
-            break;
+                break;
             case 'l':
 
                 if (modes[i][0] == '+') targeted_channel.limit_mode_handler(1, std::stoi(args));
                 else targeted_channel.limit_mode_handler(0, std::stoi(args));
-            break;
+                break;
         }
     }
 
-    
+
+}
+
+
+std::string Commands::parse_privmsg_command(std::string &req) {
+    std::string payload;
+
+    req = req.substr(7);
+    trim_fun(req);
+
+    int pos = req.find(' ');
+
+    if (pos == -1) {
+        std::cout << "no space\n";
+        return "%%{ERROR}%%";
+    }
+
+    std::string chs = req.substr(0, pos);
+
+    std::string message = req.substr(pos + 1, req.length());
+
+    if (message.empty()) {
+        std::cout << "empty message\n";
+        return "%%{ERROR}%%";
+    }
+
+    std::vector<std::string> targets = split(chs, ',');
+
+    std::cout << chs << std::endl;
+
+    if (targets.size() == 0) {
+        std::cout << "empty targets\n";
+        return "%%{ERROR}%%";
+    }
+     payload = joinByMe(targets, '*') + std::string("|") + message;
+
+    std::cout << payload << std::endl;
+
+    return payload;
+}
+
+
+void Commands::privmsg(std::string payload, int client_fd) {
+    std::vector<std::string> parts = split(payload, '|');
+
+    if (parts.size() != 2) {
+        return ;
+    }
+
+    std::vector<std::string> targets = split(parts[0], '*');
+
+    std::string message = parts[1];
+
+    for (int i = 0; i < targets.size(); ++i) {
+        if (targets[i][0] == '#' || targets[i][0] == '&') {
+            std::vector<channel>::iterator it = get_channel_by_name(targets[i]);
+            if (it != channels.end()) {
+                std::cout << "send to channel\n";
+                it->broadcast_message(message);
+            }
+        } else {
+            int it = get_client_id_by_nick(targets[i]);
+            if (it != -1) {
+                std::cout << "send to user\n";
+                send(it, message.c_str(), message.length(), 0);
+            }
+        }
+    }
 }

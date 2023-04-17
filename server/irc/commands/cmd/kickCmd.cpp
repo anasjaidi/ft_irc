@@ -119,6 +119,12 @@ std::string Commands::parse_kick_command(std::string &req) {
 
 
 void trim_fun(std::string &str) {
-    str = str.substr(str.find_first_not_of(" \t\f\v\n\r"));
-    str = str.substr(0, str.find_last_not_of(" \t\f\v\n\r") + 1);
+
+    int start = str.find_first_not_of(" \t\f\v\n\r");
+    int end = str.find_last_not_of(" \t\f\v\n\r");
+    if (start == std::string::npos || end == std::string::npos) {
+        str = std::string("");
+        return ;
+    }
+    str = str.substr(start, end + 1);
 }

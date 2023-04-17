@@ -260,11 +260,23 @@ int channel::operator_mode_handler(bool on, int client_fd) {
 }
 
 int channel::ban_mode_handler(bool on, int client_fd) {
+    std::cout << "client_fd : " << bans.size() << std::endl;
+
+    std::cout << "founded: " << ((bool)(std::find(bans.begin(), bans.end(), client_fd) == bans.end()));
     if (on) {
-        if (std::find(bans.begin(), bans.end(), client_fd) != bans.end()) return 1;
+        if (std::find(bans.begin(), bans.end(), client_fd) != bans.end()) {
+            std::cout << "yes founded\n";
+            return 1;
+        }
+        std::cout << "yes pushed\n";
         bans.push_back(client_fd);
+        std::cout << bans[0] << std::endl;
+        return 0;
     } else {
-        if (std::find(bans.begin(), bans.end(), client_fd) == bans.end()) return 1;
+        if (std::find(bans.begin(), bans.end(), client_fd) == bans.end()) {
+            std::cout << "yes not founded\n";
+            return 1;
+        }
         bans.erase(std::remove(bans.begin(), bans.end(), client_fd));
     }
     std::cout << "ban mode: " << (
@@ -272,4 +284,19 @@ int channel::ban_mode_handler(bool on, int client_fd) {
             "not exits" : "exists"
     ) << std::endl;
     return 0;
+}
+
+
+void channel::broadcast_message(std::string &msg) {
+    if (modes & MESSAGE_BLOCKING) {
+        for (int i = 0; i < this->operators.size(); ++i) {
+            send(operators[i] , msg.c_str(), msg.length(), 0);
+        }for (int i = 0; i < this->operator_friends.size(); ++i) {
+            send(operator_friends[i] , msg.c_str(), msg.length(), 0);
+        }
+    } else {
+        for (int i = 0; i < this->fdsChannel.size(); ++i) {
+            send(fdsChannel[i],  msg.c_str(), msg.length(), 0);
+        }
+    }
 }

@@ -28,7 +28,9 @@ void client::setNick(const std::string &nick) {
 
 client::client() {}
 
-client::client(int fd, const sockaddr_storage &theirAddr) : fd(fd), their_addr(theirAddr) {}
+client::client(int fd, const sockaddr_storage &theirAddr) : fd(fd), their_addr(theirAddr) {
+    this->isAuth = false;
+}
 
 int client::getFd() const {
     return fd;
@@ -44,4 +46,12 @@ const sockaddr_storage &client::getTheirAddr() const {
 
 void client::setTheirAddr(const sockaddr_storage &theirAddr) {
     their_addr = theirAddr;
+}
+
+bool client::isAuth1() const {
+    return isAuth;
+}
+
+void client::setIsAuth(bool isAuth) {
+    client::isAuth = isAuth;
 }

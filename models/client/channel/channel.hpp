@@ -68,7 +68,7 @@ public:
 
     bool adminChannel(int fd);
 
-
+    void broadcast_message(std::string &);
 
     /**
      * @mode i
