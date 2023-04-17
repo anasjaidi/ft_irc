@@ -248,9 +248,7 @@ std::string Commands::parse_join_command(std::string &req)
             return ("Not enough param");
         }
     }
-    return (
-            joinByMe(channels, '*') + std::string("|") + joinByMe(keys, '*')
-    );
+    return (joinByMe(channels, '*') + std::string("|") + joinByMe(keys, '*'));
 }
 
 void Commands::join(std::string payload, int client_fd, t_join_client infos) {
@@ -370,9 +368,7 @@ std::string Commands::parse_mode_command(std::string &req) {
 
     return (
             target + std::string("|") + joinByMe(modes, '*') + std::string("|") + (
-                parts.size() == 3 ? args : ""
-            )
-    );
+                parts.size() == 3 ? args : ""));
 }
 
 void Commands::mode(std::string payload, int client_fd, t_join_client infos) {
@@ -404,7 +400,6 @@ void Commands::mode(std::string payload, int client_fd, t_join_client infos) {
         std::string Errormsg = ":localhost 401 "+  channel_name +" : No such nick/channel\r\n";
         send(client_fd, Errormsg.c_str(), Errormsg.size(), 0);
         return;
-
     }
     int new_client_fd;
 
@@ -477,12 +472,10 @@ void Commands::mode(std::string payload, int client_fd, t_join_client infos) {
                 else targeted_channel.operator_friend_mode_handler(0, client_fd);
             break;
             case 'k':
-
                 if (modes[i][0] == '+') targeted_channel.pass_mode_handler(1, args);
                 else targeted_channel.pass_mode_handler(0, args);
             break;
             case 'l':
-
                 if (modes[i][0] == '+') targeted_channel.limit_mode_handler(1, std::stoi(args));
                 else targeted_channel.limit_mode_handler(0, std::stoi(args));
             break;

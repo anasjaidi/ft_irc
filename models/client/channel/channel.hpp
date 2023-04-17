@@ -61,6 +61,8 @@ public:
 
     void delete_client(int client_fd, char z);
 
+    void send_msg_to_all_members(int client_fd, std::string kicked, std::string channel);
+
     bool itIsInChannel(int client_fd);
     std::vector<int> operator_friends;
 

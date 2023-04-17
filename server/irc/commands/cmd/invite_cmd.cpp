@@ -9,10 +9,8 @@
 
 std::string Commands::parse_invite_command(std::string &req)
 {
-
     req.erase(0, 6);
 
-    std::cout << req << std::endl;
     std::string payload;
     std::vector<std::string> cmd = split(req, ' ');
     std::cout << cmd[0] << " | " << cmd[1] << std::endl;
@@ -26,7 +24,6 @@ std::string Commands::parse_invite_command(std::string &req)
 
 void Commands::invite(std::string payload, int client_fd)
 {
-    std::cout << "go in invite\n" << std::endl;
     std::string msg;
     if (payload == "enough")
     {
@@ -64,7 +61,7 @@ void Commands::invite(std::string payload, int client_fd)
             ch_it->AddToinvited(nick_name);
         }
         msg.clear();
-        msg = ":" + clients[client_fd].getNick() + " INVITE ========>" + desirlize[0] + " " + desirlize[1] + "\r\n";
+        msg = ":" + clients[client_fd].getNick() + " INVITE ========>" + desirlize[0] + " " + desirlize[1] + " :End of Channel Invite Exception List\r\n";
         send(client_fd, msg.c_str(), msg.size(), 0);
         return ;
     }

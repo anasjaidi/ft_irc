@@ -31,7 +31,7 @@ int channel_manager::create_channel(int client_fd, std::string ch,  t_join_clien
 
     }
     std::string msg = ":" + clientInformations(infos) + " JOIN " + ch + "\r\n"
-          + ":loclahost" + " MODE " + ch + " +nt\r\n"
+          + ":localhost" + " MODE " + ch + " +nt\r\n"
           + ":localhost" + " 353 " + infos.nick + " = " + ch + " :@" + infos.nick + "\r\n"
           + ":localhost" + " 366 " + infos.nick + " " +  ch + " :End of /NAMES list\r\n";
     send(client_fd, msg.c_str(), msg.size(), 0);
