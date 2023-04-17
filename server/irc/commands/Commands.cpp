@@ -277,7 +277,8 @@ std::string Commands::parse_join_command(std::string &req) {
         std::cout << "keys: " <<  "\"" <<splited_command[1] << "\"" << std::endl;
 
     if (splited_command.size() > 2 || !splited_command.size()) {
-        return std::string("%%{ERROR}%%");
+
+        return ("Not enough param");
     }
 
     trim_fun(splited_command[0]);
@@ -291,16 +292,20 @@ std::string Commands::parse_join_command(std::string &req) {
 
     for (std::string ch: channels) {
         if (ch[0] != '#' && ch[0] != '&') {
-            return std::string("%%{ERROR}%%");
+            return ("Not enough param");
         }
     }
-    return (
-            joinByMe(channels, '*') + std::string("|") + joinByMe(keys, '*')
-    );
+    return (joinByMe(channels, '*') + std::string("|") + joinByMe(keys, '*'));
 }
 
 void Commands::join(std::string payload, int client_fd, t_join_client infos) {
-
+    std::string msg;
+    if (payload == "Not enough param")
+    {
+        msg = ":localhost 461 JOIN :Not enough parameters\r\n";
+        send(client_fd, msg.c_str(),msg.size(),0);
+        return;
+    }
     std::vector<std::string> desr = split(payload, '|');
 
     std::vector<std::string> channels_names = split(desr[0], '*');
@@ -316,7 +321,7 @@ void Commands::join(std::string payload, int client_fd, t_join_client infos) {
         if (i >= keys.size()) {
             if (it != channels.end()) {
                 if (it->getPassword() != "") {
-                    std::string msgError = "475 * " + it->getName() + " :Cannot join channel (+k)\r\n";
+                    std::string msgError = ":localhost 475 " + it->getName() + " :Cannot join channel (+k)\r\n";
                     send(client_fd, msgError.c_str(), msgError.size(), 0);
                     return;
                 }
@@ -328,7 +333,7 @@ void Commands::join(std::string payload, int client_fd, t_join_client infos) {
         } else {
             if (it != channels.end()) {
                 if (it->getPassword() != keys[i]) {
-                    std::string msgError = "464 * :Password incorrect \r\n";
+                    std::string msgError = ":localhost 464 :Password incorrect \r\n";
                     send(client_fd, msgError.c_str(), msgError.size(), 0);
                     return;
                 }
@@ -395,7 +400,7 @@ std::string Commands::parse_mode_command(std::string &req) {
     std::vector<std::string> parts = split(req, ' ');
 
     if (parts.size() <= 2) {
-        // error case
+        return ("enough");
     }
 
     std::string target = parts[0];
@@ -418,10 +423,16 @@ std::string Commands::parse_mode_command(std::string &req) {
 }
 
 void Commands::mode(std::string payload, int client_fd, t_join_client infos) {
+    if (payload == "enough")
+    {
+        std::string msg = ":localhost 461 MODE :Not enough parameters\r\n";
+        send(client_fd, msg.c_str(),msg.size(),0);
+        return;
+    }
     std::vector<std::string> parts = split(payload, '|');
     if (parts.size() < 2) {
-        // case error
-        std::cout << "parse error" << std::endl;
+        std::string Errormsg = ":localhost 461 MODE :Not enough parameters\r\n";
+        send(client_fd, Errormsg.c_str(),Errormsg.size(),0);
         return;
     }
     std::string channel_name = parts[0];
@@ -436,8 +447,8 @@ void Commands::mode(std::string payload, int client_fd, t_join_client infos) {
     std::vector<channel>::iterator it = get_channel_by_name(channel_name);
 
     if (it == channels.end()) {
-        // case error
-        std::cout << "channel not found" << std::endl;
+        std::string Errormsg = ":localhost 401 "+  channel_name +" : No such nick/channel\r\n";
+        send(client_fd, Errormsg.c_str(), Errormsg.size(), 0);
         return;
     }
     int new_client_fd;
@@ -468,12 +479,14 @@ void Commands::mode(std::string payload, int client_fd, t_join_client infos) {
                 break;
             case 'b':
                 new_client_fd = get_client_id_by_nick(args);
-                if (new_client_fd != -1) {
-                    // error case
-                    std::cout << "nick  exists." << std::endl;
+                if (new_client_fd == -1) {
+                    std::string Errormsg = ":localhost 401 "+  channel_name +" : No such nick/channel\r\n";
+                    send(client_fd, Errormsg.c_str(), Errormsg.size(), 0);
+                    //// return here
                 } else {
-                    std::cout << "nick not exists." << std::endl;
-                    exit(0);
+                    std::string Errormsg = ":localhost 401 "+  channel_name +" : No such nick/channel\r\n";
+                    send(client_fd, Errormsg.c_str(), Errormsg.size(), 0);
+                    return;
                 }
                 if (modes[i][0] == '+') targeted_channel.ban_mode_handler(1, client_fd);
                 else targeted_channel.ban_mode_handler(0, client_fd);
@@ -484,9 +497,13 @@ void Commands::mode(std::string payload, int client_fd, t_join_client infos) {
                 std::cout << "inside operator mode" << std::endl;
                 new_client_fd = get_client_id_by_nick(args);
                 if (new_client_fd == -1) {
-                    std::cout << "nick  exists." << std::endl;
+                    std::string Errormsg = ":localhost 401 "+  channel_name +" : No such nick/channel\r\n";
+                    send(client_fd, Errormsg.c_str(), Errormsg.size(), 0);
+                    return;
                 } else {
-                    std::cout << "nick not exists." << std::endl;
+                    std::string Errormsg = ":localhost 401 "+  channel_name +" : No such nick/channel\r\n";
+                    send(client_fd, Errormsg.c_str(), Errormsg.size(), 0);
+                    /// return here
                 }
                 if (modes[i][0] == '+') targeted_channel.operator_mode_handler(1, client_fd);
                 else targeted_channel.operator_mode_handler(0, client_fd);
@@ -494,27 +511,27 @@ void Commands::mode(std::string payload, int client_fd, t_join_client infos) {
             case 'v':
                 new_client_fd = get_client_id_by_nick(args);
                 if (new_client_fd == -1) {
-                    std::cout << "nick  exists." << std::endl;
+                    std::string Errormsg = ":localhost 401 "+  channel_name +" : No such nick/channel\r\n";
+                    send(client_fd, Errormsg.c_str(), Errormsg.size(), 0);
+                    return;
                 } else {
-                    std::cout << "nick not exists." << std::endl;
+                    std::string Errormsg = ":localhost 401 "+  channel_name +" : No such nick/channel\r\n";
+                    send(client_fd, Errormsg.c_str(), Errormsg.size(), 0);
+                    /// return here
                 }
                 if (modes[i][0] == '+') targeted_channel.operator_friend_mode_handler(1, client_fd);
                 else targeted_channel.operator_friend_mode_handler(0, client_fd);
                 break;
             case 'k':
-
                 if (modes[i][0] == '+') targeted_channel.pass_mode_handler(1, args);
                 else targeted_channel.pass_mode_handler(0, args);
                 break;
             case 'l':
-
                 if (modes[i][0] == '+') targeted_channel.limit_mode_handler(1, std::stoi(args));
                 else targeted_channel.limit_mode_handler(0, std::stoi(args));
                 break;
         }
     }
-
-
 }
 
 

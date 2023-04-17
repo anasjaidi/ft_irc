@@ -47,8 +47,14 @@ void Commands::kick(std::string payload, int client_fd) {
                         if(this->isOperator(client_fd ,itChan)){
                             if(itChan->itIsInChannel(fdcl)){
                                 itChan->delete_client(fdcl, 'k');
-                                msg = cmd[1] + " is kicked\r\n";
-                                send(client_fd, msg.c_str(), msg.size(), 0);
+//                                msg = ":" + cmd[1] + " is  KICKED FROM " + cmd[0] + "\r\n";
+//                                send(client_fd, msg.c_str(), msg.size(), 0);
+                                //->
+                                /// here i send msg kiked to all mumbers in channel
+                                 itChan->send_msg_to_all_members(client_fd, cmd[1], cmd[0]);
+
+
+                                //->
                                 return;
                             }else
                                 msg = ":localhost 441 " + cmd[1]  + " :isn't on that channel\r\n";

@@ -142,6 +142,17 @@ void channel::delete_client(int client_fd, char z) {
 
 }
 
+void channel::send_msg_to_all_members( int client_fd, std::string kicked, std::string channel) {
+    std::string msg;
+    msg = ":" + kicked + " is  KICKED FROM " + channel + "\r\n";
+    std::vector<int>::iterator allFds = this->fdsChannel.begin();
+    allFds = this->fdsChannel.begin();
+        for (; allFds != this->fdsChannel.end(); allFds++) {
+            send(*allFds, msg.c_str(), msg.size(), 0);
+            }
+}
+
+
 bool channel::itIsInChannel(int client_fd) {
     std::vector<int>::iterator it = this->fdsChannel.begin();
 
