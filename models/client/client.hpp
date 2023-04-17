@@ -11,8 +11,14 @@ private:
     std::string user;
     std::string nick;
     int fd;
+
+    bool isAuth;
     struct sockaddr_storage their_addr;
+
 public:
+    bool isAuth1() const;
+
+    void setIsAuth(bool isAuth);
     int getFd() const;
 
     void setFd(int fd);

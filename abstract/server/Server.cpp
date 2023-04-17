@@ -80,7 +80,7 @@ void Server::accept_incoming_requests() throw() {
                     if (key <= 0) {
 
                         if (key < 0) throw SeverErrors(SeverErrors::ErrorCode::ReadError);
-                        remove_client(i);
+                        remove_client_from_server(pfds[i].fd);
                     }
                     handle(buff, pfds[i].fd);
                 }
@@ -108,7 +108,19 @@ std::pair<struct sockaddr_storage, int> Server::accept_and_add_new_client() thro
     return std::make_pair(their_addr, new_client_fd);
 }
 
-int Server::remove_client(int i) {
+int Server::remove_client_from_server(int fd) {
+    std::cout << "start remove client from server" << std::endl;
+    int i;
+
+    for (i = 0; i < pfds.size(); ++i) {
+        if (pfds[i].fd == fd)
+            break;
+    }
+
+    if (i == pfds.size()) {
+        // error case
+        return 1;
+    }
 
     std::cout << "user: " << i << " closes the connection\n";
 
