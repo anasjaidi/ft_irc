@@ -50,6 +50,7 @@ void Commands::kick(std::string payload, int client_fd) {
 //                                msg = ":" + cmd[1] + " is  KICKED FROM " + cmd[0] + "\r\n";
 //                                send(client_fd, msg.c_str(), msg.size(), 0);
                                 //->
+                                /// here i send msg kiked to all mumbers in channel
                                  itChan->send_msg_to_all_members(client_fd, cmd[1], cmd[0]);
 
 
