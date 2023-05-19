@@ -84,29 +84,3 @@ void Socket::listen_to_socket() throw(ServerErrors)
     else
         std::cout << "Listen Success " << status << std::endl;
 }
-
-std::pair<std::string, int> &Socket::read_from_socket_fd(int &fd) const throw(ServerErrors)
-{
-
-    char buff[1026];
-    std::pair<std::string, int> p;
-
-    const int bytes_size = recv(fd, buff, 1024, 0);
-    if (bytes_size < 0)
-    {
-        p.first = std::string();
-        p.second = -1;
-    }
-    else
-    {
-        p.first = std::string(buff, bytes_size);
-        p.second = bytes_size;
-    }
-    return p;
-}
-
-int Socket::write_to_socket_fd(std::string payload, int &fd) const throw(ServerErrors)
-{
-
-    return send(fd, payload.c_str(), payload.size(), 0);
-}

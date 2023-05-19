@@ -58,8 +58,6 @@ public:
 
     virtual void listen_to_socket() throw(ServerErrors);
 
-    virtual std::pair<std::string, int> &read_from_socket_fd(int &) const throw(ServerErrors);
-    int write_to_socket_fd(std::string, int &) const throw(ServerErrors);
     virtual void accept_incoming_requests() throw(ServerErrors) = 0;
 };
 

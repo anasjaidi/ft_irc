@@ -49,6 +49,18 @@ const char *ServerErrors::what() const throw()
     case ServerErrors::ListenError:
         error = "Listen Function Failed: ";
         break;
+    case ServerErrors::AcceptError :
+        error = "Accept Function Failed: ";
+        break;
+    case ServerErrors::ReadError:
+        error = "Read Function Failed: ";
+        break;
+    case ServerErrors::WriteError:
+        error = "Write Function Failed: ";
+        break;
+    case ServerErrors::UndefinedError:
+        error = "Undefined Failed: ";
+        break;
     default:
         return "Undefined Error!";
     }
