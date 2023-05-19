@@ -1,6 +1,0 @@
-cmake_minimum_required(VERSION 3.24)
-project(ft_irc)
-
-set(CMAKE_CXX_STANDARD 98)
-
-add_executable(ft_irc main.cpp FT_IRC.h abstract/server/Server.cpp abstract/server/Server.hpp abstract/socket/Socket.cpp abstract/socket/Socket.hpp server/irc/IrcServer.cpp server/irc/IrcServer.hpp models/client/client.cpp models/client/client.hpp server/irc/commands/Commands.cpp server/irc/commands/Commands.hpp models/client/client_manager/client_manager.cpp models/client/client_manager/client_manager.hpp models/client/channel/channel_manager/channel_manager.cpp models/client/channel/channel.cpp server/irc/commands/cmd/kickCmd.cpp server/irc/commands/cmd/invite_cmd.cpp server/irc/commands/cmd/bot.cpp)

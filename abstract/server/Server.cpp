@@ -55,7 +55,7 @@ const char *Server::SeverErrors::what() const throw() {
 
 Server::SeverErrors::SeverErrors(ErrorCode _errorCode) : errorCode(_errorCode) {}
 
-void Server::accept_incoming_requests() throw() {
+void Server::accept_incoming_requests() {
 
 
     char buff[1024];
@@ -71,18 +71,19 @@ void Server::accept_incoming_requests() throw() {
 
                 if (pfds[i].fd == socket_fd) {
                     std::pair<struct sockaddr_storage, int> r = accept_and_add_new_client();
-                    signup(r);
+                    // signup(r);
                 } else {
 
                     char buff[1024];
                     int key = recv(pfds[i].fd, buff, 1024, 0);
+                    
                     buff[key] = 0;
                     if (key <= 0) {
 
-                        if (key < 0) throw SeverErrors(SeverErrors::ErrorCode::ReadError);
+                        if (key < 0) throw SeverErrors(SeverErrors::ReadError);
                         remove_client_from_server(pfds[i].fd);
                     }
-                    handle(buff, pfds[i].fd);
+                    // handle(buff, pfds[i].fd);
                 }
             }
         }
@@ -100,7 +101,7 @@ std::pair<struct sockaddr_storage, int> Server::accept_and_add_new_client() thro
     const int new_client_fd = accept(socket_fd, (struct sockaddr *) &their_addr, &addr_size);
 
     if (new_client_fd < 0)
-        throw SeverErrors(SeverErrors::ErrorCode::AcceptError);
+        throw SeverErrors(SeverErrors::AcceptError);
 
 
     pfds.push_back((struct pollfd){.fd = new_client_fd, .events = POLLIN, .revents = 0});

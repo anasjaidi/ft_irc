@@ -35,7 +35,7 @@ public:
     Socket(int family, int socket_type, const char *service);
 
     /**
-     * start parametrised constructor
+     * start paramtrised constructor
     * @arg node, family, socket_type, port, flags
     *
     * @details
@@ -71,15 +71,15 @@ public:
         int errorCode;
     };
 
-    virtual void get_socket_fd() throw(SeverErrors);
+    virtual void get_socket_fd();
 
-    virtual void bind_socket_fd() throw(SeverErrors);
+    virtual void bind_socket_fd();
 
-    virtual void listen_to_socket() throw(SeverErrors);
+    virtual void listen_to_socket();
 
     virtual std::pair<std::string, int> &read_from_socket_fd(int &) const;
     int write_to_socket_fd(std::string, int &) const;
-    virtual void accept_incoming_requests() throw(SeverErrors) = 0;
+    virtual void accept_incoming_requests()  = 0;
 };
 
 

@@ -25,7 +25,7 @@ Socket::Socket(int family, int socket_type, const char *service)  : service(serv
     status = getaddrinfo(nullptr, service, &hints, &res);
 
     if (status < 0)
-        throw SeverErrors(SeverErrors::ErrorCode::AddrInfoError);
+        throw SeverErrors(SeverErrors::AddrInfoError);
     else
         std::cout << "GetAddrInfo Success " << status << std::endl;
 }
@@ -43,7 +43,7 @@ Socket::Socket(const char *node, int family, int socket_type, const char *servic
     status = getaddrinfo(node, service, &hints, &res);
 
     if (status < 0)
-        throw SeverErrors(SeverErrors::ErrorCode::AddrInfoError);
+        throw SeverErrors(SeverErrors::AddrInfoError);
     else
         std::cout << "GetAddrInfo Success " << status << std::endl;
 
@@ -97,7 +97,7 @@ void Socket::listen_to_socket() throw(SeverErrors) {
     int status = listen(this->socket_fd, 12);
 
     if (status < 0)
-        throw SeverErrors(SeverErrors::ErrorCode::ListenError);
+        throw SeverErrors(SeverErrors::ListenError);
     else
         std::cout <<  "Listen Success " << status << std::endl;
 }
