@@ -52,34 +52,15 @@ public:
      * */
      ~Socket();
 
-    class SeverErrors : public std::exception {
-    public:
-        enum ErrorCode {
-            AddrInfoError,
-            SocketFdError,
-            BindFdError,
-            ListenError,
-            ReadError,
-            WriteError,
-            UndefinedError
-        };
-        SeverErrors(ErrorCode _errorCode = UndefinedError);
+    virtual void get_socket_fd() throw(ServerErrors);
 
-        virtual const char * what() const throw();
+    virtual void bind_socket_fd() throw(ServerErrors);
 
-    protected:
-        int errorCode;
-    };
+    virtual void listen_to_socket() throw(ServerErrors);
 
-    virtual void get_socket_fd();
-
-    virtual void bind_socket_fd();
-
-    virtual void listen_to_socket();
-
-    virtual std::pair<std::string, int> &read_from_socket_fd(int &) const;
-    int write_to_socket_fd(std::string, int &) const;
-    virtual void accept_incoming_requests()  = 0;
+    virtual std::pair<std::string, int> &read_from_socket_fd(int &) const throw(ServerErrors);
+    int write_to_socket_fd(std::string, int &) const throw(ServerErrors);
+    virtual void accept_incoming_requests() throw(ServerErrors) = 0;
 };
 
 

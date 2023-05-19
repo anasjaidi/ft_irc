@@ -14,6 +14,26 @@
 #include <libc.h>
 #include <poll.h>
 #include <vector>
+class ServerErrors : public std::exception
+{
+public:
+  enum ErrorCode
+  {
+    AddrInfoError,
+    SocketFdError,
+    BindFdError,
+    ListenError,
+    AcceptError,
+    ReadError,
+    WriteError,
+    UndefinedError
+  };
+  ServerErrors(ErrorCode _errorCode = UndefinedError);
+  virtual const char *what() const throw();
+
+protected:
+  int errorCode;
+};
 
 typedef struct join_client_info
 {
