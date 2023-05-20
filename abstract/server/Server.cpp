@@ -71,7 +71,7 @@ const char *ServerErrors::what() const throw()
 
 ServerErrors::ServerErrors(ErrorCode _errorCode) : errorCode(_errorCode) {}
 
-void Server::accept_incoming_requests()
+void Server::accept_incoming_requests() throw(ServerErrors)
 {
 
     char buff[1024];

@@ -21,11 +21,11 @@ int main(int argc, char *argv[])
     //        Server *irc = new Server("www.google.com", AF_UNSPEC, SOCK_STREAM, "80" );
     Server *irc = new Server(AF_UNSPEC, SOCK_STREAM, argv[1]);
 
-    // irc->get_socket_fd();
+    irc->get_socket_fd();
 
-    // irc->bind_socket_fd();
+    irc->bind_socket_fd();
 
-    // irc->listen_to_socket();
+    irc->listen_to_socket();
 
     // irc->accept_incoming_requests();
   }

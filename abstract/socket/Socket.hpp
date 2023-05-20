@@ -14,6 +14,7 @@ protected:
     const std::string node; // ip
     const int sock_type; // udp, tcp
     const int family; // ipv4, ipv6
+    struct sockaddr_in;
     struct addrinfo hints;
     struct addrinfo *res;
     int socket_fd;
