@@ -52,14 +52,15 @@ IrcServer::SeverErrors::SeverErrors(ErrorCode _errorCode) : errorCode(_errorCode
 int IrcServer::handle(std::string req, int client_fd) throw() {
 
     trim_fun(req);
-    std::pair<OptionCommands, std::string> command = get_command(req);
+    std::vector<client>::iterator cl = this->get_client(client_fd);
+    std::cout << "==========>" << req << "<==========" << "\n";
+    std::pair<OptionCommands, std::string> command = get_command(req, client_fd);
 
-
-    if (command.first == OptionCommands::UNDEFINED) {
-        std::cerr << command.second << std::endl;
+    if (command.first == UNDEFINED) { 
+        std::cerr << command.second << std::endl; // TODO: UNDIFINED COMMAND ERROR
         return -1;
     }
-    std::vector<client>::iterator cl = this->get_client(client_fd);
+
 
     if (command.second == "%%{ERROR}%%") {
 
@@ -67,34 +68,35 @@ int IrcServer::handle(std::string req, int client_fd) throw() {
         remove_client(client_fd);
         return 1;
     }
+
     int remove = 0;
     std::vector<client>::iterator it = get_client(client_fd);
 
-    if (it == clients.end() && command.first != OptionCommands::PASS) {
+    if (it == clients.end() && command.first != PASS) {
         std::cerr << "internal server error" << std::endl; // client doesn't exist in server
         close(client_fd);
         remove_client_from_server(client_fd);
         return 1;
-    } else if (it != clients.end() && it->isAuth1() == false && command.first != OptionCommands::PASS) {
+    } else if (it != clients.end() && it->isAuth1() == false && command.first != PASS) {
         // user not authenticated
-        std::cout << "user not authenticated\n";
+        std::cout << "user not authenticated\n"; // TODO: CLIENT IS NOT AUTHENTICATED
         remove_client(client_fd);
         remove_client_from_server(client_fd);
         return 1;
-    } else if (it != clients.end() && (it->getNick().empty() || it->getUser().empty()) && command.first != OptionCommands::PASS && command.first != OptionCommands::NICK && command.first != OptionCommands::USER) {
-        remove_client(client_fd);
+    } else if (it != clients.end() && (it->getNick().empty() || it->getUser().empty()) && command.first != PASS && command.first != NICK && command.first != USER) {
+        remove_client(client_fd); // TODO: COMMAND WITHOUT INDETIFICATION
         remove_client_from_server(client_fd);
         return 1;
     }
 
     switch (command.first) {
-        case OptionCommands::PASS:
+        case PASS:
             remove = pass(command.second, client_fd, server_password);
             break;
-        case OptionCommands::NICK:
+        case NICK:
                 remove  = nick(command.second, client_fd);
             break;
-        case OptionCommands::USER:
+        case USER:
                 remove = user(command.second, client_fd);
             break;
 //        case OptionCommands::KICK:
@@ -106,29 +108,31 @@ int IrcServer::handle(std::string req, int client_fd) throw() {
 //        case OptionCommands::BOT:
 //            bot(command.second, client_fd);
 //            break;
-        case OptionCommands::MODE:
+        case MODE:
             mode(command.second, client_fd, (t_join_client){.nick=cl->getNick(), .user=cl->getUser(), .info=(struct sockaddr_in*)&cl->getTheirAddr()});
             break;
 //        case OptionCommands::INVITE:
 //            invite(command.second, client_fd);
 //            break;
-        case OptionCommands::PRIVATE_MSG:
+        case PRIVATE_MSG:
 //            struct sockaddr_storage addrInfos = cl->getTheirAddr();
                 privmsg(command.second, client_fd);
             break;
-        case OptionCommands::JOIN:
+        case JOIN:
             struct sockaddr_storage addrInfos = cl->getTheirAddr();
             join(command.second, client_fd, (t_join_client){.nick=cl->getNick(), .user=cl->getUser(), .info=(struct sockaddr_in*)&cl->getTheirAddr()});
             render_channels();
             break;
     }
+    std::cout << "remove: " << remove << std::endl;
     if (remove) {
         remove_client_from_server(client_fd);
         remove_client(client_fd);
     }
-    clients[0].getTheirAddr();
+    return 0;
 }
 
 int IrcServer::signup(std::pair<struct sockaddr_storage, int> &new_client) {
-    add_client(new_client.second, new_client.first);
+    return add_client(new_client.second, new_client.first);
+
 }

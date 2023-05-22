@@ -25,7 +25,7 @@ Socket::Socket(int family, int socket_type, const char *service)  : service(serv
     status = getaddrinfo(nullptr, service, &hints, &res);
 
     if (status < 0)
-        throw SeverErrors(SeverErrors::ErrorCode::AddrInfoError);
+        throw SeverErrors(SeverErrors::AddrInfoError);
     else
         std::cout << "GetAddrInfo Success " << status << std::endl;
 }
@@ -43,7 +43,7 @@ Socket::Socket(const char *node, int family, int socket_type, const char *servic
     status = getaddrinfo(node, service, &hints, &res);
 
     if (status < 0)
-        throw SeverErrors(SeverErrors::ErrorCode::AddrInfoError);
+        throw SeverErrors(SeverErrors::AddrInfoError);
     else
         std::cout << "GetAddrInfo Success " << status << std::endl;
 
@@ -67,6 +67,7 @@ const char *Socket::SeverErrors::what() const throw() {
         default:
             return "Undefined Error!";
     }
+    return "";
 }
 
 void Socket::get_socket_fd() throw(SeverErrors) {
@@ -97,30 +98,9 @@ void Socket::listen_to_socket() throw(SeverErrors) {
     int status = listen(this->socket_fd, 12);
 
     if (status < 0)
-        throw SeverErrors(SeverErrors::ErrorCode::ListenError);
+        throw SeverErrors(SeverErrors::ListenError);
     else
         std::cout <<  "Listen Success " << status << std::endl;
-}
-
-std::pair<std::string, int> &Socket::read_from_socket_fd(int &fd) const {
-
-    char buff[1026];
-    std::pair<std::string, int> p;
-
-    const int bytes_size = recv(fd, buff, 1024, 0);
-    if (bytes_size < 0) {
-        p.first = std::string();
-        p.second = -1;
-    } else {
-        p.first = std::string(buff, bytes_size);
-        p.second = bytes_size;
-    }
-    return p;
-}
-
-int Socket::write_to_socket_fd(std::string payload, int &fd) const {
-
-    return send(fd, payload.c_str(), payload.size(), 0);
 }
 
 Socket::SeverErrors::SeverErrors(ErrorCode _errorCode) : errorCode(_errorCode) {}

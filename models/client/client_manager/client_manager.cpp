@@ -29,11 +29,15 @@ int client_manager::get_client_id_by_nick(std::string &nick)  {
 }
 
 int client_manager::remove_client(int ID) {
+
     std::vector<client>::iterator to_remove = get_client(ID);
+
     int client_index = std::distance(clients.begin(), to_remove)  + 1;
 
     if (to_remove != clients.end()) {
+
         close(to_remove->getFd());
+
         clients.erase(to_remove);
 
         return client_index;
@@ -50,10 +54,10 @@ int client_manager::update_client_info(update_action action, std::string &payloa
     int client_index = std::distance(clients.begin(), to_update)  + 1;
 
     switch (action) {
-        case update_action::UpdateNick:
+        case UpdateNick:
             to_update->setNick(payload);
             break;
-        case update_action::UpdateUserName:
+        case UpdateUserName:
             to_update->setUser(payload);
             break;
     }
@@ -67,5 +71,6 @@ int client_manager::get_client_id(int fd) {
         return -1;
 
     int client_index = std::distance(clients.begin(), to_update)  + 1;
+
     return  client_index;
 }

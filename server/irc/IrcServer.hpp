@@ -49,8 +49,8 @@ public:
         int errorCode;
     };
 
-    int handle(std::string, int) throw() override;
-    int signup(std::pair<struct sockaddr_storage, int> &) override;
+    int handle(std::string, int) throw();
+    int signup(std::pair<struct sockaddr_storage, int> &);
 };
 
 
