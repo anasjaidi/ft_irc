@@ -54,7 +54,7 @@ int IrcServer::handle(std::string req, int client_fd) throw() {
     trim_fun(req);
     std::vector<client>::iterator cl = this->get_client(client_fd);
     std::cout << "==========>" << req << "<==========" << "\n";
-    std::pair<OptionCommands, std::string> command = get_command(req, client_fd);
+    std::pair<OptionCommands, std::string> command = get_command(req, client_fd, cl);
 
     if (command.first == UNDEFINED) { 
         std::cerr << command.second << std::endl; // TODO: UNDIFINED COMMAND ERROR
@@ -91,13 +91,13 @@ int IrcServer::handle(std::string req, int client_fd) throw() {
 
     switch (command.first) {
         case PASS:
-            remove = pass(command.second, client_fd, server_password);
+            remove = pass(command.second, client_fd, server_password, cl);
             break;
         case NICK:
-                remove  = nick(command.second, client_fd);
+                remove  = nick(command.second, client_fd, cl);
             break;
         case USER:
-                remove = user(command.second, client_fd);
+                remove = user(command.second, client_fd, cl);
             break;
 //        case OptionCommands::KICK:
 //            kick(command.second, client_fd);
@@ -116,11 +116,11 @@ int IrcServer::handle(std::string req, int client_fd) throw() {
 //            break;
         case PRIVATE_MSG:
 //            struct sockaddr_storage addrInfos = cl->getTheirAddr();
-                privmsg(command.second, client_fd);
+                privmsg(command.second, client_fd, cl);
             break;
         case JOIN:
             struct sockaddr_storage addrInfos = cl->getTheirAddr();
-            join(command.second, client_fd, (t_join_client){.nick=cl->getNick(), .user=cl->getUser(), .info=(struct sockaddr_in*)&cl->getTheirAddr()});
+            join(command.second, client_fd, (t_join_client){.nick=cl->getNick(), .user=cl->getUser(), .info=(struct sockaddr_in*)&cl->getTheirAddr()}, cl);
             render_channels();
             break;
     }

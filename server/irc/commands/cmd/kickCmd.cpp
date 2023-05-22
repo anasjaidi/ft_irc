@@ -3,7 +3,7 @@
 //
 #include "../Commands.hpp"
 
-void Commands::kick(std::string payload, int client_fd) {
+void Commands::kick(std::string payload, int client_fd, std::vector<client>::iterator theclient) {
 //payload = #ch|med
 //
     int fdcl;
@@ -84,7 +84,7 @@ void Commands::kick(std::string payload, int client_fd) {
 
 
 
-std::string Commands::parse_kick_command(std::string &req) {
+std::string Commands::parse_kick_command(std::string &req, std::vector<client>::iterator theclient) {
     bool Nk = false;
      std::string payload;
      std::vector<std::string> cmd = split(req, ' ');

@@ -48,11 +48,12 @@ public:
     std::string parse_join_command(std::string &req, int client_fd, std::vector<client>::iterator);
     std::string parse_mode_command(std::string &req, int client_fd, std::vector<client>::iterator);
     std::string parse_part_command(std::string &, int client_fd, std::vector<client>::iterator);
-    std::string parse_kick_command(std::string &, int client_fd, std::vector<client>::iterator);
-    std::string parse_invite_command(std::string &, int client_fd, std::vector<client>::iterator);
-    std::string parse_bot_command(std::string &req, int client_fd, std::vector<client>::iterator);
+    std::string parse_kick_command(std::string &req, std::vector<client>::iterator theclient);
+    std::string parse_invite_command(std::string &req, std::vector<client>::iterator theclient);
+    std::string parse_bot_command(std::string &req, std::vector<client>::iterator theclient);
     std::string parse_privmsg_command(std::string &req, int client_fd, std::vector<client>::iterator);
 };
+
 std::vector<std::string> split(std::string line, char c);
 std::string joinByMe(std::vector<std::string> &vec, char c);
 void trim_fun(std::string &str);

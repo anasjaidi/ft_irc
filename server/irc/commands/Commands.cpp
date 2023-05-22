@@ -242,12 +242,12 @@ std::pair<Commands::OptionCommands, std::string> Commands::get_command(std::stri
     }
     else if (cmd == "BOT")
     {
-        payload = parse_bot_command(request, client_fd, theclient);
+        payload = parse_bot_command(request,  theclient);
         action = BOT;
     }
     else if (cmd == "INVITE")
     {
-        payload = parse_invite_command(request, client_fd, theclient);
+        payload = parse_invite_command(request, theclient);
         action = INVITE;
     }
     else if (cmd == "PART")
@@ -257,7 +257,7 @@ std::pair<Commands::OptionCommands, std::string> Commands::get_command(std::stri
     }
     else if (cmd == "KICK")
     {
-        payload = parse_kick_command(request, client_fd, theclient);
+        payload = parse_kick_command(request,  theclient);
         action = KICK;
     }
     else if (cmd == "MODE")
