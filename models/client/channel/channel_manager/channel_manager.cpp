@@ -115,3 +115,6 @@ bool channel_manager::isOperator(int fdOperator, std::vector<channel>::iterator 
         return true;
     return false;
 }
+
+
+

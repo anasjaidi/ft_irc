@@ -671,6 +671,7 @@ void Commands::mode(std::string payload, int client_fd, t_join_client infos)
 std::string Commands::parse_privmsg_command(std::string &req, int client_fd, std::vector<client>::iterator theclient)
 {
     std::string payload;
+    std::string msg;
 
     req = req.substr(7);
     trim_fun(req);
@@ -679,6 +680,8 @@ std::string Commands::parse_privmsg_command(std::string &req, int client_fd, std
 
     if (pos == -1)
     {
+        msg = ":localhost 461 PRIVMSG :Not enough parameters\n\r";
+        send(client_fd,msg.c_str(), msg.size(), 0);
         std::cout << "no space\n";
         return "%%{ERROR}%%";
     }
@@ -689,6 +692,8 @@ std::string Commands::parse_privmsg_command(std::string &req, int client_fd, std
 
     if (message.empty())
     {
+        msg = ":localhost 461 PRIVMSG :Not enough parameters\n\r";
+        send(client_fd,msg.c_str(), msg.size(), 0);
         std::cout << "empty message\n";
         return "%%{ERROR}%%";
     }
@@ -699,6 +704,8 @@ std::string Commands::parse_privmsg_command(std::string &req, int client_fd, std
 
     if (targets.size() == 0)
     {
+         msg = ":localhost 461 PRIVMSG :Not enough parameters\n\r";
+        send(client_fd,msg.c_str(), msg.size(), 0);
         std::cout << "empty targets\n";
         return "%%{ERROR}%%";
     }
