@@ -72,6 +72,17 @@ int Commands::user(std::string payload, int new_client_fd, std::vector<client>::
             std::cout << "user: " << updated_client->getUser() << "\n"
                       << "nick: " << updated_client->getNick()
                       << std::endl;
+            ////////////// replay to limechat ////////////
+            char time_str[11];
+            std::time_t now = std::time(NULL);
+            std::tm *local_time = std::localtime(&now);
+
+            std::strftime(time_str, sizeof(time_str), "%d/%m/%Y", local_time);
+
+            std::string msg = ":irc.1337.ma 001 " + theclient->getNick() + " Welcome to internet chat relay \r\n"
+                            + ": 002 " + theclient->getNick() + " the host is: localhost, running version 1.0 \r\n"
+                            + ": 003 " + theclient->getNick() + " the server was created on " + std::string(time_str) + "\r\n";
+            send(new_client_fd, msg.c_str(), msg.size(), 0);
         }
     }
     return 0;
