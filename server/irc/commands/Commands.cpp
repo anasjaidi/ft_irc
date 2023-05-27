@@ -93,7 +93,7 @@ int Commands::pass(std::string pass, int new_client_fd, std::string server_pass,
 
     if (pass != server_pass)
     {
-        send(new_client_fd, "464 ERR_PASSWDMISMATCH:Password incorrect\n", std::strlen("464 ERR_PASSWDMISMATCH:Password incorrect\n"), 0);
+        send(new_client_fd, "464 ERR_PASSWDMISMATCH:Password incorrect\r\n", std::strlen("464 ERR_PASSWDMISMATCH:Password incorrect\r\n"), 0);
         return 0;
     }
     else

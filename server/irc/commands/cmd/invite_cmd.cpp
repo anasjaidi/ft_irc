@@ -63,7 +63,7 @@ void Commands::invite(std::string payload, int client_fd, std::vector<client>::i
             ch_it->AddToinvited(nick_name);
         }
         msg.clear();
-        msg = ":" + clients[client_fd].getNick() + " INVITE ========>" + desirlize[0] + " " + desirlize[1] + " :End of Channel Invite Exception List\r\n";
+        msg = ":" + clients[client_fd].getNick() + " INVITE ========> " + desirlize[0] + " " + desirlize[1] + " :End of Channel Invite Exception List\r\n";
         send(client_fd, msg.c_str(), msg.size(), 0);
         return ;
     }
