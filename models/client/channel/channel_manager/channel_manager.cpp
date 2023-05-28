@@ -73,9 +73,21 @@ int channel_manager::add_to_exist(channel &ch, std::string key, int client_fd, t
     msg.clear();
     msg = ":" + clientInformations(infos) + " JOIN " + ch.getName() + "\r\n"
     ":localhost 332 " + infos.nick + " " + ch.getName() + " :This is my cool channel! https://irc.com\r\n"
-    ":localhost 333 " + infos.nick + " " + ch.getName() + " " + infos.nick +"!" +ch.getName() +"@localhost"  " 1547691506\r\n"
-    ":localhost 353 " + infos.nick + " @ " + ch.getName() + " :" + infos.nick + " @"+ infos.nick + "\r\n"
-    ":localhost 366 " + infos.nick + " " + ch.getName() + " :End of /NAMES list\r\n";
+    ":localhost 333 " + infos.nick + " " + ch.getName() + " " + infos.nick +"!" +ch.getName() +"@localhost"  " 1547691506\r\n";
+                        /////////////// send list of user of the channel ///////////////////////////////
+    msg += ":localhost 366 " + infos.nick + " " + ch.getName() + " :End of /NAMES list\r\n";
+    msg += ":localhost 353 " + infos.nick + " #" + ch.getName() + " :";
+
+    std::vector<std::string>::iterator itAdmin = admins_nicks.begin();
+    std::vector<std::string>::iterator itUser = members_nicks.begin();
+    for(; itAdmin != admins_nicks.end(); itAdmin++){
+            msg += "@" + *itAdmin + " ";
+    }
+
+        for(; itUser != members_nicks.end(); itUser++){
+            msg += *itUser + " ";
+    }
+    msg += "\r\n";
     send(client_fd, msg.c_str(), msg.size(), 0);
     return 0;
 }
