@@ -14,7 +14,7 @@ protected:
     std::vector<channel> channels;
 public:
     int create_channel(int client_fd, std::string channel,  t_join_client infos, std::string key = std::string("@notfound@"));
-    int add_to_exist(channel &channel, std::string key,int client_fd, t_join_client infos, std::vector<std::string> nicks);
+    int add_to_exist(channel &channel, std::string key,int client_fd, t_join_client infos, std::vector<std::string> members_nicks, std::vector<std::string> admins_nicks);
     std::vector<channel>::iterator  get_channel_by_name(std::string &name);
     void render_channels();
     void delete_from_channel(int client_fd, std::string &channel_name);

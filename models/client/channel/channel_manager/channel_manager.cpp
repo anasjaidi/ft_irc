@@ -54,7 +54,7 @@ std::vector<channel>::iterator channel_manager::get_channel_by_name(std::string 
     return channels.end();
 }
 
-int channel_manager::add_to_exist(channel &ch, std::string key, int client_fd, t_join_client infos, std::vector<std::string> nicks)
+int channel_manager::add_to_exist(channel &ch, std::string key, int client_fd, t_join_client infos, std::vector<std::string> members_nicks, std::vector<std::string> admins_nicks)
 {
     std::string msg;
 

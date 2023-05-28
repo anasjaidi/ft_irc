@@ -30,6 +30,7 @@ private:
 public:
 
     const std::vector<int>& get_memebers_fds();
+    const std::vector<int>& get_admins_fds();
     const std::vector<int>& get_all_fds();
     const std::string &getName() const;
 

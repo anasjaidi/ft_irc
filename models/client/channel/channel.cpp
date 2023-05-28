@@ -9,6 +9,9 @@
 const std::vector<int>& channel::get_memebers_fds() {
     return this->members;
 }
+const std::vector<int>& channel::get_admins_fds() {
+    return this->operators;
+}
 const std::vector<int>& channel::get_all_fds() {
     return this->fdsChannel;
 }
