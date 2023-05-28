@@ -795,7 +795,7 @@ void Commands::privmsg(std::string payload, int client_fd, std::vector<client>::
             if (it != channels.end())
             {
                 std::cout << "send to channel\n";
-                msg = ":" + get_client_Nick_by_Id(client) + " localhost" + " PRIVMSG " + targets[i] + " :" + message + "\r\n";
+                msg = ":" + get_client_Nick_by_Id(client_fd) + " localhost" + " PRIVMSG " + targets[i] + " :" + message + "\r\n";
                 it->broadcast_message(msg);
             }
         }
@@ -805,7 +805,7 @@ void Commands::privmsg(std::string payload, int client_fd, std::vector<client>::
             if (it != -1)
             {
                 std::cout << "send to user\n";
-                msg = ":" + get_client_Nick_by_Id(client) + " localhost" + " "+ get_client_Nick_by_Id(client) + " :" + message + "\r\n";
+                msg = ":" + get_client_Nick_by_Id(client_fd) + " localhost" + " "+ get_client_Nick_by_Id(client_fd) + " :" + message + "\r\n";
                 send(it, msg.c_str(), msg.length(), 0);
             }
         }

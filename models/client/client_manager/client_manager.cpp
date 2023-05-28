@@ -28,13 +28,13 @@ int client_manager::get_client_id_by_nick(std::string &nick)  {
     return -1;
 }
 
-int client_manager::get_client_Nick_by_Id(int id)  {
-    for (std::vector<std::string>::iterator itId = clients.begin(); itId != clients.end(); itId++) {
-        if (itId->get_client_id == id) {
+std::string client_manager::get_client_Nick_by_Id(int id)  {
+    for (std::vector<client>::iterator itId = clients.begin(); itId != clients.end(); itId++) {
+        if (itId->getFd() == id) {
             return itId->getNick();
         }
     }
-    return -1;
+    return ("error");
 }
 
 int client_manager::remove_client(int ID) {

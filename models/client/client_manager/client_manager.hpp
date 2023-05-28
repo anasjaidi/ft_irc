@@ -21,7 +21,7 @@ public:
 
     int get_client_id(int fd);
     int get_client_id_by_nick(std::string &);
-    int get_client_Nick_by_Id(std::string &);
+    std::string get_client_Nick_by_Id(int);
 
 
 
