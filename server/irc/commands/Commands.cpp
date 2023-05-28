@@ -411,7 +411,23 @@ void Commands::join(std::string payload, int client_fd, t_join_client infos, std
                     return;
                 }
 
-                add_to_exist(*it, "", client_fd, infos);
+                std::vector<int> members_fds = (*it).get_all_fds();
+                std::vector<std::string> members_nicks;
+
+
+                for (size_t i = 0; i < members_fds.size(); i++)
+                {
+                    std::vector<client>::iterator client_it = get_client(members_fds[i]);
+
+                    if (client_it != clients.end()) {
+                        std::string client_nick = client_it->getNick();
+
+                        members_nicks.push_back(client_nick);
+                    }
+                }
+                
+
+                add_to_exist(*it, "", client_fd, infos, members_nicks);
             }
             else
             {
@@ -428,7 +444,21 @@ void Commands::join(std::string payload, int client_fd, t_join_client infos, std
                     send(client_fd, msgError.c_str(), msgError.size(), 0);
                     return;
                 }
-                add_to_exist(*it, "", client_fd, infos);
+                std::vector<int> members_fds = (*it).get_all_fds();
+                std::vector<std::string> members_nicks;
+
+
+                for (size_t i = 0; i < members_fds.size(); i++)
+                {
+                    std::vector<client>::iterator client_it = get_client(members_fds[i]);
+
+                    if (client_it != clients.end()) {
+                        std::string client_nick = client_it->getNick();
+
+                        members_nicks.push_back(client_nick);
+                    }
+                }
+                add_to_exist(*it, "", client_fd, infos, members_nicks);
             }
             else
             {

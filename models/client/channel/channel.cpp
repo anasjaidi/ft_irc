@@ -5,6 +5,14 @@
 #include "channel.hpp"
 # include "../../../FT_IRC.h"
 
+
+const std::vector<int>& channel::get_memebers_fds() {
+    return this->members;
+}
+const std::vector<int>& channel::get_all_fds() {
+    return this->fdsChannel;
+}
+
 const std::string &channel::getName() const {
     return name;
 }

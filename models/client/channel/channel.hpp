@@ -28,6 +28,9 @@ private:
     std::vector<std::string> invited;
 
 public:
+
+    const std::vector<int>& get_memebers_fds();
+    const std::vector<int>& get_all_fds();
     const std::string &getName() const;
 
     void setName(const std::string &name);
