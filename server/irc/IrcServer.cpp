@@ -99,15 +99,15 @@ int IrcServer::handle(std::string req, int client_fd) throw() {
         case USER:
                 remove = user(command.second, client_fd, cl);
             break;
-//        case OptionCommands::KICK:
-//            kick(command.second, client_fd);
-//            break;
+       case KICK:
+           kick(command.second, client_fd, cl);
+           break;
 //        case OptionCommands::PART:
 //            part(command.second, client_fd);
 //            break;
-//        case OptionCommands::BOT:
-//            bot(command.second, client_fd);
-//            break;
+       case BOT:
+           bot(command.second, client_fd, cl);
+           break;
         case MODE:
             mode(command.second, client_fd, (t_join_client){.nick=cl->getNick(), .user=cl->getUser(), .info=(struct sockaddr_in*)&cl->getTheirAddr()});
             break;
@@ -116,7 +116,7 @@ int IrcServer::handle(std::string req, int client_fd) throw() {
 //            break;
         case PRIVATE_MSG:
 //            struct sockaddr_storage addrInfos = cl->getTheirAddr();
-                privmsg(command.second, client_fd, cl);
+                privmsg(command.second,client_fd, (t_join_client){.nick=cl->getNick(), .user=cl->getUser(), .info=(struct sockaddr_in*)&cl->getTheirAddr()}, cl);
             break;
         case JOIN:
             struct sockaddr_storage addrInfos = cl->getTheirAddr();

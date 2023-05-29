@@ -772,7 +772,7 @@ std::string Commands::parse_privmsg_command(std::string &req, int client_fd, std
     return payload;
 }
 
-void Commands::privmsg(std::string payload, int client_fd, std::vector<client>::iterator thclient)
+void Commands::privmsg(std::string payload, int client_fd,t_join_client infos ,std::vector<client>::iterator thclient)
 {
     std::vector<std::string> parts = split(payload, '|');
 
@@ -795,8 +795,8 @@ void Commands::privmsg(std::string payload, int client_fd, std::vector<client>::
             if (it != channels.end())
             {
                 std::cout << "send to channel\n";
-                msg = ":" + get_client_Nick_by_Id(client_fd) + " localhost" + " PRIVMSG " + targets[i] + " :" + message + "\r\n";
-                it->broadcast_message(msg);
+                msg = ":" + get_client_Nick_by_Id(client_fd)+ "!~" + infos.user + "@localhost" + " PRIVMSG " + targets[i] + " :" + message + "\r\n";
+                it->broadcast_message(msg, client_fd);
             }
         }
         else
@@ -805,7 +805,7 @@ void Commands::privmsg(std::string payload, int client_fd, std::vector<client>::
             if (it != -1)
             {
                 std::cout << "send to user\n";
-                msg = ":" + get_client_Nick_by_Id(client_fd) + " localhost" + " "+ get_client_Nick_by_Id(client_fd) + " :" + message + "\r\n";
+                msg = ":" + get_client_Nick_by_Id(client_fd) + "!~" + infos.user + "@localhost" + " PRIVMSG " + get_client_Nick_by_Id(it) + " :" + message + "\r\n";
                 send(it, msg.c_str(), msg.length(), 0);
             }
         }

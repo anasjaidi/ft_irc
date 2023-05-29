@@ -46,12 +46,13 @@ void Commands::kick(std::string payload, int client_fd, std::vector<client>::ite
                         // check if the kicker is operator
                         if(this->isOperator(client_fd ,itChan)){
                             if(itChan->itIsInChannel(fdcl)){
+                                std::string kicker = get_client_Nick_by_Id(client_fd);
+                                 itChan->send_msg_to_all_members(client_fd, cmd[1], cmd[0], kicker, theclient);
                                 itChan->delete_client(fdcl, 'k');
 //                                msg = ":" + cmd[1] + " is  KICKED FROM " + cmd[0] + "\r\n";
 //                                send(client_fd, msg.c_str(), msg.size(), 0);
                                 //->
                                 /// here i send msg kiked to all mumbers in channel
-                                 itChan->send_msg_to_all_members(client_fd, cmd[1], cmd[0]);
 
 
                                 //->

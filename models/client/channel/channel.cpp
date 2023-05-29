@@ -128,34 +128,35 @@ void channel::delete_client(int client_fd, char z) {
         if (this->fdsChannel[i] == client_fd)
             this->fdsChannel.erase(this->fdsChannel.begin() + i);
     }
-    if (z == 'k') {
-        /// send message for one;
-        msg = ":" + clientInformationsForChannel(infos) + " PART " + this->name + "\r\n";
-        send(client_fd, msg.c_str(), msg.size(), 0);
-    ///// here i send message to all mumbers is this dude kicked in the roome
-    msg.clear();
-    msg = clientInformationsForChannel(infos) + " PART " + this->name + "\r\n";
-    allFds = this->fdsChannel.begin();
-        for(; allFds != this->fdsChannel.end(); allFds++)
-        {
-            send(*allFds, msg.c_str(),msg.size(), 0);
-        }
-    }
-    if (z == 'b') {
-        /// send message for all mumbers in this channel
-        msg = ":localehost " + this->name + " +b " + clientInformationsForChannel(infos) +
-              " has been banned from this channel\r\n";
-        allFds = this->fdsChannel.begin();
-        for (; allFds != this->fdsChannel.end(); allFds++) {
-            send(*allFds, msg.c_str(), msg.size(), 0);
-        }
-    }
+    // if (z == 'k') {
+    //     /// send message for one;
+    //     msg = ":" + clientInformationsForChannel(infos) + " PART " + this->name + "\r\n";
+    //     send(client_fd, msg.c_str(), msg.size(), 0);
+    // ///// here i send message to all mumbers is this dude kicked in the roome
+    // msg.clear();
+    // msg = clientInformationsForChannel(infos) + " PART " + this->name + "\r\n";
+    // allFds = this->fdsChannel.begin();
+    //     for(; allFds != this->fdsChannel.end(); allFds++)
+    //     {
+    //         send(*allFds, msg.c_str(),msg.size(), 0);
+    //     }
+    // }
+    // if (z == 'b') {
+    //     /// send message for all mumbers in this channel
+    //     msg = ":localehost " + this->name + " +b " + clientInformationsForChannel(infos) +
+    //           " has been banned from this channel\r\n";
+    //     allFds = this->fdsChannel.begin();
+    //     for (; allFds != this->fdsChannel.end(); allFds++) {
+    //         send(*allFds, msg.c_str(), msg.size(), 0);
+    //     }
+    // }
 
 }
 
-void channel::send_msg_to_all_members( int client_fd, std::string kicked, std::string channel) {
+void channel::send_msg_to_all_members( int client_fd, std::string kicked, std::string channel, std::string kicker,std::vector<client>::iterator theclient) {
     std::string msg;
-    msg = ":" + kicked + " is  KICKED FROM " + channel + "\r\n";
+    
+    msg = ":" + kicker + "!~" + theclient->getUser() + "@localhost"  + " KICK " + channel + " " + kicked + "\r\n";
     std::vector<int>::iterator allFds = this->fdsChannel.begin();
     allFds = this->fdsChannel.begin();
         for (; allFds != this->fdsChannel.end(); allFds++) {
@@ -309,7 +310,7 @@ int channel::ban_mode_handler(bool on, int client_fd) {
 }
 
 
-void channel::broadcast_message(std::string &msg) {
+void channel::broadcast_message(std::string &msg, int client_fd) {
     if (modes & MESSAGE_BLOCKING) {
         for (int i = 0; i < this->operators.size(); i++) {
             send(operators[i] , msg.c_str(), msg.length(), 0);
@@ -318,7 +319,8 @@ void channel::broadcast_message(std::string &msg) {
         }
     } else {
         for (int i = 0; i < this->fdsChannel.size(); i++) {
-            send(fdsChannel[i],  msg.c_str(), msg.length(), 0);
+            if (fdsChannel[i] != client_fd)
+                send(fdsChannel[i],  msg.c_str(), msg.length(), 0);
         }
     }
 }

@@ -9,7 +9,7 @@
 
 # include "../../../FT_IRC.h"
 #include <sstream>
-
+# include "../client.hpp"
 
 
 class channel {
@@ -65,7 +65,7 @@ public:
 
     void delete_client(int client_fd, char z);
 
-    void send_msg_to_all_members(int client_fd, std::string kicked, std::string channel);
+    void send_msg_to_all_members(int client_fd, std::string kicked, std::string channel, std::string kicker, std::vector<client>::iterator theclient);
 
     bool itIsInChannel(int client_fd);
     std::vector<int> operator_friends;
@@ -74,7 +74,7 @@ public:
 
     bool adminChannel(int fd);
 
-    void broadcast_message(std::string &);
+    void broadcast_message(std::string &, int fd);
     void send_msg_to_all_users(std::string &);
 
     /**

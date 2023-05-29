@@ -22,7 +22,7 @@ public:
     void kick(std::string, int, std::vector<client>::iterator);
     void invite(std::string,int, std::vector<client>::iterator);
     void bot(std::string, int client_fd, std::vector<client>::iterator);
-    void privmsg(std::string, int client_fd, std::vector<client>::iterator);
+    void privmsg(std::string, int client_fd, t_join_client infos, std::vector<client>::iterator);
 
     enum OptionCommands  {
         PASS, // valide
