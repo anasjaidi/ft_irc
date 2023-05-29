@@ -93,6 +93,9 @@ int IrcServer::handle(std::string req, int client_fd) throw() {
         case PASS:
             remove = pass(command.second, client_fd, server_password, cl);
             break;
+        case TOPIC:
+            topic(command.second, client_fd, cl);
+            break;
         case NICK:
                 remove  = nick(command.second, client_fd, cl);
             break;
@@ -117,6 +120,9 @@ int IrcServer::handle(std::string req, int client_fd) throw() {
         case PRIVATE_MSG:
 //            struct sockaddr_storage addrInfos = cl->getTheirAddr();
                 privmsg(command.second,client_fd, (t_join_client){.nick=cl->getNick(), .user=cl->getUser(), .info=(struct sockaddr_in*)&cl->getTheirAddr()}, cl);
+            break;
+        case NOTICE:
+                notice(command.second,client_fd, (t_join_client){.nick=cl->getNick(), .user=cl->getUser(), .info=(struct sockaddr_in*)&cl->getTheirAddr()}, cl);
             break;
         case JOIN:
             struct sockaddr_storage addrInfos = cl->getTheirAddr();

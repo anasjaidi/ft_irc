@@ -3,105 +3,132 @@
 //
 
 #include "channel.hpp"
-# include "../../../FT_IRC.h"
+#include "../../../FT_IRC.h"
+void channel::set_topic(std::string &topic) {
+    this->topic = topic;
+}
+const std::string &channel::get_topic() {
+    return this->topic;
+}
 
-
-const std::vector<int>& channel::get_memebers_fds() {
+const std::vector<int> &channel::get_memebers_fds()
+{
     return this->members;
 }
-const std::vector<int>& channel::get_admins_fds() {
+const std::vector<int> &channel::get_admins_fds()
+{
     return this->operators;
 }
-const std::vector<int>& channel::get_all_fds() {
+const std::vector<int> &channel::get_all_fds()
+{
     return this->fdsChannel;
 }
 
-const std::string &channel::getName() const {
+const std::string &channel::getName() const
+{
     return name;
 }
 
-void channel::setName(const std::string &name) {
+void channel::setName(const std::string &name)
+{
     channel::name = name;
 }
 
-const std::string &channel::getPassword() const {
+const std::string &channel::getPassword() const
+{
     return password;
 }
 
-void channel::setPassword(const std::string &password) {
+void channel::setPassword(const std::string &password)
+{
     channel::password = password;
 }
 
-int channel::getMemberLimit() const {
+int channel::getMemberLimit() const
+{
     return memberLimit;
 }
 
-void channel::setMemberLimit(int memberLimit) {
+void channel::setMemberLimit(int memberLimit)
+{
     channel::memberLimit = memberLimit;
 }
 
-bool channel::isKey() const {
+bool channel::isKey() const
+{
     return key;
 }
 
-void channel::setKey(bool key) {
+void channel::setKey(bool key)
+{
     channel::key = key;
 }
 
-long long int channel::getModes() const {
+long long int channel::getModes() const
+{
     return modes;
 }
 
-void channel::setModes(long long int modes) {
+void channel::setModes(long long int modes)
+{
     channel::modes = modes;
 }
 
 channel::channel(const std::string &name, const std::string &password, int memberLimit, int client_fd) : name(name),
                                                                                                          password(
-                                                                                                                 password),
+                                                                                                             password),
                                                                                                          memberLimit(
-                                                                                                                 memberLimit) {
+                                                                                                             memberLimit)
+{
     fdsChannel.push_back(client_fd);
     operators.push_back(client_fd);
     key = true;
 }
 
-channel::channel(const std::string &name, int memberLimit, int client_fd) : name(name), memberLimit(memberLimit) {
+channel::channel(const std::string &name, int memberLimit, int client_fd) : name(name), memberLimit(memberLimit)
+{
     fdsChannel.push_back(client_fd);
     operators.push_back(client_fd);
     key = false;
 }
 
-
-void channel::add_to_channel(int client_fd) {
+void channel::add_to_channel(int client_fd)
+{
     members.push_back(client_fd);
     fdsChannel.push_back(client_fd);
 }
 
-bool channel::check_if_already_memebr(int client_fd) {
+bool channel::check_if_already_memebr(int client_fd)
+{
     std::vector<int>::iterator it = members.begin();
 
-    for (; it != members.end(); it++) {
-        if (*it == client_fd) {
+    for (; it != members.end(); it++)
+    {
+        if (*it == client_fd)
+        {
             return true;
         }
     }
     return false;
 }
 
-bool channel::check_if_banned(int client_fd) {
+bool channel::check_if_banned(int client_fd)
+{
     std::vector<int>::iterator it = bans.begin();
 
-    for (; it != bans.end(); it++) {
-        if (*it == client_fd) {
+    for (; it != bans.end(); it++)
+    {
+        if (*it == client_fd)
+        {
             return true;
         }
     }
     return false;
 }
 
-std::string channel::clientInformationsForChannel(struct join_client_info infos) {
-    struct sockaddr_in *i = (struct sockaddr_in *) (infos.info);
+std::string channel::clientInformationsForChannel(struct join_client_info infos)
+{
+    struct sockaddr_in *i = (struct sockaddr_in *)(infos.info);
     std::string ip;
     std::stringstream ss;
     ss << i->sin_addr.s_addr;
@@ -109,22 +136,25 @@ std::string channel::clientInformationsForChannel(struct join_client_info infos)
     return (infos.nick + "!" + infos.user + "@" + ip);
 }
 
-
-void channel::delete_client(int client_fd, char z) {
+void channel::delete_client(int client_fd, char z)
+{
     t_join_client infos;
     std::string msg;
     std::vector<int>::iterator mumber = this->members.begin();
-    for (int i = 0; i < this->members.size(); i++){
-        if(this->members[i] == client_fd)
+    for (int i = 0; i < this->members.size(); i++)
+    {
+        if (this->members[i] == client_fd)
             this->members.erase(this->members.begin() + i);
     }
     std::vector<int>::iterator operate = this->operators.begin();
-    for (int i = 0; i < this->operators.size(); i++) {
+    for (int i = 0; i < this->operators.size(); i++)
+    {
         if (this->operators[i] == client_fd)
             this->operators.erase(this->operators.begin() + i);
     }
     std::vector<int>::iterator allFds = this->fdsChannel.begin();
-    for (int i = 0; i < this->fdsChannel.size(); i++) {
+    for (int i = 0; i < this->fdsChannel.size(); i++)
+    {
         if (this->fdsChannel[i] == client_fd)
             this->fdsChannel.erase(this->fdsChannel.begin() + i);
     }
@@ -150,36 +180,39 @@ void channel::delete_client(int client_fd, char z) {
     //         send(*allFds, msg.c_str(), msg.size(), 0);
     //     }
     // }
-
 }
 
-void channel::send_msg_to_all_members( int client_fd, std::string kicked, std::string channel, std::string kicker,std::vector<client>::iterator theclient) {
+void channel::send_msg_to_all_members(int client_fd, std::string kicked, std::string channel, std::string kicker, std::vector<client>::iterator theclient)
+{
     std::string msg;
-    
-    msg = ":" + kicker + "!~" + theclient->getUser() + "@localhost"  + " KICK " + channel + " " + kicked + "\r\n";
+
+    msg = ":" + kicker + "!~" + theclient->getUser() + "@localhost" + " KICK " + channel + " " + kicked + "\r\n";
     std::vector<int>::iterator allFds = this->fdsChannel.begin();
     allFds = this->fdsChannel.begin();
-        for (; allFds != this->fdsChannel.end(); allFds++) {
-            send(*allFds, msg.c_str(), msg.size(), 0);
-            }
+    for (; allFds != this->fdsChannel.end(); allFds++)
+    {
+        send(*allFds, msg.c_str(), msg.size(), 0);
+    }
 }
 
-
-bool channel::itIsInChannel(int client_fd) {
+bool channel::itIsInChannel(int client_fd)
+{
     std::vector<int>::iterator it = this->fdsChannel.begin();
 
-    for(; it != this->fdsChannel.end(); it++) {
-        if(*it == client_fd)
+    for (; it != this->fdsChannel.end(); it++)
+    {
+        if (*it == client_fd)
             return true;
     }
     return false;
 }
 
-
-bool channel::adminChannel(int fd) {
+bool channel::adminChannel(int fd)
+{
     std::vector<int>::iterator it = this->operators.begin();
-    for (; it != this->operators.end(); it++) {
-        if(*it == fd)
+    for (; it != this->operators.end(); it++)
+    {
+        if (*it == fd)
             return true;
     }
     return false;
@@ -189,43 +222,48 @@ void channel::AddToinvited(std::string nick_name)
     invited.push_back(nick_name);
 }
 
-int channel::privacy_mode_handler(bool on) {
+int channel::privacy_mode_handler(bool on)
+{
     if (on)
         modes |= PRIVACY_ENABLED;
     else
         modes &= ~PRIVACY_ENABLED;
-    std::cout << "privacy mode: is" << (modes & PRIVACY_ENABLED ? "exists" : "not exists")<< std::endl;
+    std::cout << "privacy mode: is" << (modes & PRIVACY_ENABLED ? "exists" : "not exists") << std::endl;
     return 0;
 }
 
-int channel::message_blocking_mode_handler(bool on) {
+int channel::message_blocking_mode_handler(bool on)
+{
     if (on)
         modes |= MESSAGE_BLOCKING;
     else
         modes &= ~MESSAGE_BLOCKING;
-    std::cout << "message blocking mode: is" << (modes & MESSAGE_BLOCKING ? "exists" : "not exists")<< std::endl;
+    std::cout << "message blocking mode: is" << (modes & MESSAGE_BLOCKING ? "exists" : "not exists") << std::endl;
     return 0;
 }
 
-int channel::channel_visibility_mode_handler(bool on) {
+int channel::channel_visibility_mode_handler(bool on)
+{
     if (on)
         modes |= VISIBILITY_ENABLED;
     else
         modes &= ~VISIBILITY_ENABLED;
-    std::cout << "visibility mode: is" << (modes & VISIBILITY_ENABLED ? "exists" : "not exists")<< std::endl;
+    std::cout << "visibility mode: is" << (modes & VISIBILITY_ENABLED ? "exists" : "not exists") << std::endl;
     return 0;
 }
 
-int channel::channel_topic_mode_handler(bool on) {
+int channel::channel_topic_mode_handler(bool on)
+{
     if (on)
         modes |= TOPIC_ENABLED;
     else
         modes &= ~TOPIC_ENABLED;
-    std::cout << "topic mode: is" << (modes & TOPIC_ENABLED ? "exists" : "not exists")<< std::endl;
+    std::cout << "topic mode: is" << (modes & TOPIC_ENABLED ? "exists" : "not exists") << std::endl;
     return 0;
 }
 
-int channel::public_mode_handler(bool on) {
+int channel::public_mode_handler(bool on)
+{
     if (on)
         modes |= PUBLIC_ENABLED;
     else
@@ -234,7 +272,8 @@ int channel::public_mode_handler(bool on) {
     return 0;
 }
 
-int channel::limit_mode_handler(bool on, int new_limit) {
+int channel::limit_mode_handler(bool on, int new_limit)
+{
     if (on)
         this->memberLimit = new_limit;
     else
@@ -243,7 +282,8 @@ int channel::limit_mode_handler(bool on, int new_limit) {
     return this->memberLimit;
 }
 
-std::string channel::pass_mode_handler(bool on, std::string &newPass) {
+std::string channel::pass_mode_handler(bool on, std::string &newPass)
+{
     if (on)
         this->password = newPass;
     else
@@ -252,42 +292,51 @@ std::string channel::pass_mode_handler(bool on, std::string &newPass) {
     return this->password;
 }
 
-int channel::operator_friend_mode_handler(bool on, int client_fd) {
-    if (on) {
-        if (std::find(operator_friends.begin(), operator_friends.end(), client_fd) != operator_friends.end()) return 1;
+int channel::operator_friend_mode_handler(bool on, int client_fd)
+{
+    if (on)
+    {
+        if (std::find(operator_friends.begin(), operator_friends.end(), client_fd) != operator_friends.end())
+            return 1;
         operator_friends.push_back(client_fd);
-    } else {
-        if (std::find(operator_friends.begin(), operator_friends.end(), client_fd) == operator_friends.end()) return 1;
+    }
+    else
+    {
+        if (std::find(operator_friends.begin(), operator_friends.end(), client_fd) == operator_friends.end())
+            return 1;
         operator_friends.erase(std::remove(operator_friends.begin(), operator_friends.end(), client_fd));
     }
-    std::cout << "friend mode: " << (
-            std::find(operator_friends.begin(), operator_friends.end(), client_fd) == operator_friends.end() ?
-            "not exits" : "exists"
-    ) << std::endl;
+    std::cout << "friend mode: " << (std::find(operator_friends.begin(), operator_friends.end(), client_fd) == operator_friends.end() ? "not exits" : "exists") << std::endl;
     return 0;
 }
 
-int channel::operator_mode_handler(bool on, int client_fd) {
-    if (on) {
-        if (std::find(operators.begin(), operators.end(), client_fd) != operators.end()) return 1;
+int channel::operator_mode_handler(bool on, int client_fd)
+{
+    if (on)
+    {
+        if (std::find(operators.begin(), operators.end(), client_fd) != operators.end())
+            return 1;
         operators.push_back(client_fd);
-    } else {
-        if (std::find(operators.begin(), operators.end(), client_fd) == operators.end()) return 1;
+    }
+    else
+    {
+        if (std::find(operators.begin(), operators.end(), client_fd) == operators.end())
+            return 1;
         operators.erase(std::remove(operators.begin(), operators.end(), client_fd));
     }
-    std::cout << "operator mode: " << (
-            std::find(operators.begin(), operators.end(), client_fd) == operators.end() ?
-            "not exits" : "exists"
-    ) << std::endl;
+    std::cout << "operator mode: " << (std::find(operators.begin(), operators.end(), client_fd) == operators.end() ? "not exits" : "exists") << std::endl;
     return 0;
 }
 
-int channel::ban_mode_handler(bool on, int client_fd) {
+int channel::ban_mode_handler(bool on, int client_fd)
+{
     std::cout << "client_fd : " << bans.size() << std::endl;
 
     std::cout << "founded: " << ((bool)(std::find(bans.begin(), bans.end(), client_fd) == bans.end()));
-    if (on) {
-        if (std::find(bans.begin(), bans.end(), client_fd) != bans.end()) {
+    if (on)
+    {
+        if (std::find(bans.begin(), bans.end(), client_fd) != bans.end())
+        {
             std::cout << "yes founded\n";
             return 1;
         }
@@ -295,38 +344,47 @@ int channel::ban_mode_handler(bool on, int client_fd) {
         bans.push_back(client_fd);
         std::cout << bans[0] << std::endl;
         return 0;
-    } else {
-        if (std::find(bans.begin(), bans.end(), client_fd) == bans.end()) {
+    }
+    else
+    {
+        if (std::find(bans.begin(), bans.end(), client_fd) == bans.end())
+        {
             std::cout << "yes not founded\n";
             return 1;
         }
         bans.erase(std::remove(bans.begin(), bans.end(), client_fd));
     }
-    std::cout << "ban mode: " << (
-            std::find(bans.begin(), bans.end(), client_fd) == bans.end() ?
-            "not exits" : "exists"
-    ) << std::endl;
+    std::cout << "ban mode: " << (std::find(bans.begin(), bans.end(), client_fd) == bans.end() ? "not exits" : "exists") << std::endl;
     return 0;
 }
 
-
-void channel::broadcast_message(std::string &msg, int client_fd) {
-    if (modes & MESSAGE_BLOCKING) {
-        for (int i = 0; i < this->operators.size(); i++) {
-            send(operators[i] , msg.c_str(), msg.length(), 0);
-        }for (int i = 0; i < this->operator_friends.size(); i++) {
-            send(operator_friends[i] , msg.c_str(), msg.length(), 0);
+void channel::broadcast_message(std::string &msg, int client_fd)
+{
+    if (modes & MESSAGE_BLOCKING)
+    {
+        for (int i = 0; i < this->operators.size(); i++)
+        {
+            send(operators[i], msg.c_str(), msg.length(), 0);
         }
-    } else {
-        for (int i = 0; i < this->fdsChannel.size(); i++) {
+        for (int i = 0; i < this->operator_friends.size(); i++)
+        {
+            send(operator_friends[i], msg.c_str(), msg.length(), 0);
+        }
+    }
+    else
+    {
+        for (int i = 0; i < this->fdsChannel.size(); i++)
+        {
             if (fdsChannel[i] != client_fd)
-                send(fdsChannel[i],  msg.c_str(), msg.length(), 0);
+                send(fdsChannel[i], msg.c_str(), msg.length(), 0);
         }
     }
 }
 
-void channel::send_msg_to_all_users(std::string &msg){
-        for (int i = 0; i < this->fdsChannel.size(); i++) {
-            send(fdsChannel[i],  msg.c_str(), msg.length(), 0);
-        }
+void channel::send_msg_to_all_users(std::string &msg)
+{
+    for (int i = 0; i < this->fdsChannel.size(); i++)
+    {
+        send(fdsChannel[i], msg.c_str(), msg.length(), 0);
+    }
 }

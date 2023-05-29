@@ -22,7 +22,9 @@ public:
     void kick(std::string, int, std::vector<client>::iterator);
     void invite(std::string,int, std::vector<client>::iterator);
     void bot(std::string, int client_fd, std::vector<client>::iterator);
+    void topic(std::string, int client_fd, std::vector<client>::iterator);
     void privmsg(std::string, int client_fd, t_join_client infos, std::vector<client>::iterator);
+    void notice(std::string, int client_fd, t_join_client infos, std::vector<client>::iterator);
 
     enum OptionCommands  {
         PASS, // valide
@@ -37,12 +39,14 @@ public:
         BOT,
         JOIN, // valide
         KILL,
-        UNDEFINED
+        UNDEFINED,
+        TOPIC
     };
 
     std::pair<OptionCommands, std::string > get_command(std::string &request, int client_fd, std::vector<client>::iterator);
 
     std::string parse_pass_command(std::string &, int client_fd, std::vector<client>::iterator);
+    std::string parse_topic_command(std::string &, int client_fd, std::vector<client>::iterator);
     std::string parse_nick_command(std::string &, int client_fd, std::vector<client>::iterator);
     std::string parse_user_command(std::string &, int client_fd, std::vector<client>::iterator);
     std::string parse_join_command(std::string &req, int client_fd, std::vector<client>::iterator);

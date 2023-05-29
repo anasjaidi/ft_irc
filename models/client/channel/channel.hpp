@@ -26,9 +26,12 @@ private:
     char modes;
     std::vector<int> bans;
     std::vector<std::string> invited;
+    std::string topic;
 
 public:
 
+    void set_topic(std::string &topic);
+    const std::string& get_topic();
     const std::vector<int>& get_memebers_fds();
     const std::vector<int>& get_admins_fds();
     const std::vector<int>& get_all_fds();
