@@ -65,7 +65,7 @@ void Server::accept_incoming_requests() {
     while (1) {
         int len = poll(pfds.data(), pfds.size(), -1);
 
-        for (int i = 0; i < pfds.size(); ++i) {
+        for (int i = 0; i < pfds.size(); i++) {
 
             if (pfds[i].revents & POLLIN) {
 
@@ -113,7 +113,7 @@ int Server::remove_client_from_server(int fd) {
     std::cout << "start remove client from server" << std::endl;
     int i;
 
-    for (i = 0; i < pfds.size(); ++i) {
+    for (i = 0; i < pfds.size(); i++) {
         if (pfds[i].fd == fd)
             break;
     }

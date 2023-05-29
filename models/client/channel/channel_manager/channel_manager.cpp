@@ -33,7 +33,7 @@ int channel_manager::create_channel(int client_fd, std::string ch,  t_join_clien
     std::string msg = ":" + clientInformations(infos) + " JOIN " + ch + "\r\n"
           + ":localhost" + " MODE " + ch + " +nt\r\n"
           + ":localhost" + " 353 " + infos.nick + " = " + ch + " :@" + infos.nick + "\r\n"
-          + ":localhost" + " 366 " + infos.nick + " " +  ch + " :End of /NAMES list\r\n";
+          + ":localhost" + " 366 " + infos.nick + " = " +  ch + " :End of /NAMES list\r\n";
     send(client_fd, msg.c_str(), msg.size(), 0);
 
     return (EXIT_SUCCESS);
@@ -70,13 +70,17 @@ int channel_manager::add_to_exist(channel &ch, std::string key, int client_fd, t
         return 1;
     }
     ch.add_to_channel(client_fd);
+        std::string msgToAllUser;
+
+    msgToAllUser = ":" + infos.nick + "!~" + infos.nick + "@localhost" + " JOIN " + ch.getName() + "\r\n";
+    ch.send_msg_to_all_users(msgToAllUser);
     msg.clear();
-    msg = ":" + clientInformations(infos) + " JOIN " + ch.getName() + "\r\n"
-    ":localhost 332 " + infos.nick + " " + ch.getName() + " :This is my cool channel! https://irc.com\r\n"
-    ":localhost 333 " + infos.nick + " " + ch.getName() + " " + infos.nick +"!" +ch.getName() +"@localhost"  " 1547691506\r\n";
+    msg = ":" + clientInformations(infos) + " JOIN " + ch.getName() + "\r\n";
+    // ":localhost 332 " + infos.nick + " " + ch.getName() + " :This is my cool channel! https://irc.com\r\n"
+    // ":localhost 333 " + infos.nick + " " + ch.getName() + " " + infos.nick +"!" +ch.getName() +"@localhost"  " 1547691506\r\n";
                         /////////////// send list of user of the channel ///////////////////////////////
-    msg += ":localhost 366 " + infos.nick + " " + ch.getName() + " :End of /NAMES list\r\n";
-    msg += ":localhost 353 " + infos.nick + " #" + ch.getName() + " :";
+    // msg += ":localhost 366 " + infos.nick + " " + ch.getName() + " :End of /NAMES list\r\n";
+    msg += ":localhost 353 " + infos.nick + " = " + ch.getName() + " :";
 
     std::vector<std::string>::iterator itAdmin = admins_nicks.begin();
     std::vector<std::string>::iterator itUser = members_nicks.begin();
@@ -87,8 +91,17 @@ int channel_manager::add_to_exist(channel &ch, std::string key, int client_fd, t
         for(; itUser != members_nicks.end(); itUser++){
             msg += *itUser + " ";
     }
+     msg += infos.nick;
     msg += "\r\n";
+    msg += ":localhost 366 " + infos.nick + " = " + ch.getName() + " :End of /NAMES list\r\n";
     send(client_fd, msg.c_str(), msg.size(), 0);
+
+    // std::string msgToAllUser;
+
+    // msgToAllUser = ":" + infos.nick + "!~" + infos.nick + "@localhost" + " JOIN " + ch.getName() + "\r\n";
+    // ch.send_msg_to_all_users(msgToAllUser);
+    
+
     return 0;
 }
 

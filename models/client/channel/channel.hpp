@@ -75,6 +75,7 @@ public:
     bool adminChannel(int fd);
 
     void broadcast_message(std::string &);
+    void send_msg_to_all_users(std::string &);
 
     /**
      * @mode i

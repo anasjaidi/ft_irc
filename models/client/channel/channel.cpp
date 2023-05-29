@@ -311,14 +311,20 @@ int channel::ban_mode_handler(bool on, int client_fd) {
 
 void channel::broadcast_message(std::string &msg) {
     if (modes & MESSAGE_BLOCKING) {
-        for (int i = 0; i < this->operators.size(); ++i) {
+        for (int i = 0; i < this->operators.size(); i++) {
             send(operators[i] , msg.c_str(), msg.length(), 0);
-        }for (int i = 0; i < this->operator_friends.size(); ++i) {
+        }for (int i = 0; i < this->operator_friends.size(); i++) {
             send(operator_friends[i] , msg.c_str(), msg.length(), 0);
         }
     } else {
-        for (int i = 0; i < this->fdsChannel.size(); ++i) {
+        for (int i = 0; i < this->fdsChannel.size(); i++) {
             send(fdsChannel[i],  msg.c_str(), msg.length(), 0);
         }
     }
+}
+
+void channel::send_msg_to_all_users(std::string &msg){
+        for (int i = 0; i < this->fdsChannel.size(); i++) {
+            send(fdsChannel[i],  msg.c_str(), msg.length(), 0);
+        }
 }

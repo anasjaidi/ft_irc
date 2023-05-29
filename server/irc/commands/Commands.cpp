@@ -125,7 +125,7 @@ void remove_whitespaces(std::string &str)
 
 void UPPER_STRING(std::string &str)
 {
-    for (int i = 0; i < str.length(); ++i)
+    for (int i = 0; i < str.length(); i++)
     {
         str[i] = std::toupper(str[i]);
     }
@@ -787,7 +787,7 @@ void Commands::privmsg(std::string payload, int client_fd, std::vector<client>::
     std::string msg;
 
 
-    for (int i = 0; i < targets.size(); ++i)
+    for (int i = 0; i < targets.size(); i++)
     {
         if (targets[i][0] == '#' || targets[i][0] == '&')
         {
