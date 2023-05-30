@@ -9,7 +9,7 @@
 #include "../../../../FT_IRC.h"
 
 
-std::string Commands::parse_invite_command(std::string &req, std::vector<client>::iterator theclient)
+std::string Commands::parse_invite_command(std::string &req, std::vector<client>::iterator )
 {
     req.erase(0, 6);
 
@@ -24,7 +24,7 @@ std::string Commands::parse_invite_command(std::string &req, std::vector<client>
     return (payload);
 }
 
-void Commands::invite(std::string payload, int client_fd, std::vector<client>::iterator theclient)
+void Commands::invite(std::string payload, int client_fd, std::vector<client>::iterator )
 {
     std::string msg;
     if (payload == "enough")

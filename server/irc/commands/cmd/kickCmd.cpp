@@ -34,7 +34,6 @@ void Commands::kick(std::string payload, int client_fd, std::vector<client>::ite
 
         if(!cmd[0].empty() && name == cmd[0]){
 
-            int i= 0;
 
             //check nick client ,check is the current one and get his file descriptor
             if(!cmd[1].empty()){
@@ -85,7 +84,7 @@ void Commands::kick(std::string payload, int client_fd, std::vector<client>::ite
 
 
 
-std::string Commands::parse_kick_command(std::string &req, std::vector<client>::iterator theclient) {
+std::string Commands::parse_kick_command(std::string &req, std::vector<client>::iterator ) {
     bool Nk = false;
      std::string payload;
      std::vector<std::string> cmd = split(req, ' ');
@@ -98,7 +97,7 @@ std::string Commands::parse_kick_command(std::string &req, std::vector<client>::
     std::vector<client>::iterator itclient = clients.begin();
 
     std::cout << cmd[1] << "->" << cmd[2] <<std::endl;
-     if (cmd.size() != 3 || channelName[0] != '#')
+     if (cmd.size() <= 3 || channelName[0] != '#')
          return  "No such nick/channel"; // rpl = ":localhost 401 " + cmd[1] + " : No such nick/channel\r\n";
      if(!user.empty())
      {
@@ -127,8 +126,8 @@ std::string Commands::parse_kick_command(std::string &req, std::vector<client>::
 
 void trim_fun(std::string &str) {
 
-    int start = str.find_first_not_of(" \t\f\v\n\r");
-    int end = str.find_last_not_of(" \t\f\v\n\r");
+    size_t start = str.find_first_not_of(" \t\f\v\n\r");
+    size_t end = str.find_last_not_of(" \t\f\v\n\r");
     if (start == std::string::npos || end == std::string::npos) {
         str = std::string("");
         return ;

@@ -5,7 +5,7 @@
 #include "Socket.hpp"
 
 
-Socket::Socket() : family(-1), sock_type(-1) {}
+Socket::Socket() : sock_type(-1), family(-1) {}
 
 Socket::~Socket() {}
 

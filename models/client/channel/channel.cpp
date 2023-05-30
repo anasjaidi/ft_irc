@@ -136,24 +136,24 @@ std::string channel::clientInformationsForChannel(struct join_client_info infos)
     return (infos.nick + "!" + infos.user + "@" + ip);
 }
 
-void channel::delete_client(int client_fd, char z)
+void channel::delete_client(int client_fd, char)
 {
     t_join_client infos;
     std::string msg;
-    std::vector<int>::iterator mumber = this->members.begin();
-    for (int i = 0; i < this->members.size(); i++)
+    // std::vector<int>::iterator mumber = this->members.begin();
+    for (size_t i = 0; i < this->members.size(); i++)
     {
         if (this->members[i] == client_fd)
             this->members.erase(this->members.begin() + i);
     }
-    std::vector<int>::iterator operate = this->operators.begin();
-    for (int i = 0; i < this->operators.size(); i++)
+    // std::vector<int>::iterator operate = this->operators.begin();
+    for (size_t i = 0; i < this->operators.size(); i++)
     {
         if (this->operators[i] == client_fd)
             this->operators.erase(this->operators.begin() + i);
     }
-    std::vector<int>::iterator allFds = this->fdsChannel.begin();
-    for (int i = 0; i < this->fdsChannel.size(); i++)
+    // std::vector<int>::iterator allFds = this->fdsChannel.begin();
+    for (size_t i = 0; i < this->fdsChannel.size(); i++)
     {
         if (this->fdsChannel[i] == client_fd)
             this->fdsChannel.erase(this->fdsChannel.begin() + i);
@@ -182,7 +182,7 @@ void channel::delete_client(int client_fd, char z)
     // }
 }
 
-void channel::send_msg_to_all_members(int client_fd, std::string kicked, std::string channel, std::string kicker, std::vector<client>::iterator theclient)
+void channel::send_msg_to_all_members(int , std::string kicked, std::string channel, std::string kicker, std::vector<client>::iterator theclient)
 {
     std::string msg;
 
@@ -362,18 +362,18 @@ void channel::broadcast_message(std::string &msg, int client_fd)
 {
     if (modes & MESSAGE_BLOCKING)
     {
-        for (int i = 0; i < this->operators.size(); i++)
+        for (size_t i = 0; i < this->operators.size(); i++)
         {
             send(operators[i], msg.c_str(), msg.length(), 0);
         }
-        for (int i = 0; i < this->operator_friends.size(); i++)
+        for (size_t i = 0; i < this->operator_friends.size(); i++)
         {
             send(operator_friends[i], msg.c_str(), msg.length(), 0);
         }
     }
     else
     {
-        for (int i = 0; i < this->fdsChannel.size(); i++)
+        for (size_t i = 0; i < this->fdsChannel.size(); i++)
         {
             if (fdsChannel[i] != client_fd)
                 send(fdsChannel[i], msg.c_str(), msg.length(), 0);
@@ -383,7 +383,7 @@ void channel::broadcast_message(std::string &msg, int client_fd)
 
 void channel::send_msg_to_all_users(std::string &msg)
 {
-    for (int i = 0; i < this->fdsChannel.size(); i++)
+    for (size_t i = 0; i < this->fdsChannel.size(); i++)
     {
         send(fdsChannel[i], msg.c_str(), msg.length(), 0);
     }

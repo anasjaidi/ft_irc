@@ -90,6 +90,8 @@ int IrcServer::handle(std::string req, int client_fd) throw() {
     }
 
     switch (command.first) {
+        case UNDEFINED:
+        break;
         case PASS:
             remove = pass(command.second, client_fd, server_password, cl);
             break;
@@ -114,9 +116,9 @@ int IrcServer::handle(std::string req, int client_fd) throw() {
         case MODE:
             mode(command.second, client_fd, (t_join_client){.nick=cl->getNick(), .user=cl->getUser(), .info=(struct sockaddr_in*)&cl->getTheirAddr()});
             break;
-//        case OptionCommands::INVITE:
-//            invite(command.second, client_fd);
-//            break;
+       case INVITE:
+           invite(command.second, client_fd, cl);
+           break;
         case PRIVATE_MSG:
 //            struct sockaddr_storage addrInfos = cl->getTheirAddr();
                 privmsg(command.second,client_fd, (t_join_client){.nick=cl->getNick(), .user=cl->getUser(), .info=(struct sockaddr_in*)&cl->getTheirAddr()}, cl);
@@ -125,7 +127,6 @@ int IrcServer::handle(std::string req, int client_fd) throw() {
                 notice(command.second,client_fd, (t_join_client){.nick=cl->getNick(), .user=cl->getUser(), .info=(struct sockaddr_in*)&cl->getTheirAddr()}, cl);
             break;
         case JOIN:
-            struct sockaddr_storage addrInfos = cl->getTheirAddr();
             join(command.second, client_fd, (t_join_client){.nick=cl->getNick(), .user=cl->getUser(), .info=(struct sockaddr_in*)&cl->getTheirAddr()}, cl);
             render_channels();
             break;

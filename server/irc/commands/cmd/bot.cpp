@@ -4,7 +4,7 @@
 
 #include "../Commands.hpp"
 
-void Commands::bot(std::string payload, int client_fd, std::vector<client>::iterator theclient) {
+void Commands::bot(std::string payload, int client_fd, std::vector<client>::iterator ) {
     std::string msg;
     std::vector<client>::iterator it = clients.begin();
     if(payload == "Error"){
@@ -21,7 +21,7 @@ void Commands::bot(std::string payload, int client_fd, std::vector<client>::iter
 
 }
 
-std::string Commands::parse_bot_command(std::string &req, std::vector<client>::iterator theclient) {
+std::string Commands::parse_bot_command(std::string &req, std::vector<client>::iterator ) {
     trim_fun(req);
     std::vector<std::string> cmd = split(req, ' ');
     if(cmd.size() != 1)

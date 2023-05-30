@@ -58,14 +58,12 @@ Server::SeverErrors::SeverErrors(ErrorCode _errorCode) : errorCode(_errorCode) {
 void Server::accept_incoming_requests() {
 
 
-    char buff[1024];
-
     pfds.push_back((struct pollfd){.fd = socket_fd, .events = POLLIN, .revents = 0});
 
     while (1) {
-        int len = poll(pfds.data(), pfds.size(), -1);
+       poll(pfds.data(), pfds.size(), -1);
 
-        for (int i = 0; i < pfds.size(); i++) {
+        for (size_t i = 0; i < pfds.size(); i++) {
 
             if (pfds[i].revents & POLLIN) {
 
@@ -111,7 +109,7 @@ std::pair<struct sockaddr_storage, int> Server::accept_and_add_new_client() thro
 
 int Server::remove_client_from_server(int fd) {
     std::cout << "start remove client from server" << std::endl;
-    int i;
+    size_t i;
 
     for (i = 0; i < pfds.size(); i++) {
         if (pfds[i].fd == fd)

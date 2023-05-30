@@ -10,7 +10,7 @@
 std::string joinByMe(std::vector<std::string> &vec, char c)
 {
     std::string result = "";
-    for (int i = 0; i < vec.size(); i++)
+    for (size_t i = 0; i < vec.size(); i++)
     {
         trim_fun(vec[i]);
         result += vec[i];
@@ -22,7 +22,7 @@ std::string joinByMe(std::vector<std::string> &vec, char c)
     return result;
 }
 
-int Commands::nick(std::string payload, int new_client_fd, std::vector<client>::iterator client)
+int Commands::nick(std::string payload, int new_client_fd, std::vector<client>::iterator)
 {
 
     const int ID = update_client_info(UpdateNick, payload, new_client_fd);
@@ -86,7 +86,7 @@ int Commands::user(std::string payload, int new_client_fd, std::vector<client>::
     return 0;
 }
 
-int Commands::pass(std::string pass, int new_client_fd, std::string server_pass, std::vector<client>::iterator theclient)
+int Commands::pass(std::string pass, int new_client_fd, std::string server_pass, std::vector<client>::iterator)
 {
 
     if (pass != server_pass)
@@ -123,7 +123,7 @@ void remove_whitespaces(std::string &str)
 
 void UPPER_STRING(std::string &str)
 {
-    for (int i = 0; i < str.length(); i++)
+    for (size_t i = 0; i < str.length(); i++)
     {
         str[i] = std::toupper(str[i]);
     }
@@ -142,7 +142,7 @@ std::string get_first_word(const std::string &str)
     }
 }
 
-std::string Commands::parse_pass_command(std::string &req, int client_fd, std::vector<client>::iterator theclient)
+std::string Commands::parse_pass_command(std::string &req, int client_fd, std::vector<client>::iterator)
 {
 
     if (req.length() < 5)
@@ -162,7 +162,7 @@ std::string Commands::parse_pass_command(std::string &req, int client_fd, std::v
     return std::string(req);
 }
 
-std::string Commands::parse_nick_command(std::string &req, int client_fd, std::vector<client>::iterator theclient)
+std::string Commands::parse_nick_command(std::string &req, int, std::vector<client>::iterator)
 {
     req = req.substr(4);
 
@@ -183,7 +183,7 @@ std::string Commands::parse_nick_command(std::string &req, int client_fd, std::v
     return std::string(req);
 }
 
-std::string Commands::parse_user_command(std::string &req, int client_fd, std::vector<client>::iterator theclint)
+std::string Commands::parse_user_command(std::string &req, int, std::vector<client>::iterator)
 {
 
     req = req.substr(4);
@@ -271,11 +271,6 @@ std::pair<Commands::OptionCommands, std::string> Commands::get_command(std::stri
         payload = parse_invite_command(request, theclient);
         action = INVITE;
     }
-    else if (cmd == "PART")
-    {
-        payload = parse_part_command(request, client_fd, theclient);
-        action = PART;
-    }
     else if (cmd == "KICK")
     {
         payload = parse_kick_command(request, theclient);
@@ -311,7 +306,7 @@ std::vector<std::string> split(std::string line, char c)
     return (command);
 }
 
-std::string Commands::parse_part_command(std::string &req, int client_fd, std::vector<client>::iterator theclient)
+std::string Commands::parse_part_command(std::string &req, int, std::vector<client>::iterator)
 {
     channel_manager manage;
     std::vector<std::string> cmd = split(req, ' ');
@@ -328,7 +323,7 @@ std::string Commands::parse_part_command(std::string &req, int client_fd, std::v
     return (nameChannel);
 }
 
-void Commands::part(std::string payload, int client_fd, std::vector<client>::iterator theclient)
+void Commands::part(std::string payload, int client_fd, std::vector<client>::iterator)
 {
     std::string msg;
     if (payload == "Not enough parameters")
@@ -347,7 +342,7 @@ void Commands::part(std::string payload, int client_fd, std::vector<client>::ite
         delete_from_channel(client_fd, payload);
 }
 
-std::string Commands::parse_join_command(std::string &req, int client_fd, std::vector<client>::iterator thclient)
+std::string Commands::parse_join_command(std::string &req, int , std::vector<client>::iterator )
 {
     req.erase(0, 5);
     trim_fun(req);
@@ -377,17 +372,18 @@ std::string Commands::parse_join_command(std::string &req, int client_fd, std::v
         keys = split(splited_command[1], ',');
     }
 
-    for (std::string ch : channels)
+    for (size_t i = 0; i < channels.size(); i++)
     {
-        if (ch[0] != '#' && ch[0] != '&')
+       if (channels[i][0] != '#' && channels[i][0] != '&')
         {
             return ("Not enough param");
         }
     }
+    
     return (joinByMe(channels, '*') + std::string("|") + joinByMe(keys, '*'));
 }
 
-void Commands::join(std::string payload, int client_fd, t_join_client infos, std::vector<client>::iterator theclint)
+void Commands::join(std::string payload, int client_fd, t_join_client infos, std::vector<client>::iterator)
 {
     std::string msg;
     if (payload == "Not enough param")
@@ -406,7 +402,7 @@ void Commands::join(std::string payload, int client_fd, t_join_client infos, std
         keys = split(desr[1], '*');
     }
 
-    for (int i = 0; i < channels_names.size(); i++)
+    for (size_t i = 0; i < channels_names.size(); i++)
     {
         std::vector<channel>::iterator it = get_channel_by_name(channels_names[i]);
 
@@ -523,17 +519,17 @@ std::vector<std::string> parse_and_get_modes(std::string &modes)
 
     //  +ispx
 
-    for (int i = 0; i < modes.length(); i++)
+    for (size_t i = 0; i < modes.length(); i++)
     {
         if (modes[i] && modes[i] == '-' && modes[i + 1] != modes[i])
         {
 
-            while (modes[i + 1] && availble_modes.find((modes[i + 1])) != -1)
+            while (modes[i + 1] && availble_modes.find((modes[i + 1])) != std::string::npos)
             {
                 returned_modes.push_back(std::string("-") + modes.substr(i + 1, 1));
                 i++;
             }
-            if (availble_modes.find((modes[i + 1])) == -1 && modes[i + 1] != '-' && modes[i + 1] != '+' &&
+            if (availble_modes.find((modes[i + 1])) == std::string::npos && modes[i + 1] != '-' && modes[i + 1] != '+' &&
                 modes[i + 1] != '\0')
             {
                 // error case
@@ -541,12 +537,12 @@ std::vector<std::string> parse_and_get_modes(std::string &modes)
         }
         else if (modes[i] && modes[i] == '+' && modes[i + 1] != modes[i])
         {
-            while (modes[i + 1] && availble_modes.find((modes[i + 1])) != -1)
+            while (modes[i + 1] && availble_modes.find((modes[i + 1])) != std::string::npos)
             {
                 returned_modes.push_back(std::string("+") + modes.substr(i + 1, 1));
                 i++;
             }
-            if (availble_modes.find((modes[i + 1])) == -1 && modes[i + 1] != '-' && modes[i + 1] != '+' &&
+            if (availble_modes.find((modes[i + 1])) == std::string::npos && modes[i + 1] != '-' && modes[i + 1] != '+' &&
                 modes[i + 1] != '\0')
             {
                 // error case
@@ -560,7 +556,7 @@ std::vector<std::string> parse_and_get_modes(std::string &modes)
     return returned_modes;
 }
 
-std::string Commands::parse_mode_command(std::string &req, int client_fd, std::vector<client>::iterator theclient)
+std::string Commands::parse_mode_command(std::string &req, int , std::vector<client>::iterator )
 {
     req = req.erase(0, 5);
 
@@ -588,7 +584,7 @@ std::string Commands::parse_mode_command(std::string &req, int client_fd, std::v
         target + std::string("|") + joinByMe(modes, '*') + std::string("|") + (parts.size() == 3 ? args : ""));
 }
 
-void Commands::mode(std::string payload, int client_fd, t_join_client infos)
+void Commands::mode(std::string payload, int client_fd, t_join_client)
 {
     if (payload == "enough")
     {
@@ -625,7 +621,7 @@ void Commands::mode(std::string payload, int client_fd, t_join_client infos)
 
     channel targeted_channel = *it;
 
-    for (int i = 0; i < modes.size(); i++)
+    for (size_t i = 0; i < modes.size(); i++)
     {
         switch (modes[i][1])
         {
@@ -735,7 +731,7 @@ void Commands::mode(std::string payload, int client_fd, t_join_client infos)
     }
 }
 
-std::string Commands::parse_privmsg_command(std::string &req, int client_fd, std::vector<client>::iterator theclient)
+std::string Commands::parse_privmsg_command(std::string &req, int client_fd, std::vector<client>::iterator )
 {
     std::string payload;
     std::string msg;
@@ -783,7 +779,7 @@ std::string Commands::parse_privmsg_command(std::string &req, int client_fd, std
     return payload;
 }
 
-std::string Commands::parse_topic_command(std::string &req, int client_fd, std::vector<client>::iterator) {
+std::string Commands::parse_topic_command(std::string &req, int , std::vector<client>::iterator) {
     std::string payload;
     std::string msg;
 
@@ -852,7 +848,7 @@ void Commands::topic(std::string payload, int client_fd, std::vector<client>::it
     }
 }
 
-void Commands::privmsg(std::string payload, int client_fd, t_join_client infos, std::vector<client>::iterator thclient)
+void Commands::privmsg(std::string payload, int client_fd, t_join_client infos, std::vector<client>::iterator )
 {
     std::vector<std::string> parts = split(payload, '|');
 
@@ -866,28 +862,32 @@ void Commands::privmsg(std::string payload, int client_fd, t_join_client infos, 
     std::string message = parts[1];
     std::string msg;
 
-    for (int i = 0; i < targets.size(); i++)
+    for (size_t i = 0; i < targets.size(); i++)
     {
         if (targets[i][0] == '#' || targets[i][0] == '&')
         {
             std::vector<channel>::iterator it = get_channel_by_name(targets[i]);
             if (it != channels.end())
             {
+                int is_channel_member = 0;
+
                 std::vector<int> allFds = it->get_all_fds();
                 for (size_t i = 0; i < allFds.size(); i++)
                 {
                     if (client_fd == allFds[i])
                     {
-                        std::cout << "send to channel\n";
-                        msg = ":" + get_client_Nick_by_Id(client_fd) + "!~" + infos.user + "@localhost" + " PRIVMSG " + targets[i] + " :" + message + "\r\n";
-                        it->broadcast_message(msg, client_fd);
-
-                        return ;
+                        is_channel_member = 1;break;
                     }
                 }
-                msg.erase();
+                if (is_channel_member == 0) {
                 msg = "404 ERR_CANNOTSENDTOCHAN :Cannot send to channel\r\n";
                 send(client_fd, msg.c_str(), msg.size(), 0);
+
+                }else {
+
+                msg = ":" + get_client_Nick_by_Id(client_fd) + "!~" + infos.user + "@localhost" + " PRIVMSG " + targets[i] + " " + message + "\r\n";
+                it->broadcast_message(msg, client_fd);
+                }
             }
         }
         else
@@ -904,7 +904,7 @@ void Commands::privmsg(std::string payload, int client_fd, t_join_client infos, 
 }
 
 
-void Commands::notice(std::string payload, int client_fd, t_join_client infos, std::vector<client>::iterator thclient)
+void Commands::notice(std::string payload, int client_fd, t_join_client infos, std::vector<client>::iterator)
 {
     std::vector<std::string> parts = split(payload, '|');
 
@@ -918,29 +918,32 @@ void Commands::notice(std::string payload, int client_fd, t_join_client infos, s
     std::string message = parts[1];
     std::string msg;
 
-    for (int i = 0; i < targets.size(); i++)
+    for (size_t i = 0; i < targets.size(); i++)
     {
         if (targets[i][0] == '#' || targets[i][0] == '&')
         {
             std::vector<channel>::iterator it = get_channel_by_name(targets[i]);
             if (it != channels.end())
             {
+                int is_channel_member = 0;
+
                 std::vector<int> allFds = it->get_all_fds();
                 for (size_t i = 0; i < allFds.size(); i++)
                 {
                     if (client_fd == allFds[i])
                     {
-                        std::cout << "send to channel\n";
-                        msg = ":" + get_client_Nick_by_Id(client_fd) + "!~" + infos.user + "@localhost" + " PRIVMSG " + targets[i] + " :" + message + "\r\n";
-                        it->broadcast_message(msg, client_fd);
-
-                        return ;
+                        is_channel_member = 1;break;
                     }
                 }
+                if (is_channel_member == 0) {
+                msg = "404 ERR_CANNOTSENDTOCHAN :Cannot send to channel\r\n";
+                send(client_fd, msg.c_str(), msg.size(), 0);
 
-                // if reach this
+                }else {
 
-                send(client_fd, "hi\r\n", 4, 0);
+                msg = ":" + get_client_Nick_by_Id(client_fd) + "!~" + infos.user + "@localhost" + " NOTICE " + targets[i] + " " + message + "\r\n";
+                it->broadcast_message(msg, client_fd);
+                }
             }
         }
         else
@@ -949,7 +952,7 @@ void Commands::notice(std::string payload, int client_fd, t_join_client infos, s
             if (it != -1)
             {
                 std::cout << "send to user\n";
-                msg = ":" + get_client_Nick_by_Id(client_fd) + "!~" + infos.user + "@localhost" + " PRIVMSG " + get_client_Nick_by_Id(it) + " :" + message + "\r\n";
+                msg = ":" + get_client_Nick_by_Id(client_fd) + "!~" + infos.user + "@localhost" + " NOTICE " + get_client_Nick_by_Id(it) + " :" + message + "\r\n";
                 send(it, msg.c_str(), msg.length(), 0);
             }
         }

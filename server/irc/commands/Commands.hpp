@@ -32,13 +32,11 @@ public:
         USER, // valide
         PRIVATE_MSG,
         NOTICE,
-        PART,
         MODE,
         INVITE,
         KICK,
         BOT,
         JOIN, // valide
-        KILL,
         UNDEFINED,
         TOPIC
     };
