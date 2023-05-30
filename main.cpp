@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   main.cpp                                           :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: zmaziane <zmaziane@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2023/05/30 18:57:50 by zmaziane          #+#    #+#             */
+/*   Updated: 2023/05/30 18:58:30 by zmaziane         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "FT_IRC.h"
 # include "./abstract/server/Server.hpp"
 # include "./server/irc/IrcServer.hpp"
@@ -18,7 +30,6 @@ int main(int argc, char *argv[])
 
     try {
 
-//        Server *irc = new Server("www.google.com", AF_UNSPEC, SOCK_STREAM, "80" );
         Server *irc = new IrcServer(AF_UNSPEC, SOCK_STREAM, argv[1], argv[2]);
 
         irc->get_socket_fd();

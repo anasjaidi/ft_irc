@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   bot.cpp                                            :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: zmaziane <zmaziane@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2023/05/30 18:56:05 by zmaziane          #+#    #+#             */
+/*   Updated: 2023/05/30 19:40:17 by zmaziane         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 //
 // Created by Zakaria Maziane on 4/14/23.
 //
@@ -14,7 +26,7 @@ void Commands::bot(std::string payload, int client_fd, std::vector<client>::iter
     }
     else {
         for (; it != this->clients.end(); it++) {
-            msg =  "Nick client: " + it->getNick() + "\r\n";
+            msg = ":BOT NOTICE Nick " + it->getNick() +  "\r\n";
             send(client_fd,msg.c_str(),msg.size(),0);
         }
     }

@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   Commands.cpp                                       :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: zmaziane <zmaziane@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2023/05/30 18:56:21 by zmaziane          #+#    #+#             */
+/*   Updated: 2023/05/30 19:24:08 by zmaziane         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 //
 // Created by anas jaidi on 30/3/2023.
 //
@@ -72,7 +84,6 @@ int Commands::user(std::string payload, int new_client_fd, std::vector<client>::
             std::cout << "user: " << updated_client->getUser() << "\n"
                       << "nick: " << updated_client->getNick()
                       << std::endl;
-            ////////////// replay to limechat ////////////
             char time_str[11];
             std::time_t now = std::time(NULL);
             std::tm *local_time = std::localtime(&now);
@@ -314,11 +325,11 @@ std::string Commands::parse_part_command(std::string &req, int, std::vector<clie
     trim_fun(nameChannel);
     if (cmd.size() != 2)
     {
-        return "Not enough parameters"; // rpl = ":localhost 441 " + clientname  + " : Not enough parameters"
+        return "Not enough parameters";
     }
     if (nameChannel[0] != '#')
     {
-        return "No such nick/channel"; // rpl = ":localhost 401 " + nameChannel + " : No such nick/channel\r\n"
+        return "No such nick/channel";
     }
     return (nameChannel);
 }
@@ -510,14 +521,13 @@ std::vector<std::string> parse_and_get_modes(std::string &modes)
 
     if (modes.length() && modes[modes.length() - 1] == '-' && modes[modes.length() - 1] == '+')
     {
-        // case error
+        std::cerr << "Error\r\n"; 
     }
 
     modes = modes.substr(modes.find_first_not_of(" \r\t\n"));
 
     modes = modes.substr(0, modes.find_last_not_of(" \r\t\n") + 1);
 
-    //  +ispx
 
     for (size_t i = 0; i < modes.length(); i++)
     {
@@ -532,7 +542,7 @@ std::vector<std::string> parse_and_get_modes(std::string &modes)
             if (availble_modes.find((modes[i + 1])) == std::string::npos && modes[i + 1] != '-' && modes[i + 1] != '+' &&
                 modes[i + 1] != '\0')
             {
-                // error case
+                std::cerr << "Error\r\n"; 
             }
         }
         else if (modes[i] && modes[i] == '+' && modes[i + 1] != modes[i])
@@ -545,12 +555,12 @@ std::vector<std::string> parse_and_get_modes(std::string &modes)
             if (availble_modes.find((modes[i + 1])) == std::string::npos && modes[i + 1] != '-' && modes[i + 1] != '+' &&
                 modes[i + 1] != '\0')
             {
-                // error case
+                std::cerr << "Error\r\n"; 
             }
         }
         else
         {
-            // case error
+            std::cerr << "Error\r\n"; 
         }
     }
     return returned_modes;
@@ -661,7 +671,7 @@ void Commands::mode(std::string payload, int client_fd, t_join_client)
             {
                 std::string Errormsg = ":localhost 401 " + channel_name + " : No such nick/channel\r\n";
                 send(client_fd, Errormsg.c_str(), Errormsg.size(), 0);
-                //// return here
+                return;
             }
             else
             {
@@ -689,7 +699,7 @@ void Commands::mode(std::string payload, int client_fd, t_join_client)
             {
                 std::string Errormsg = ":localhost 401 " + channel_name + " : No such nick/channel\r\n";
                 send(client_fd, Errormsg.c_str(), Errormsg.size(), 0);
-                /// return here
+                return ;
             }
             if (modes[i][0] == '+')
                 targeted_channel.operator_mode_handler(1, client_fd);
@@ -708,7 +718,7 @@ void Commands::mode(std::string payload, int client_fd, t_join_client)
             {
                 std::string Errormsg = ":localhost 401 " + channel_name + " : No such nick/channel\r\n";
                 send(client_fd, Errormsg.c_str(), Errormsg.size(), 0);
-                /// return here
+                return ;
             }
             if (modes[i][0] == '+')
                 targeted_channel.operator_friend_mode_handler(1, client_fd);
@@ -795,8 +805,6 @@ std::string Commands::parse_topic_command(std::string &req, int , std::vector<cl
     std::string channel_name = req.substr(0, pos ? pos : req.length());
 
     if ((channel_name[0] != '#' && channel_name[0] != '&') || channel_name.length() == 1) {
-        // chanel name is invlaid
-
         return "error 2";
     }
     pos  = req.find(':');
@@ -815,7 +823,6 @@ std::string Commands::parse_topic_command(std::string &req, int , std::vector<cl
         }
         return channel_name + std::string("*") + msg;
     }
-    // not error just defualt
     return "awdy";
 }
 
@@ -905,7 +912,7 @@ void Commands::privmsg(std::string payload, int client_fd, t_join_client infos, 
 
 
 void Commands::notice(std::string payload, int client_fd, t_join_client infos, std::vector<client>::iterator)
-{
+{ 
     std::vector<std::string> parts = split(payload, '|');
 
     if (parts.size() != 2)

@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   IrcServer.cpp                                      :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: zmaziane <zmaziane@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2023/05/30 18:56:29 by zmaziane          #+#    #+#             */
+/*   Updated: 2023/05/30 19:00:24 by zmaziane         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 //
 // Created by anas jaidi on 30/3/2023.
 //
@@ -57,7 +69,7 @@ int IrcServer::handle(std::string req, int client_fd) throw() {
     std::pair<OptionCommands, std::string> command = get_command(req, client_fd, cl);
 
     if (command.first == UNDEFINED) { 
-        std::cerr << command.second << std::endl; // TODO: UNDIFINED COMMAND ERROR
+        std::cerr << command.second << std::endl;
         return -1;
     }
 
@@ -79,12 +91,12 @@ int IrcServer::handle(std::string req, int client_fd) throw() {
         return 1;
     } else if (it != clients.end() && it->isAuth1() == false && command.first != PASS) {
         // user not authenticated
-        std::cout << "user not authenticated\n"; // TODO: CLIENT IS NOT AUTHENTICATED
+        std::cout << "user not authenticated\n";
         remove_client(client_fd);
         remove_client_from_server(client_fd);
         return 1;
     } else if (it != clients.end() && (it->getNick().empty() || it->getUser().empty()) && command.first != PASS && command.first != NICK && command.first != USER) {
-        remove_client(client_fd); // TODO: COMMAND WITHOUT INDETIFICATION
+        remove_client(client_fd); 
         remove_client_from_server(client_fd);
         return 1;
     }

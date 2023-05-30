@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   Commands.hpp                                       :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: zmaziane <zmaziane@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2023/05/30 18:56:25 by zmaziane          #+#    #+#             */
+/*   Updated: 2023/05/30 19:00:46 by zmaziane         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 //
 // Created by anas jaidi on 30/3/2023.
 //
@@ -27,16 +39,16 @@ public:
     void notice(std::string, int client_fd, t_join_client infos, std::vector<client>::iterator);
 
     enum OptionCommands  {
-        PASS, // valide
-        NICK, // valide
-        USER, // valide
+        PASS, 
+        NICK, 
+        USER, 
         PRIVATE_MSG,
         NOTICE,
         MODE,
         INVITE,
         KICK,
         BOT,
-        JOIN, // valide
+        JOIN, 
         UNDEFINED,
         TOPIC
     };

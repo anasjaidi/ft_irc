@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   invite_cmd.cpp                                     :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: zmaziane <zmaziane@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2023/05/30 18:56:09 by zmaziane          #+#    #+#             */
+/*   Updated: 2023/05/30 19:08:34 by zmaziane         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 //
 // Created by mustapha ouarsass on 4/13/23.
 //
@@ -34,10 +46,7 @@ void Commands::invite(std::string payload, int client_fd, std::vector<client>::i
         return ;
     }
     std::vector<std::string> desirlize = split(payload, '|');
-    // desirlize[0] = nickname
-    // desirlize[1] = #channel
     std::vector<channel>::iterator ch_it = get_channel_by_name(desirlize[1]);
-    //TODO here i have to check this channel if have it mode "i"=invite in my modes
 
     if (ch_it == channels.end())
     {
@@ -52,7 +61,6 @@ void Commands::invite(std::string payload, int client_fd, std::vector<client>::i
     }
     else if (!(ch_it->getModes() & (PRIVACY_ENABLED)))
     {
-        // case error
         std::cout << "dont have invite mode" << std::endl;
     }
     else
@@ -63,7 +71,7 @@ void Commands::invite(std::string payload, int client_fd, std::vector<client>::i
             ch_it->AddToinvited(nick_name);
         }
         msg.clear();
-        msg = ":" + clients[client_fd].getNick() + " INVITE ========> " + desirlize[0] + " " + desirlize[1] + " :End of Channel Invite Exception List\r\n";
+        msg = ":" + clients[client_fd].getNick() + " INVITE " + desirlize[0] + " " + desirlize[1] + " :End of Channel Invite Exception List\r\n";
         send(client_fd, msg.c_str(), msg.size(), 0);
         return ;
     }

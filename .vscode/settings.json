@@ -69,5 +69,6 @@
     "variant": "cpp",
     "compare": "cpp",
     "concepts": "cpp"
-  }
+  },
+  "C_Cpp.errorSquiggles": "disabled"
 }
