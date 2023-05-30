@@ -827,22 +827,27 @@ void Commands::topic(std::string payload, int client_fd, std::vector<client>::it
     std::vector<std::string> parts = split(payload, '*');
 
     std::vector<channel>::iterator ch = get_channel_by_name(parts[0]);
+    std::string message;
     if (parts.size() == 1) {
 
         if (ch != channels.end()) {
             std::string topic = ch->get_topic();
 
             if (topic.length() == 0) {
-                // no topic
+                message = "461 ERR_NEEDMOREPARAMS TOPIC :Not enough parameters \r\n";
+                send(client_fd, message.c_str(), message.size(), 0);
+                
             } else  {
-                // topic is here
-                topic;
+                std::string msg = ":irc_server TOPIC " + ch->getName() + " :" + topic + "\r\n";
+                ch->send_msg_to_all_users(msg);
             }
         }
     } else {
         if (ch != channels.end()) {
+            std::string msg = ":irc_server TOPIC " + ch->getName() + " :" + parts[1] + "\r\n";
+            ch->send_msg_to_all_users(msg);
             ch->set_topic(parts[1]);
-            // topic is saved
+            
         }
     }
 }
@@ -880,10 +885,9 @@ void Commands::privmsg(std::string payload, int client_fd, t_join_client infos, 
                         return ;
                     }
                 }
-
-                // if reach this
-
-                send(client_fd, "hi\r\n", 4, 0);
+                msg.erase();
+                msg = "404 ERR_CANNOTSENDTOCHAN :Cannot send to channel\r\n";
+                send(client_fd, msg.c_str(), msg.size(), 0);
             }
         }
         else
